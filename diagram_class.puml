@@ -1,0 +1,38 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class Category {
+    -name: String
+    -allocationPerMonth: int
+    #balance: int
+
+    +getName(): String
+    +getAllocationPerMonth(): int
+    +setAllocationPerMonth(): int
+    +getBalance(): int
+    +newMonth(): void
+}
+class StandardCategory
+class BudgetCategory {
+    +getBudget(): Budget
+    +override newMonth(): void
+}
+class Budget {
+    -name: String
+    -allocationPerMonth: int
+    -balance: int
+
+    +getName(): String
+    +getAllocationPerMonth(): int
+    +setAllocationPerMonth(): int
+    +getBalance(): int
+    +newMonth(): void
+}
+
+Category <|-- StandardCategory
+Category <|-- BudgetCategory
+
+Budget --> BudgetCategory : -budget
+Category "0..*" -right-> Budget : -categories
+
+@enduml

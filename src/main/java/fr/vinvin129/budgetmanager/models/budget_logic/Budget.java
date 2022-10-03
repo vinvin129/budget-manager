@@ -51,6 +51,10 @@ public class Budget {
         this.categories.remove(category);
     }
 
+    public Category[] getCategories() {
+        return this.categories.toArray(new Category[0]);
+    }
+
     public void addSpent(Spent spent) {
         this.categories.forEach(category -> {
             if (category == spent.category()) {

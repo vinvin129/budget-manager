@@ -1,6 +1,9 @@
 package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
+import fr.vinvin129.budgetmanager.exceptions.BudgetCategoryTooSmallException;
+import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
+import fr.vinvin129.budgetmanager.exceptions.CategoryTooBigException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +31,29 @@ public class Budget {
         return name;
     }
 
-    public void setAllocationPerMonth(int allocationPerMonth) {
+    public void setAllocationPerMonth(int allocationPerMonth) throws BudgetTooSmallException {
+        int totalBudget = 0;
+        for (Category category : this.categories) {
+            totalBudget += category.getAllocationPerMonth();
+        }
+
+        if (totalBudget > allocationPerMonth) {
+            throw new BudgetTooSmallException();
+        }
         this.allocationPerMonth = allocationPerMonth;
-        //TODO !!!!!
+    }
+
+    public void setAllocationPerMonthOfCategory(Category category, int allocationPerMonth) throws BudgetCategoryTooSmallException, CategoryTooBigException {
+        int newTotalAllocation = 0;
+        for (Category c : this.categories) {
+            newTotalAllocation += c != category ? c.getAllocationPerMonth() : allocationPerMonth;
+        }
+
+        if (newTotalAllocation > this.allocationPerMonth) {
+            throw new CategoryTooBigException();
+        }
+
+        category.setAllocationPerMonth(allocationPerMonth);
     }
 
     public void newMonth() {

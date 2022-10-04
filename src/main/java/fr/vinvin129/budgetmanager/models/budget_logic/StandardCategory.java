@@ -32,7 +32,8 @@ public class StandardCategory extends Category{
     }
 
     @Override
-    public void setAllocationPerMonth(int allocationPerMonth) {
+    void setAllocationPerMonth(int allocationPerMonth) {
+
         this.allocationPerMonth = allocationPerMonth;
     }
 

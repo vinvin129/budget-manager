@@ -1,6 +1,8 @@
 package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
+import fr.vinvin129.budgetmanager.exceptions.BudgetCategoryTooSmallException;
+import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 
 public class BudgetCategory extends Category{
     private final Budget budget;
@@ -17,8 +19,12 @@ public class BudgetCategory extends Category{
     }
 
     @Override
-    public void setAllocationPerMonth(int allocationPerMonth) {
-        this.budget.setAllocationPerMonth(allocationPerMonth);
+    void setAllocationPerMonth(int allocationPerMonth) throws BudgetCategoryTooSmallException {
+        try {
+            this.budget.setAllocationPerMonth(allocationPerMonth);
+        } catch (BudgetTooSmallException e) {
+            throw new BudgetCategoryTooSmallException();
+        }
     }
 
     public Budget getBudget() {

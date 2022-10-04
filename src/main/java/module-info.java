@@ -1,4 +1,4 @@
-module fr.vinvin128.budgetmanager {
+module fr.vinvin129.budgetmanager {
     requires javafx.controls;
     requires javafx.fxml;
 
@@ -6,5 +6,6 @@ module fr.vinvin128.budgetmanager {
     opens fr.vinvin129.budgetmanager to javafx.fxml;
     exports fr.vinvin129.budgetmanager;
     exports fr.vinvin129.budgetmanager.models.budget_logic;
+    exports fr.vinvin129.budgetmanager.exceptions;
     opens fr.vinvin129.budgetmanager.models.budget_logic to javafx.fxml;
 }

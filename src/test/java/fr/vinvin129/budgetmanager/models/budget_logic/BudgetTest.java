@@ -1,6 +1,7 @@
 package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
+import fr.vinvin129.budgetmanager.exceptions.BudgetCategoryTooSmallException;
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 import fr.vinvin129.budgetmanager.exceptions.CategoryTooBigException;
 import org.junit.jupiter.api.Test;
@@ -46,6 +47,7 @@ class BudgetTest {
         Category cat1b2 = new StandardCategory("cat1b2", 300);
         Category cat2b2 = new StandardCategory("cat2b2", 2000);
         Category cat3b2 = new BudgetCategory("cat3b2", 2000);
+        assertThrows(BudgetTooSmallException.class, () -> b1.setAllocationPerMonth(-100));
         b2.addCategory(cat1b2);
         assertDoesNotThrow(() -> b1.setAllocationPerMonth(1000));
         assertEquals(1000, b1.getAllocationPerMonth());
@@ -57,6 +59,8 @@ class BudgetTest {
         b2.removeCategory(cat2b2);
         b2.addCategory(cat3b2);
         assertThrows(BudgetTooSmallException.class, () -> b2.setAllocationPerMonth(1000));
+
+        assertThrows(BudgetTooSmallException.class, () -> b1.setAllocationPerMonth(-100));
     }
 
     @Test
@@ -70,6 +74,9 @@ class BudgetTest {
         assertDoesNotThrow(() -> b.setAllocationPerMonthOfCategory(cat1, 600));
         assertThrows(CategoryTooBigException.class, () -> b.setAllocationPerMonthOfCategory(cat2, 600));
         assertDoesNotThrow(() -> b.setAllocationPerMonthOfCategory(cat2, 100));
+
+        assertThrows(Exception.class, () -> b.setAllocationPerMonthOfCategory(cat1, 0));
+        assertThrows(BudgetCategoryTooSmallException.class, () -> b.setAllocationPerMonthOfCategory(cat2, 0));
     }
 
     @Test
@@ -82,7 +89,7 @@ class BudgetTest {
         b.newMonth();
         assertEquals(1000, b.getBalance());
 
-        b.addSpent(new Spent(cat1, "un achat", 100));
+        assertDoesNotThrow(() -> b.addSpent(new Spent(cat1, "un achat", 100)));
         b.newMonth();
         assertEquals(1900, b.getBalance());
     }
@@ -125,11 +132,13 @@ class BudgetTest {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 200);
         BudgetCategory cat2 = new BudgetCategory("cat2", 300);
+        Category cat3 = new StandardCategory("cat3", 300);
         b.addCategory(cat1);
         b.addCategory(cat2);
         b.newMonth();
-        b.addSpent(new Spent(cat1, "dep1", 50));
-        b.addSpent(new Spent(cat2.getBudget().getCategories()[0], "dep2", 200)); // ne doit pas changer la somme
+        assertDoesNotThrow(() -> b.addSpent(new Spent(cat1, "dep1", 50)));
         assertEquals(1000-300-50, b.getBalance());
+
+        assertThrows(Exception.class, () -> b.addSpent(new Spent(cat3, "erreur", 20)));
     }
 }

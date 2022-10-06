@@ -2,6 +2,7 @@ package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
 import fr.vinvin129.budgetmanager.exceptions.BudgetCategoryTooSmallException;
+import fr.vinvin129.budgetmanager.exceptions.BudgetNotContainCategory;
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 import fr.vinvin129.budgetmanager.exceptions.CategoryTooBigException;
 
@@ -78,7 +79,10 @@ public class Budget {
         return this.categories.toArray(new Category[0]);
     }
 
-    public void addSpent(Spent spent) {
+    public void addSpent(Spent spent) throws BudgetNotContainCategory {
+        if (!this.categories.contains(spent.category())) {
+            throw new BudgetNotContainCategory(spent.category());
+        }
         this.categories.forEach(category -> {
             if (category == spent.category()) {
                 category.addSpent(spent);

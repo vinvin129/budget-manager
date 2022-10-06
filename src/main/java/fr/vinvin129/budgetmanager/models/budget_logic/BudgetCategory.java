@@ -2,6 +2,7 @@ package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
 import fr.vinvin129.budgetmanager.exceptions.BudgetCategoryTooSmallException;
+import fr.vinvin129.budgetmanager.exceptions.BudgetNotContainCategory;
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 
 public class BudgetCategory extends Category{
@@ -48,7 +49,11 @@ public class BudgetCategory extends Category{
 
     @Override
     void addSpent(Spent spent) {
-        this.budget.addSpent(spent);
+        try {
+            this.budget.addSpent(spent);
+        } catch (BudgetNotContainCategory e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

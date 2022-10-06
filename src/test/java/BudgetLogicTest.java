@@ -5,7 +5,8 @@ import fr.vinvin129.budgetmanager.models.budget_logic.Category;
 import fr.vinvin129.budgetmanager.models.budget_logic.StandardCategory;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BudgetLogicTest {
     @Test
@@ -38,14 +39,14 @@ public class BudgetLogicTest {
         assertEquals(400, logement.getBalance(), "on commence donc ça doit être vide");
         assertEquals(300, bouffe.getBalance(), "on commence donc ça doit être vide");
 
-        budgetPrincipal.addSpent(new Spent(bouffe, "un bk !", 10));
+        assertDoesNotThrow(() -> budgetPrincipal.addSpent(new Spent(bouffe, "un bk !", 10)));
 
         assertEquals(1390, budgetPrincipal.getBalance(), "on commence donc ça doit être vide");
         assertEquals(600, technologiesCat.getBalance(), "on commence donc ça doit être vide");
         assertEquals(400, logement.getBalance(), "on commence donc ça doit être vide");
         assertEquals(290, bouffe.getBalance(), "on commence donc ça doit être vide");
 
-        budgetTechnologie.addSpent(new Spent(telephone, "un tel !", 200));
+        assertDoesNotThrow(() -> budgetTechnologie.addSpent(new Spent(telephone, "un tel !", 200)));
 
         assertEquals(1390, budgetPrincipal.getBalance(), "on commence donc ça doit être vide");
         assertEquals(400, technologiesCat.getBalance(), "on commence donc ça doit être vide");

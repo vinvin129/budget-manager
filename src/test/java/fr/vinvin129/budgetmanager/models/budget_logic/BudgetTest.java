@@ -28,7 +28,7 @@ class BudgetTest {
 
         b = new Budget("budget", 3000);
         b.addCategory(new StandardCategory("null", 300));
-        b.addCategory(new BudgetCategory("null2", 500));
+        b.addCategory(new BudgetCategory(new Budget("null2", 500)));
         assertEquals(0, b.getBalance(), "budget balance must be 0");
         b.newMonth();
         assertEquals(3000-500, b.getBalance(), "budget balance must be 3000");
@@ -47,7 +47,7 @@ class BudgetTest {
         Budget b2 = new Budget("budget2", 3000);
         Category cat1b2 = new StandardCategory("cat1b2", 300);
         Category cat2b2 = new StandardCategory("cat2b2", 2000);
-        Category cat3b2 = new BudgetCategory("cat3b2", 2000);
+        Category cat3b2 = new BudgetCategory(new Budget("cat3b2", 2000));
         assertThrows(BudgetTooSmallException.class, () -> b1.setAllocationPerMonth(-100));
         b2.addCategory(cat1b2);
         assertDoesNotThrow(() -> b1.setAllocationPerMonth(1000));
@@ -99,7 +99,7 @@ class BudgetTest {
     void addCategory() {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
-        Category cat2 = new BudgetCategory("cat2", 300);
+        Category cat2 = new BudgetCategory(new Budget("cat2", 300));
         assertArrayEquals(new Category[]{}, b.getCategories());
         b.addCategory(cat1);
         b.addCategory(cat2);
@@ -110,7 +110,7 @@ class BudgetTest {
     void removeCategory() {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
-        Category cat2 = new BudgetCategory("cat2", 300);
+        Category cat2 = new BudgetCategory(new Budget("cat2", 300));
         b.addCategory(cat1);
         b.addCategory(cat2);
         b.removeCategory(cat1);
@@ -132,7 +132,7 @@ class BudgetTest {
     void addSpent() {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 200);
-        BudgetCategory cat2 = new BudgetCategory("cat2", 300);
+        BudgetCategory cat2 = new BudgetCategory(new Budget("cat2", 300));
         Category cat3 = new StandardCategory("cat3", 300);
         b.addCategory(cat1);
         b.addCategory(cat2);

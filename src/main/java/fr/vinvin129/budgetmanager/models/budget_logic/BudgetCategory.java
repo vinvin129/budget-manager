@@ -13,12 +13,6 @@ public class BudgetCategory extends Category{
         this.budget = budget;
     }
 
-    public BudgetCategory(String name, int allocationPerMonth) {
-        super(name);
-        this.budget = new Budget(name, allocationPerMonth);
-        this.budget.addCategory(new StandardCategory(name + " catégorie", allocationPerMonth));
-    }
-
     @Override
     void setAllocationPerMonth(int allocationPerMonth) throws BudgetCategoryTooSmallException {
         try {

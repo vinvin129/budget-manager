@@ -1,9 +1,10 @@
 package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
-import fr.vinvin129.budgetmanager.exceptions.BudgetCategoryTooSmallException;
+import fr.vinvin129.budgetmanager.exceptions.BudgetNotContainCategoryException;
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 import fr.vinvin129.budgetmanager.exceptions.CategoryTooBigException;
+import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -139,6 +140,6 @@ class BudgetTest {
         assertDoesNotThrow(() -> b.addSpent(new Spent(cat1, "dep1", 50)));
         assertEquals(1000-300-50, b.getBalance());
 
-        assertThrows(Exception.class, () -> b.addSpent(new Spent(cat3, "erreur", 20)));
+        assertThrows(BudgetNotContainCategoryException.class, () -> b.addSpent(new Spent(cat3, "erreur", 20)));
     }
 }

@@ -76,8 +76,8 @@ class BudgetTest {
         assertThrows(CategoryTooBigException.class, () -> b.setAllocationPerMonthOfCategory(cat2, 600));
         assertDoesNotThrow(() -> b.setAllocationPerMonthOfCategory(cat2, 100));
 
-        assertThrows(Exception.class, () -> b.setAllocationPerMonthOfCategory(cat1, 0));
-        assertThrows(BudgetCategoryTooSmallException.class, () -> b.setAllocationPerMonthOfCategory(cat2, 0));
+        assertThrows(IllegalCategorySizeException.class, () -> b.setAllocationPerMonthOfCategory(cat1, 0));
+        assertThrows(IllegalCategorySizeException.class, () -> b.setAllocationPerMonthOfCategory(cat2, 0));
     }
 
     @Test

@@ -38,14 +38,26 @@ public class Budget {
         this.allocationPerMonth = allocationPerMonth;
     }
 
+    /**
+     * get the value of allocation for each month for Budget
+     * @return the value
+     */
     public int getAllocationPerMonth() {
         return allocationPerMonth;
     }
 
+    /**
+     * get the balance of budget
+     * @return the balance
+     */
     public int getBalance() {
         return balance;
     }
 
+    /**
+     * get the name of budget
+     * @return the name
+     */
     public String getName() {
         return name;
     }
@@ -104,14 +116,26 @@ public class Budget {
         }
     }
 
+    /**
+     * add a {@link Category} to this Budget
+     * @param category the {@link Category} object
+     */
     public void addCategory(Category category) {
         this.categories.add(category);
     }
 
+    /**
+     * remove a {@link Category} to this Budget
+     * @param category the {@link Category} object
+     */
     public void removeCategory(Category category) {
         this.categories.remove(category);
     }
 
+    /**
+     * get {@link Category} list of categories in this budget
+     * @return {@link Category} list
+     */
     public Category[] getCategories() {
         return this.categories.toArray(new Category[0]);
     }

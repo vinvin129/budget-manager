@@ -5,9 +5,20 @@ import fr.vinvin129.budgetmanager.exceptions.BudgetCategoryTooSmallException;
 import fr.vinvin129.budgetmanager.exceptions.BudgetNotContainCategoryException;
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 
+/**
+ * a {@link Category} with a linked {@link Budget}
+ * @author vinvin129
+ */
 public class BudgetCategory extends Category{
+    /**
+     * this linked {@link Budget} object
+     */
     private final Budget budget;
 
+    /**
+     * create a {@link BudgetCategory} object with a {@link Budget}
+     * @param budget the {@link Budget} object
+     */
     public BudgetCategory(Budget budget) {
         super(budget.getName());
         this.budget = budget;
@@ -22,6 +33,10 @@ public class BudgetCategory extends Category{
         }
     }
 
+    /**
+     * get the linked {@link Budget}
+     * @return a {@link Budget} object
+     */
     public Budget getBudget() {
         return budget;
     }
@@ -50,6 +65,10 @@ public class BudgetCategory extends Category{
         }
     }
 
+    /**
+     * not used in this implementation
+     * @return null
+     */
     @Override
     public Spent[] getSpentList() {
         return null;

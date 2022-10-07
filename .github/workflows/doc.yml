@@ -20,4 +20,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           javadoc-branch: javadoc
           java-version: 17
-          target-folder: ${{steps.branch-name.base_ref_branch}}
+          target-folder: ${{ steps.branch-name.base_ref_branch }}

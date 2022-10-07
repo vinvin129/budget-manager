@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"fr.vinvin129.budgetmanager","l":"fr.vinvin129.budgetmanager"},{"m":"fr.vinvin129.budgetmanager","l":"fr.vinvin129.budgetmanager.exceptions"},{"m":"fr.vinvin129.budgetmanager","l":"fr.vinvin129.budgetmanager.models.budget_logic"}];updateSearchResults();

@@ -1,9 +1,7 @@
 package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
-import fr.vinvin129.budgetmanager.exceptions.BudgetCategoryTooSmallException;
-import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
-import fr.vinvin129.budgetmanager.exceptions.CategoryTooBigException;
+import fr.vinvin129.budgetmanager.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +41,10 @@ public class Budget {
         this.allocationPerMonth = allocationPerMonth;
     }
 
-    public void setAllocationPerMonthOfCategory(Category category, int allocationPerMonth) throws BudgetCategoryTooSmallException, CategoryTooBigException {
+    public void setAllocationPerMonthOfCategory(Category category, int allocationPerMonth) throws BudgetCategoryTooSmallException, CategoryTooBigException, IllegalCategorySizeException {
+        if (allocationPerMonth <= 1) {
+            throw new IllegalCategorySizeException();
+        }
         int newTotalAllocation = 0;
         for (Category c : this.categories) {
             newTotalAllocation += c != category ? c.getAllocationPerMonth() : allocationPerMonth;
@@ -78,7 +79,10 @@ public class Budget {
         return this.categories.toArray(new Category[0]);
     }
 
-    public void addSpent(Spent spent) {
+    public void addSpent(Spent spent) throws BudgetNotContainCategoryException {
+        if (!this.categories.contains(spent.category())) {
+            throw new BudgetNotContainCategoryException(spent.category());
+        }
         this.categories.forEach(category -> {
             if (category == spent.category()) {
                 category.addSpent(spent);

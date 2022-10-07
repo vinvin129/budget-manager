@@ -1,0 +1,4 @@
+module:fr.vinvin129.budgetmanager
+fr.vinvin129.budgetmanager
+fr.vinvin129.budgetmanager.exceptions
+fr.vinvin129.budgetmanager.models.budget_logic

@@ -1,5 +1,9 @@
 package fr.vinvin129.budgetmanager.exceptions;
 
+/**
+ * Exception for when the new allocation for a {@link fr.vinvin129.budgetmanager.models.budget_logic.Category} is too big
+ * @author vinvin129
+ */
 public class CategoryTooBigException extends Exception {
     public CategoryTooBigException() {
         super("l'allocation donnée au budget de cette catégorie est trop petit.\n" +

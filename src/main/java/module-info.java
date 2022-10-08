@@ -8,4 +8,6 @@ module fr.vinvin129.budgetmanager {
     exports fr.vinvin129.budgetmanager.models.budget_logic;
     exports fr.vinvin129.budgetmanager.exceptions;
     opens fr.vinvin129.budgetmanager.models.budget_logic to javafx.fxml;
+    exports fr.vinvin129.budgetmanager.ihm;
+    opens fr.vinvin129.budgetmanager.ihm to javafx.fxml;
 }

@@ -3,6 +3,9 @@ package fr.vinvin129.budgetmanager.models.budget_logic;
 import fr.vinvin129.budgetmanager.Spent;
 import fr.vinvin129.budgetmanager.exceptions.BudgetCategoryTooSmallException;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * it's a part of a {@link Budget}. Contains expenses named {@link Spent} to split in categories the expenses
  * @author vinvin129
@@ -64,4 +67,24 @@ public abstract class Category {
      * @return list of expenses
      */
     public abstract Spent[] getSpentList();
+
+    @Override
+    public String toString() {
+        return this.name + ", allocation : " + getAllocationPerMonth() + ", solde : " + getBalance();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Category category)) return false;
+        return Objects.equals(getName(), category.getName())
+                && Objects.equals(getAllocationPerMonth(), category.getAllocationPerMonth())
+                && Objects.equals(getBalance(), category.getBalance())
+                && Arrays.equals(getSpentList(), category.getSpentList());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
+    }
 }

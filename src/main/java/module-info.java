@@ -10,4 +10,10 @@ module fr.vinvin129.budgetmanager {
     opens fr.vinvin129.budgetmanager.models.budget_logic to javafx.fxml;
     exports fr.vinvin129.budgetmanager.ihm;
     opens fr.vinvin129.budgetmanager.ihm to javafx.fxml;
+    exports fr.vinvin129.budgetmanager.ihm.views.controllers;
+    opens fr.vinvin129.budgetmanager.ihm.views.controllers to javafx.fxml;
+    exports fr.vinvin129.budgetmanager.ihm.views.stages;
+    opens fr.vinvin129.budgetmanager.ihm.views.stages to javafx.fxml;
+    exports fr.vinvin129.budgetmanager.ihm.views.controllers.create.category;
+    opens fr.vinvin129.budgetmanager.ihm.views.controllers.create.category to javafx.fxml;
 }

@@ -7,7 +7,7 @@
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="fr.vinvin129.budgetmanager.ihm.views.controllers.HomeController">
     <Label styleClass="title">Bienvenue !</Label>
-    <Button fx:id="startButton" text="Créer mon premier budget!" onAction="#onBeginButtonClick"/>
+    <Button fx:id="startButton" text="Créer mon premier budget!"/>
     <stylesheets>
         <URL value="@common.css" />
     </stylesheets>

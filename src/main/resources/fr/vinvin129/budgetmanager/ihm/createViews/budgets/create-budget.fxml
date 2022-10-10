@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
-<BorderPane prefHeight="374.0" prefWidth="372.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.vinvin129.budgetmanager.ihm.views.controllers.CreateBudgetController">
+<BorderPane prefHeight="374.0" prefWidth="372.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.vinvin129.budgetmanager.ihm.views.controllers.create.budget.CreateBudgetController">
    <top>
       <Label text="Création d'un budget" BorderPane.alignment="CENTER" />
    </top>
@@ -19,11 +19,11 @@
             <TextField fx:id="budgetAllocation" />
          </HBox>
          <ListView fx:id="categoryList" disable="true" prefHeight="258.0" prefWidth="372.0" />
-         <Button fx:id="addCategoryButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addCategory" text="AJouter Catégorie" textAlignment="CENTER" />
+         <Button fx:id="addCategoryButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addCategory" text="Ajouter Catégorie" textAlignment="CENTER" />
       </VBox>
    </center>
    <bottom>
-      <Button mnemonicParsing="false" onAction="#validate" text="Valider" BorderPane.alignment="CENTER" />
+      <Button mnemonicParsing="false" fx:id="validateBudgetCreation" text="Valider" BorderPane.alignment="CENTER" />
    </bottom>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

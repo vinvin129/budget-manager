@@ -19,7 +19,7 @@ public class CreateCategoryStage extends Stage {
         FXMLLoader fxmlLoader = new FXMLLoader(IHM.class.getResource("createViews/categories/create-category.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         this.controller = fxmlLoader.getController();
-        controller.validate.setOnAction(actionEvent -> {
+        controller.validateCategoryCreation.setOnAction(actionEvent -> {
             this.category = this.controller.getCategory();
             close();
         });

@@ -15,7 +15,7 @@ import java.io.IOException;
 public class CreateCategoryController implements CreateCategory {
     @FXML
     public ChoiceBox<String> typeChoice;
-    public Button validate;
+    public Button validateCategoryCreation;
     public Button cancel;
     public BorderPane view;
     private BorderPane budgetView;
@@ -26,9 +26,10 @@ public class CreateCategoryController implements CreateCategory {
 
     @FXML
     public void initialize() throws IOException {
-        FXMLLoader budgetViewLoader = new FXMLLoader(IHM.class.getResource("createViews/categories/create-budget-category.fxml"));
+        FXMLLoader budgetViewLoader = new FXMLLoader(IHM.class.getResource("createViews/budgets/create-budget.fxml"));
         FXMLLoader standardViewLoader = new FXMLLoader(IHM.class.getResource("createViews/categories/create-standard-category.fxml"));
         this.budgetView = budgetViewLoader.load();
+        this.budgetView.setBottom(null);
         this.standardView = standardViewLoader.load();
         this.budgetViewController = budgetViewLoader.getController();
         this.standardViewController = standardViewLoader.getController();

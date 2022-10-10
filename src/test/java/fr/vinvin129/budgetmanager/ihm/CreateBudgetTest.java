@@ -41,7 +41,7 @@ public class CreateBudgetTest {
         robot.write("cat1");
         robot.clickOn("#allocation");
         robot.write("300");
-        robot.clickOn("#validate");
+        robot.clickOn("#validateCategoryCreation");
         Category category = new StandardCategory("cat1", 300);
         FxAssert.verifyThat("#categoryList", ListViewMatchers.hasListCell(category));
     }

@@ -86,7 +86,7 @@
                 <version>3.0.0-M7</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/*Test.java</exclude>
+                        <exclude>**/ihm/**/*Test.java</exclude>
                     </excludes>
                     <!-- add tiret <argLine>-add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argLine> -->
                 </configuration>

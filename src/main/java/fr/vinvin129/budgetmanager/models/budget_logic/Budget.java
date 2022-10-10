@@ -4,7 +4,9 @@ import fr.vinvin129.budgetmanager.Spent;
 import fr.vinvin129.budgetmanager.exceptions.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represent a Budget. He can contains some {@link Category}
@@ -157,5 +159,22 @@ public class Budget {
                 }
             }
         });
+    }
+
+    @Override
+    public String toString() {
+        return "Budget " + name + "; solde : " + balance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Budget budget)) return false;
+        return getAllocationPerMonth() == budget.getAllocationPerMonth() && getBalance() == budget.getBalance() && getName().equals(budget.getName()) && Arrays.equals(getCategories(), budget.getCategories());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getAllocationPerMonth(), getBalance(), Arrays.hashCode(getCategories()));
     }
 }

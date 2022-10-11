@@ -1,5 +1,6 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.create.category;
 
+import fr.vinvin129.budgetmanager.exceptions.CreateCategoryException;
 import fr.vinvin129.budgetmanager.ihm.IHM;
 import fr.vinvin129.budgetmanager.models.budget_logic.Category;
 import javafx.event.ActionEvent;
@@ -62,9 +63,9 @@ public class CreateCategoryController implements CreateCategory {
      * @return the {@link Category} object or null
      */
     @Override
-    public Category getCategory() {
+    public Category getCategory() throws CreateCategoryException {
         if (actualCategoryController == null) {
-            return null;
+            throw new CreateCategoryException("erreur inconnue (problème de controleurs)");
         }
         return actualCategoryController.getCategory();
     }

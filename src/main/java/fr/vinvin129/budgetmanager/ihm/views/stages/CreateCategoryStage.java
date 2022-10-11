@@ -1,5 +1,6 @@
 package fr.vinvin129.budgetmanager.ihm.views.stages;
 
+import fr.vinvin129.budgetmanager.exceptions.CreateCategoryException;
 import fr.vinvin129.budgetmanager.ihm.IHM;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.create.category.CreateCategoryController;
 import fr.vinvin129.budgetmanager.models.budget_logic.Category;
@@ -20,12 +21,14 @@ public class CreateCategoryStage extends Stage {
         Scene scene = new Scene(fxmlLoader.load());
         this.controller = fxmlLoader.getController();
         controller.validateCategoryCreation.setOnAction(actionEvent -> {
-            this.category = this.controller.getCategory();
-            close();
+            try {
+                this.category = this.controller.getCategory();
+                close();
+            } catch (CreateCategoryException e) {
+                e.showWarningAlert();
+            }
         });
-        controller.cancel.setOnAction(actionEvent -> {
-            close();
-        });
+        controller.cancel.setOnAction(actionEvent -> close());
         this.setScene(scene);
     }
 

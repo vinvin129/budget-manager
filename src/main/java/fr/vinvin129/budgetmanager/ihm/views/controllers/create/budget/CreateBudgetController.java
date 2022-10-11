@@ -1,6 +1,7 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.create.budget;
 
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
+import fr.vinvin129.budgetmanager.exceptions.CreateCategoryException;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.create.category.CreateCategory;
 import fr.vinvin129.budgetmanager.ihm.views.stages.CreateCategoryStage;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
@@ -64,8 +65,11 @@ public class CreateBudgetController implements CreateCategory {
      * @return the {@link Category} object or null
      */
     @Override
-    public Category getCategory() {
+    public Category getCategory() throws CreateCategoryException {
         Budget budget = getBudget();
-        return budget != null ? new BudgetCategory(getBudget()) : null;
+        if (budget == null) {
+            throw new CreateCategoryException("le budget auquel est lié la catégorie n'a pas pu être crée.");
+        }
+        return new BudgetCategory(budget);
     }
 }

@@ -121,6 +121,7 @@ public class Budget {
     /**
      * add a {@link Category} to this Budget
      * @param category the {@link Category} object
+     * @throws BudgetTooSmallException when there is no more place in this budget
      */
     public void addCategory(Category category) throws BudgetTooSmallException {
         int totalAllocation = 0;

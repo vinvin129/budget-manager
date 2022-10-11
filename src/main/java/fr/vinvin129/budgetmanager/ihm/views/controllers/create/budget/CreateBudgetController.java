@@ -17,17 +17,43 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 
+/**
+ * the controller for budgets creations
+ * @author vinvin129
+ */
 public class CreateBudgetController implements CreateCategory {
 
+    /**
+     * FXML reference for the budget name emplacement
+     */
     @FXML
     public TextField budgetName;
+    /**
+     * FXML reference for the budget allocation emplacement
+     */
     @FXML
     public TextField budgetAllocation;
+    /**
+     * FXML reference for the list of categories emplacement
+     */
     @FXML
     public ListView<Category> categoryList;
+    /**
+     * FXML reference for the button to add category
+     */
+    @FXML
     public Button addCategoryButton;
+    /**
+     * FXML reference for the button validate the creation of the budget
+     */
+    @FXML
     public Button validateBudgetCreation;
 
+    /**
+     * called when the button to add category was pressed
+     * @param actionEvent the event
+     * @throws IOException .
+     */
     @FXML
     public void addCategory(ActionEvent actionEvent) throws IOException {
         System.out.println("ajout d'une catégorie");
@@ -37,6 +63,11 @@ public class CreateBudgetController implements CreateCategory {
         }
     }
 
+    /**
+     * create a {@link Budget} object with data in the view
+     * @return a {@link Budget} object
+     * @throws CreateBudgetException if the budget can't be created
+     */
     public Budget getBudget() throws CreateBudgetException {
         String name = this.budgetName.getText();
         String allocation = this.budgetAllocation.getText();
@@ -64,7 +95,8 @@ public class CreateBudgetController implements CreateCategory {
     }
 
     /**
-     * @return the {@link Category} object or null
+     * @return the {@link Category} object
+     * @throws CreateCategoryException if category can't be created
      */
     @Override
     public Category getCategory() throws CreateCategoryException {

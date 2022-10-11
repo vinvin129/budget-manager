@@ -34,8 +34,12 @@ public class Budget {
      * create a budget instance
      * @param name budget name
      * @param allocationPerMonth money added in the balance each month
+     * @throws IllegalBudgetSizeException when allocationPerMonth is under than 1
      */
-    public Budget(String name, int allocationPerMonth) {
+    public Budget(String name, int allocationPerMonth) throws IllegalBudgetSizeException {
+        if (allocationPerMonth < 1) {
+            throw new IllegalBudgetSizeException();
+        }
         this.name = name;
         this.allocationPerMonth = allocationPerMonth;
     }

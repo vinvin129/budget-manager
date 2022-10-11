@@ -2,6 +2,7 @@ package fr.vinvin129.budgetmanager.ihm.views.controllers.create.budget;
 
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 import fr.vinvin129.budgetmanager.exceptions.CreateCategoryException;
+import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.create.category.CreateCategory;
 import fr.vinvin129.budgetmanager.ihm.views.stages.CreateCategoryStage;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
@@ -44,7 +45,7 @@ public class CreateBudgetController implements CreateCategory {
         Budget budget;
         try {
             budget = new Budget(name, Integer.parseInt(allocation));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | IllegalBudgetSizeException e) {
             return null;
         }
         if (categoryList.getItems().size() == 0) {

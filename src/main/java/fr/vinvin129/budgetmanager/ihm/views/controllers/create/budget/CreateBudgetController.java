@@ -58,6 +58,7 @@ public class CreateBudgetController implements CreateCategory {
      */
     @Override
     public Category getCategory() {
-        return new BudgetCategory(getBudget());
+        Budget budget = getBudget();
+        return budget != null ? new BudgetCategory(getBudget()) : null;
     }
 }

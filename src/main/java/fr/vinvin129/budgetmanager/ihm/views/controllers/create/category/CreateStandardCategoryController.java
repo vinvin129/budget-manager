@@ -1,6 +1,7 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.create.category;
 
 import fr.vinvin129.budgetmanager.exceptions.CreateCategoryException;
+import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 import fr.vinvin129.budgetmanager.models.budget_logic.Category;
 import fr.vinvin129.budgetmanager.models.budget_logic.StandardCategory;
 import javafx.scene.control.TextField;
@@ -22,6 +23,8 @@ public class CreateStandardCategoryController implements CreateCategory {
             return new StandardCategory(name, Integer.parseInt(allocation));
         } catch (NumberFormatException e) {
             throw new CreateCategoryException("la valeur du champ allocation doit être un nombre");
+        } catch (IllegalCategorySizeException e) {
+            throw new CreateCategoryException(e.getMessage());
         }
     }
 }

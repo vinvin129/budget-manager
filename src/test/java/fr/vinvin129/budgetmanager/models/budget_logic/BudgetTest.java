@@ -20,7 +20,7 @@ class BudgetTest {
     }
 
     @Test
-    void getBalance() throws BudgetTooSmallException {
+    void getBalance() throws BudgetTooSmallException, IllegalCategorySizeException {
         Budget b = new Budget("budget", 3000);
         assertEquals(0, b.getBalance(), "budget balance must be 0");
         b.newMonth();
@@ -42,7 +42,7 @@ class BudgetTest {
     }
 
     @Test
-    void setAllocationPerMonth() throws BudgetTooSmallException {
+    void setAllocationPerMonth() throws BudgetTooSmallException, IllegalCategorySizeException {
         Budget b1 = new Budget("budget1", 3000);
         Budget b2 = new Budget("budget2", 3000);
         Category cat1b2 = new StandardCategory("cat1b2", 300);
@@ -66,7 +66,7 @@ class BudgetTest {
     }
 
     @Test
-    void setAllocationPerMonthOfCategory() throws BudgetTooSmallException {
+    void setAllocationPerMonthOfCategory() throws BudgetTooSmallException, IllegalCategorySizeException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         Category cat2 = new BudgetCategory(new Budget("cat2", 300));
@@ -82,7 +82,7 @@ class BudgetTest {
     }
 
     @Test
-    void newMonth() throws BudgetTooSmallException {
+    void newMonth() throws BudgetTooSmallException, IllegalCategorySizeException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         b.addCategory(cat1);
@@ -97,7 +97,7 @@ class BudgetTest {
     }
 
     @Test
-    void addCategory() {
+    void addCategory() throws IllegalCategorySizeException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         Category cat2 = new BudgetCategory(new Budget("cat2", 300));
@@ -110,7 +110,7 @@ class BudgetTest {
     }
 
     @Test
-    void removeCategory() {
+    void removeCategory() throws IllegalCategorySizeException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         Category cat2 = new BudgetCategory(new Budget("cat2", 300));
@@ -123,7 +123,7 @@ class BudgetTest {
     }
 
     @Test
-    void getCategories() {
+    void getCategories() throws IllegalCategorySizeException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         assertArrayEquals(new Category[]{}, b.getCategories());
@@ -132,7 +132,7 @@ class BudgetTest {
     }
 
     @Test
-    void addSpent() {
+    void addSpent() throws IllegalCategorySizeException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 200);
         BudgetCategory cat2 = new BudgetCategory(new Budget("cat2", 300));

@@ -3,6 +3,7 @@ package fr.vinvin129.budgetmanager.models.budget_logic;
 import fr.vinvin129.budgetmanager.Spent;
 import fr.vinvin129.budgetmanager.exceptions.BudgetCategoryTooSmallException;
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
+import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BudgetCategoryTest {
 
     @Test
-    void setAllocationPerMonth() throws BudgetTooSmallException {
+    void setAllocationPerMonth() throws BudgetTooSmallException, IllegalCategorySizeException {
         Budget budget = new Budget("budget catégorie", 300);
         BudgetCategory category = new BudgetCategory(budget);
         category.newMonth();
@@ -56,7 +57,7 @@ class BudgetCategoryTest {
     }
 
     @Test
-    void addSpent() throws BudgetTooSmallException {
+    void addSpent() throws BudgetTooSmallException, IllegalCategorySizeException {
         Budget budget = new Budget("budget catégorie", 300);
         Category categoryInB = new StandardCategory("categoryInB", 300);
         budget.addCategory(categoryInB);

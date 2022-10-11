@@ -1,6 +1,7 @@
 package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
+import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +28,13 @@ public class StandardCategory extends Category{
      * create a {@link StandardCategory} with name and allocation per month
      * @param name the category name
      * @param allocationPerMonth money added in the balance each month
+     * @throws IllegalCategorySizeException when allocationPerMonth is under than 1
      */
-    public StandardCategory(String name, int allocationPerMonth) {
+    public StandardCategory(String name, int allocationPerMonth) throws IllegalCategorySizeException {
         super(name);
+        if (allocationPerMonth < 1) {
+            throw new IllegalCategorySizeException();
+        }
         this.allocationPerMonth = allocationPerMonth;
     }
 
@@ -38,9 +43,13 @@ public class StandardCategory extends Category{
      * @param name the category name
      * @param allocationPerMonth money added in the balance each month
      * @param balance the actual balance of this category
+     * @throws IllegalCategorySizeException when allocationPerMonth is under than 1
      */
-    public StandardCategory(String name, int allocationPerMonth, int balance) {
+    public StandardCategory(String name, int allocationPerMonth, int balance) throws IllegalCategorySizeException {
         super(name);
+        if (allocationPerMonth < 1) {
+            throw new IllegalCategorySizeException();
+        }
         this.balance = balance;
         this.allocationPerMonth = allocationPerMonth;
     }

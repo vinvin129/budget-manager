@@ -1,6 +1,7 @@
 package fr.vinvin129.budgetmanager.ihm;
 
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
+import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
 import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
 import fr.vinvin129.budgetmanager.models.budget_logic.Category;
@@ -57,7 +58,7 @@ public class CreateBudgetTest {
     }
 
     @Test
-    void createStandardCategory(FxRobot robot) {
+    void createStandardCategory(FxRobot robot) throws IllegalCategorySizeException {
         createBudget(robot, "budget test", "1000");
         robot.clickOn("#addCategoryButton");
         robot.clickOn("#name");
@@ -72,7 +73,7 @@ public class CreateBudgetTest {
 
 
     @Test
-    void createBudgetCategory(FxRobot robot) throws BudgetTooSmallException {
+    void createBudgetCategory(FxRobot robot) throws BudgetTooSmallException, IllegalCategorySizeException {
         List<Window> windows = new ArrayList<>();
         FxRobotContext context = robot.robotContext();
         toCreateBudget(robot);

@@ -1,6 +1,7 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.create.budget;
 
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
+import fr.vinvin129.budgetmanager.exceptions.CreateBudgetException;
 import fr.vinvin129.budgetmanager.exceptions.CreateCategoryException;
 import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.create.category.CreateCategory;
@@ -36,26 +37,26 @@ public class CreateBudgetController implements CreateCategory {
         }
     }
 
-    public Budget getBudget() {
+    public Budget getBudget() throws CreateBudgetException {
         String name = this.budgetName.getText();
         String allocation = this.budgetAllocation.getText();
         if (name.equals("") || allocation.equals("")) {
-            return null;
+            throw new CreateBudgetException("le nom et l'allocation du budget ne doivent pas être vide");
         }
         Budget budget;
         try {
             budget = new Budget(name, Integer.parseInt(allocation));
         } catch (NumberFormatException | IllegalBudgetSizeException e) {
-            return null;
+            throw new CreateBudgetException("la valeur du champ allocation doit être un nombre");
         }
         if (categoryList.getItems().size() == 0) {
-            return null;
+            throw new CreateBudgetException("il doit y avoir au moins une catégorie dans le budget");
         }
         for (Category category : categoryList.getItems()) {
             try {
                 budget.addCategory(category);
             } catch (BudgetTooSmallException e) {
-                return null;
+                throw new CreateBudgetException(e.getMessage());
             }
         }
 
@@ -67,10 +68,10 @@ public class CreateBudgetController implements CreateCategory {
      */
     @Override
     public Category getCategory() throws CreateCategoryException {
-        Budget budget = getBudget();
-        if (budget == null) {
-            throw new CreateCategoryException("le budget auquel est lié la catégorie n'a pas pu être crée.");
+        try {
+            return new BudgetCategory(getBudget());
+        } catch (CreateBudgetException e) {
+            throw new CreateCategoryException("le budget auquel est lié la catégorie n'a pas pu être crée\n (" + e.getDescription() + ")");
         }
-        return new BudgetCategory(budget);
     }
 }

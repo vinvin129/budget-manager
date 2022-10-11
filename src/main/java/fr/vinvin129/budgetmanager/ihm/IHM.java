@@ -1,5 +1,6 @@
 package fr.vinvin129.budgetmanager.ihm;
 
+import fr.vinvin129.budgetmanager.exceptions.CreateBudgetException;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.HomeController;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.create.budget.CreateBudgetController;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
@@ -39,7 +40,11 @@ public class IHM extends Application {
             principalStage.setScene(scene);
             CreateBudgetController createBudgetController = fxmlLoader.getController();
             createBudgetController.validateBudgetCreation.setOnAction(actionEvent -> {
-                System.out.println(createBudgetController.getBudget());
+                try {
+                    System.out.println(createBudgetController.getBudget());
+                } catch (CreateBudgetException e) {
+                    e.showWarningAlert();
+                }
             });
         }
     }

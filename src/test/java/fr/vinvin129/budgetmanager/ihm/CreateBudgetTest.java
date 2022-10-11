@@ -1,5 +1,6 @@
 package fr.vinvin129.budgetmanager.ihm;
 
+import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
 import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
 import fr.vinvin129.budgetmanager.models.budget_logic.Category;
@@ -71,7 +72,7 @@ public class CreateBudgetTest {
 
 
     @Test
-    void createBudgetCategory(FxRobot robot) {
+    void createBudgetCategory(FxRobot robot) throws BudgetTooSmallException {
         List<Window> windows = new ArrayList<>();
         FxRobotContext context = robot.robotContext();
         toCreateBudget(robot);

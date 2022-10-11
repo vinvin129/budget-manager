@@ -20,7 +20,7 @@ class BudgetTest {
     }
 
     @Test
-    void getBalance() {
+    void getBalance() throws BudgetTooSmallException {
         Budget b = new Budget("budget", 3000);
         assertEquals(0, b.getBalance(), "budget balance must be 0");
         b.newMonth();
@@ -42,7 +42,7 @@ class BudgetTest {
     }
 
     @Test
-    void setAllocationPerMonth() {
+    void setAllocationPerMonth() throws BudgetTooSmallException {
         Budget b1 = new Budget("budget1", 3000);
         Budget b2 = new Budget("budget2", 3000);
         Category cat1b2 = new StandardCategory("cat1b2", 300);
@@ -55,6 +55,7 @@ class BudgetTest {
         assertDoesNotThrow(() -> b2.setAllocationPerMonth(1000));
         assertEquals(1000, b2.getAllocationPerMonth());
 
+        b2.setAllocationPerMonth(3000);
         b2.addCategory(cat2b2);
         assertThrows(BudgetTooSmallException.class, () -> b2.setAllocationPerMonth(1000));
         b2.removeCategory(cat2b2);
@@ -65,7 +66,7 @@ class BudgetTest {
     }
 
     @Test
-    void setAllocationPerMonthOfCategory() {
+    void setAllocationPerMonthOfCategory() throws BudgetTooSmallException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         Category cat2 = new BudgetCategory(new Budget("cat2", 300));
@@ -81,7 +82,7 @@ class BudgetTest {
     }
 
     @Test
-    void newMonth() {
+    void newMonth() throws BudgetTooSmallException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         b.addCategory(cat1);
@@ -100,10 +101,12 @@ class BudgetTest {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         Category cat2 = new BudgetCategory(new Budget("cat2", 300));
+        Category cat3 = new StandardCategory("cat3", 600);
         assertArrayEquals(new Category[]{}, b.getCategories());
-        b.addCategory(cat1);
-        b.addCategory(cat2);
+        assertDoesNotThrow(() -> b.addCategory(cat1));
+        assertDoesNotThrow(() -> b.addCategory(cat2));
         assertArrayEquals(new Category[]{cat1, cat2}, b.getCategories());
+        assertThrows(BudgetTooSmallException.class, () -> b.addCategory(cat3));
     }
 
     @Test
@@ -111,8 +114,8 @@ class BudgetTest {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         Category cat2 = new BudgetCategory(new Budget("cat2", 300));
-        b.addCategory(cat1);
-        b.addCategory(cat2);
+        assertDoesNotThrow(() -> b.addCategory(cat1));
+        assertDoesNotThrow(() -> b.addCategory(cat2));
         b.removeCategory(cat1);
         assertArrayEquals(new Category[]{cat2}, b.getCategories());
         b.removeCategory(cat2);
@@ -124,7 +127,7 @@ class BudgetTest {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         assertArrayEquals(new Category[]{}, b.getCategories());
-        b.addCategory(cat1);
+        assertDoesNotThrow(() -> b.addCategory(cat1));
         assertArrayEquals(new Category[]{cat1}, b.getCategories());
     }
 
@@ -134,8 +137,8 @@ class BudgetTest {
         Category cat1 = new StandardCategory("cat1", 200);
         BudgetCategory cat2 = new BudgetCategory(new Budget("cat2", 300));
         Category cat3 = new StandardCategory("cat3", 300);
-        b.addCategory(cat1);
-        b.addCategory(cat2);
+        assertDoesNotThrow(() -> b.addCategory(cat1));
+        assertDoesNotThrow(() -> b.addCategory(cat2));
         b.newMonth();
         assertDoesNotThrow(() -> b.addSpent(new Spent(cat1, "dep1", 50)));
         assertEquals(1000-300-50, b.getBalance());

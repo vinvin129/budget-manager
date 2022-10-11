@@ -122,7 +122,14 @@ public class Budget {
      * add a {@link Category} to this Budget
      * @param category the {@link Category} object
      */
-    public void addCategory(Category category) {
+    public void addCategory(Category category) throws BudgetTooSmallException {
+        int totalAllocation = 0;
+        for (Category c : this.categories) {
+            totalAllocation += c.getAllocationPerMonth();
+        }
+        if ((totalAllocation + category.getAllocationPerMonth()) > this.allocationPerMonth) {
+            throw new BudgetTooSmallException();
+        }
         this.categories.add(category);
     }
 

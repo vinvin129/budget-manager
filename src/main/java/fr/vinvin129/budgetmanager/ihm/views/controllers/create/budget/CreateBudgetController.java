@@ -1,5 +1,6 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.create.budget;
 
+import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.create.category.CreateCategory;
 import fr.vinvin129.budgetmanager.ihm.views.stages.CreateCategoryStage;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
@@ -48,7 +49,13 @@ public class CreateBudgetController implements CreateCategory {
         if (categoryList.getItems().size() == 0) {
             return null;
         }
-        categoryList.getItems().forEach(budget::addCategory);
+        for (Category category : categoryList.getItems()) {
+            try {
+                budget.addCategory(category);
+            } catch (BudgetTooSmallException e) {
+                return null;
+            }
+        }
 
         return budget;
     }

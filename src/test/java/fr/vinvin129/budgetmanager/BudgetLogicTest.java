@@ -1,5 +1,6 @@
 package fr.vinvin129.budgetmanager;
 
+import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
 import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
 import fr.vinvin129.budgetmanager.models.budget_logic.Category;
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BudgetLogicTest {
     @Test
-    void logic1() {
+    void logic1() throws BudgetTooSmallException {
         Budget budgetPrincipal = new Budget("budget principal", 1000);
         Budget budgetTechnologie = new Budget("Technologie", 300);
         Category bouffe = new StandardCategory("bouffe", 300);

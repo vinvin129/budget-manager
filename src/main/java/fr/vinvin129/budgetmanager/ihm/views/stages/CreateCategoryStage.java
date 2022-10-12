@@ -11,9 +11,24 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * an independent window like dialog to get a created category
+ * @author vinvin129
+ */
 public class CreateCategoryStage extends Stage {
+    /**
+     * the controller for create category view
+     */
     CreateCategoryController controller;
+    /**
+     * the category created when validate button was pressed
+     */
     Category category = null;
+
+    /**
+     * create a new instance for create graphically a category
+     * @throws IOException if template FXML can't be load from disk
+     */
     public CreateCategoryStage() throws IOException {
         super();
         this.initModality(Modality.APPLICATION_MODAL);
@@ -32,6 +47,10 @@ public class CreateCategoryStage extends Stage {
         this.setScene(scene);
     }
 
+    /**
+     * show and wait that new window was closed
+     * @return the created category or null if no created
+     */
     public Category display() {
         this.showAndWait();
         return category;

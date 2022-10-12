@@ -11,8 +11,18 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * the main class for the IHM
+ * @author vinvin129
+ */
 public class IHM extends Application {
+    /**
+     * this principal stage
+     */
     protected Stage principalStage = null;
+    /**
+     * the main {@link Budget}
+     */
     protected Budget budget = null;
 
     @Override
@@ -33,6 +43,10 @@ public class IHM extends Application {
         stage.show();
     }
 
+    /**
+     * create the main {@link Budget}. And in the future : show this {@link Budget} graphically
+     * @throws IOException if FXML template to create budget can't be loaded from disk
+     */
     private void showBudget() throws IOException {
         if (this.budget == null) {
             FXMLLoader fxmlLoader = new FXMLLoader(IHM.class.getResource("createViews/budgets/create-budget.fxml"));

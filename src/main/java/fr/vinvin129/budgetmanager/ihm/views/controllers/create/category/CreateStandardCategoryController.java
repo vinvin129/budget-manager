@@ -4,14 +4,30 @@ import fr.vinvin129.budgetmanager.exceptions.CreateCategoryException;
 import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 import fr.vinvin129.budgetmanager.models.budget_logic.Category;
 import fr.vinvin129.budgetmanager.models.budget_logic.StandardCategory;
+import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
+/**
+ * the controller for standard categories creations
+ * @author vinvin129
+ */
 public class CreateStandardCategoryController implements CreateCategory {
 
+    /**
+     * FXML reference for the category name emplacement
+     */
+    @FXML
     public TextField name;
+    /**
+     * FXML reference for the category allocation emplacement
+     */
+    @FXML
     public TextField allocation;
 
-
+    /**
+     * @return the {@link Category} object
+     * @throws CreateCategoryException if category can't be created
+     */
     @Override
     public Category getCategory() throws CreateCategoryException {
         String name = this.name.getText();

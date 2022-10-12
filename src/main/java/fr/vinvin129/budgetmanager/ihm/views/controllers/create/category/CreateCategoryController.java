@@ -13,18 +13,58 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 
+/**
+ * the controller for categories creations
+ * @author vinvin129
+ */
 public class CreateCategoryController implements CreateCategory {
+    /**
+     * FXML reference for type's choice emplacement
+     */
     @FXML
     public ChoiceBox<String> typeChoice;
+    /**
+     * FXML reference for button to create the category
+     */
+    @FXML
     public Button validateCategoryCreation;
+    /**
+     * FXML reference for button to cancel the category creation
+     */
+    @FXML
     public Button cancel;
+    /**
+     * FXML reference for the root view
+     */
+    @FXML
     public BorderPane view;
+    /**
+     * FXML reference for the budget category view
+     */
+    @FXML
     private BorderPane budgetView;
+    /**
+     * FXML reference for the standard category view
+     */
+    @FXML
     private GridPane standardView;
+    /**
+     * the budget view controller
+     */
     private CreateCategory budgetViewController;
+    /**
+     * the standard view controller
+     */
     private CreateStandardCategoryController standardViewController;
+    /**
+     * the actual view controller between standard and budget
+     */
     private CreateCategory actualCategoryController;
 
+    /**
+     * load budget and standard views templates and controllers. And set the current view to standard
+     * @throws IOException if load from disk fail
+     */
     @FXML
     public void initialize() throws IOException {
         FXMLLoader budgetViewLoader = new FXMLLoader(IHM.class.getResource("createViews/budgets/create-budget.fxml"));
@@ -38,8 +78,10 @@ public class CreateCategoryController implements CreateCategory {
         this.actualCategoryController = this.standardViewController;
     }
 
-
-
+    /**
+     * set view template and controller to selected type (standard or budget) when selected type change in IHM
+     * @param actionEvent the event
+     */
     @FXML
     public void onChoiceChange(ActionEvent actionEvent) {
         switch (typeChoice.getSelectionModel().getSelectedItem()) {
@@ -60,7 +102,8 @@ public class CreateCategoryController implements CreateCategory {
     }
 
     /**
-     * @return the {@link Category} object or null
+     * @return the {@link Category} object
+     * @throws CreateCategoryException if category can't be created
      */
     @Override
     public Category getCategory() throws CreateCategoryException {

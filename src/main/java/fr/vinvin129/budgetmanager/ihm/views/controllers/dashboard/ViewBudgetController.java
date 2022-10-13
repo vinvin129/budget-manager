@@ -12,6 +12,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * the controller to view a {@link fr.vinvin129.budgetmanager.models.budget_logic.Budget}
@@ -47,6 +49,10 @@ public class ViewBudgetController {
      * budget showed
      */
     private Budget budget = null;
+    /**
+     * the list of {@link Category} with their linked {@link javafx.scene.chart.PieChart.Data}
+     */
+    private final Map<PieChart.Data, Category> dataCategoryMap = new HashMap<>();
 
     /**
      * create a template when view is loaded
@@ -94,6 +100,13 @@ public class ViewBudgetController {
             caption.setText(String.valueOf(data.getPieValue()));
         });
         data.getNode().setOnMouseExited(mouseEvent -> caption.setText(null));
+
+        data.getNode().setOnMouseClicked(mouseEvent -> {
+            Category category = this.dataCategoryMap.get(data);
+            if (category != null) {
+                System.out.println(category);
+            }
+        });
     }
 
     /**
@@ -105,11 +118,13 @@ public class ViewBudgetController {
             data.getNode().setOnMouseExited(null);
         });
         budgetGraph.getData().clear();
+        this.dataCategoryMap.clear();
         if (this.budget != null) {
             Arrays.stream(this.budget.getCategories())
                     .forEach(category -> {
                         PieChart.Data data = createAllocationData(category);
                         budgetGraph.getData().add(data);
+                        this.dataCategoryMap.put(data, category);
                         addDataMouseListeners(data);
                     });
             PieChart.Data freeData = new PieChart.Data("Libre", this.budget.getFreeAllocationPerMonth());

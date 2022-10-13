@@ -49,11 +49,6 @@ public class IHM extends Application {
      * @throws IOException if FXML template to create budget can't be loaded from disk
      */
     private void showBudget() throws IOException {
-        /*try {
-            this.budget = new Budget("test", 1000);
-        } catch (IllegalBudgetSizeException e) {
-            throw new RuntimeException(e);
-        }*/
         if (this.budget == null) {
             FXMLLoader fxmlLoader = new FXMLLoader(IHM.class.getResource("createViews/budgets/create-budget.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 800, 500);

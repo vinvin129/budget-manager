@@ -73,4 +73,9 @@ public class BudgetCategory extends Category{
     public Spent[] getSpentList() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "Catégorie budget " + super.toString();
+    }
 }

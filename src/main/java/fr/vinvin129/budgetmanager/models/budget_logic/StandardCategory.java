@@ -87,4 +87,9 @@ public class StandardCategory extends Category{
     public Spent[] getSpentList() {
         return spentList.toArray(new Spent[0]);
     }
+
+    @Override
+    public String toString() {
+        return "Catégorie standard " + super.toString();
+    }
 }

@@ -53,6 +53,18 @@ public class Budget {
     }
 
     /**
+     * get the value of unused allocation of this budget by this categories
+     * @return the free allocation per month value
+     */
+    public int getFreeAllocationPerMonth() {
+        int used = 0;
+        for (Category category : this.categories) {
+            used += category.getAllocationPerMonth();
+        }
+        return this.allocationPerMonth - used;
+    }
+
+    /**
      * get the balance of budget
      * @return the balance
      */
@@ -128,11 +140,7 @@ public class Budget {
      * @throws BudgetTooSmallException when there is no more place in this budget
      */
     public void addCategory(Category category) throws BudgetTooSmallException {
-        int totalAllocation = 0;
-        for (Category c : this.categories) {
-            totalAllocation += c.getAllocationPerMonth();
-        }
-        if ((totalAllocation + category.getAllocationPerMonth()) > this.allocationPerMonth) {
+        if ((this.getFreeAllocationPerMonth() - category.getAllocationPerMonth()) < 0) {
             throw new BudgetTooSmallException();
         }
         this.categories.add(category);

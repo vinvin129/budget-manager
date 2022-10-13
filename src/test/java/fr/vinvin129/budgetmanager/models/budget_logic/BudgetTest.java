@@ -148,4 +148,13 @@ class BudgetTest {
 
         assertThrows(BudgetNotContainCategoryException.class, () -> b.addSpent(new Spent(cat3, "erreur", 20)));
     }
+
+    @Test
+    void getFreeAllocationPerMonth() throws IllegalBudgetSizeException, IllegalCategorySizeException, BudgetTooSmallException {
+        Budget b = new Budget("budget", 1000);
+        assertEquals(1000, b.getFreeAllocationPerMonth());
+        b.addCategory(new StandardCategory("cat1", 300));
+        b.addCategory(new BudgetCategory(new Budget("b2", 200)));
+        assertEquals(500, b.getFreeAllocationPerMonth());
+    }
 }

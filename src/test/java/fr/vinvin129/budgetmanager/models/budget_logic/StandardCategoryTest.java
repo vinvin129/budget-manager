@@ -72,4 +72,14 @@ class StandardCategoryTest {
         category.newMonth();
         assertArrayEquals(new Spent[]{spent1, spent2}, category.getSpentList());
     }
+
+    @Test
+    void getAmountSpent() throws IllegalCategorySizeException {
+        StandardCategory category = new StandardCategory("category", 300);
+        Spent spent1 = new Spent(category, "dépense", 200);
+        Spent spent2 = new Spent(category, "dépense2", 200);
+        category.addSpent(spent1);
+        category.addSpent(spent2);
+        assertEquals(400, category.getAmountSpent());
+    }
 }

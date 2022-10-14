@@ -92,4 +92,9 @@ public class StandardCategory extends Category{
     public String toString() {
         return "Catégorie standard " + super.toString();
     }
+
+    @Override
+    public double getAmountSpent() {
+        return this.spentList.stream().mapToDouble(Spent::price).sum();
+    }
 }

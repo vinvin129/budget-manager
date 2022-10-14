@@ -73,6 +73,12 @@ public abstract class Category {
         return this.name + ", allocation : " + getAllocationPerMonth() + ", solde : " + getBalance();
     }
 
+    /**
+     * get the amount spent for this {@link Category}
+     * @return the amount spent
+     */
+    public abstract double getAmountSpent();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

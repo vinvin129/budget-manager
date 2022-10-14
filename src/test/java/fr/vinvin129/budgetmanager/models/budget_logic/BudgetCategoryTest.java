@@ -80,4 +80,17 @@ class BudgetCategoryTest {
         BudgetCategory category = new BudgetCategory(budget);
         assertArrayEquals(null, category.getSpentList());
     }
+
+    @Test
+    void getAmountSpent() throws IllegalBudgetSizeException, IllegalCategorySizeException, BudgetTooSmallException {
+        Budget budget = new Budget("budget catégorie", 300);
+        Category cat1 = new StandardCategory("cat1", 300);
+        budget.addCategory(cat1);
+        BudgetCategory category = new BudgetCategory(budget);
+        Spent spent1 = new Spent(cat1, "dépense", 200);
+        Spent spent2 = new Spent(cat1, "dépense2", 200);
+        category.addSpent(spent1);
+        category.addSpent(spent2);
+        assertEquals(400, category.getAmountSpent());
+    }
 }

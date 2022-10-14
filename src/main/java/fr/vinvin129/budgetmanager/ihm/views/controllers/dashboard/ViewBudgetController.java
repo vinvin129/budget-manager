@@ -1,16 +1,25 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard;
 
+import fr.vinvin129.budgetmanager.ihm.IHM;
+import fr.vinvin129.budgetmanager.ihm.views.stages.ViewCategoryExpensesStage;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
 import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
 import fr.vinvin129.budgetmanager.models.budget_logic.Category;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
+import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +55,16 @@ public class ViewBudgetController {
      */
     private final Label caption = new Label("");
     /**
+     * the toggle button to show expense view
+     */
+    @FXML
+    public ToggleButton expenseViewMode;
+    /**
+     * the toggle button to show allocation view
+     */
+    @FXML
+    public ToggleButton allocationViewMode;
+    /**
      * budget showed
      */
     private Budget budget = null;
@@ -53,6 +72,24 @@ public class ViewBudgetController {
      * the list of {@link Category} with their linked {@link javafx.scene.chart.PieChart.Data}
      */
     private final Map<PieChart.Data, Category> dataCategoryMap = new HashMap<>();
+
+    @FXML
+    public void viewModeChanged(ActionEvent actionEvent) {
+        Toggle toggle = this.graphViewMode.getSelectedToggle();
+        if (toggle == allocationViewMode) {
+            updateData(ViewMode.ALLOCATION);
+        } else if (toggle == expenseViewMode) {
+            updateData(ViewMode.EXPENSES);
+        }
+    }
+
+    /**
+     * choice mode
+     */
+    public enum ViewMode {
+        ALLOCATION,
+        EXPENSES,
+    }
 
     /**
      * create a template when view is loaded
@@ -84,8 +121,8 @@ public class ViewBudgetController {
      */
     public void setBudget(Budget budget) {
         this.budget = budget;
-        this.name.setText("Budget" + this.budget.getName());
-        updateData();
+        this.name.setText("Budget " + this.budget.getName());
+        updateData(ViewMode.ALLOCATION);
     }
 
     /**
@@ -104,6 +141,26 @@ public class ViewBudgetController {
         data.getNode().setOnMouseClicked(mouseEvent -> {
             Category category = this.dataCategoryMap.get(data);
             if (category != null) {
+                if (category instanceof BudgetCategory) {
+                    FXMLLoader budgetViewLoader = new FXMLLoader(IHM.class.getResource("dashboard/view-budget.fxml"));
+                    Scene budgetViewScene;
+                    try {
+                        budgetViewScene = new Scene(budgetViewLoader.load(), 800, 500);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    ViewBudgetController budgetViewController = budgetViewLoader.getController();
+                    budgetViewController.setBudget(((BudgetCategory) category).getBudget());
+                    Stage budgetViewStage = new Stage();
+                    budgetViewStage.setScene(budgetViewScene);
+                    budgetViewStage.show();
+                } else {
+                    try {
+                        new ViewCategoryExpensesStage(category).show();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 System.out.println(category);
             }
         });
@@ -111,8 +168,9 @@ public class ViewBudgetController {
 
     /**
      * actualize the graph data with the budget attribute
+     * @param viewMode the selected mode
      */
-    public void updateData() {
+    public void updateData(ViewMode viewMode) {
         budgetGraph.getData().forEach(data -> {
             data.getNode().setOnMouseMoved(null);
             data.getNode().setOnMouseExited(null);
@@ -122,19 +180,21 @@ public class ViewBudgetController {
         if (this.budget != null) {
             Arrays.stream(this.budget.getCategories())
                     .forEach(category -> {
-                        PieChart.Data data = createAllocationData(category);
+                        PieChart.Data data = viewMode == ViewMode.ALLOCATION ? createAllocationData(category) : createExpensesData(category);
                         budgetGraph.getData().add(data);
                         this.dataCategoryMap.put(data, category);
                         addDataMouseListeners(data);
                     });
-            PieChart.Data freeData = new PieChart.Data("Libre", this.budget.getFreeAllocationPerMonth());
-            budgetGraph.getData().add(freeData);
-            addDataMouseListeners(freeData);
+            if (viewMode == ViewMode.ALLOCATION) {
+                PieChart.Data freeData = new PieChart.Data("Libre", this.budget.getFreeAllocationPerMonth());
+                budgetGraph.getData().add(freeData);
+                addDataMouseListeners(freeData);
+            }
         }
     }
 
     /**
-     * create a new {@link javafx.scene.chart.PieChart.Data} for a {@link Category}
+     * create a new {@link javafx.scene.chart.PieChart.Data} for a {@link Category} with allocation
      * @param category the {@link Category} object
      * @return a {@link javafx.scene.chart.PieChart.Data} object
      */
@@ -142,6 +202,18 @@ public class ViewBudgetController {
         String type = category instanceof BudgetCategory ? "Budget" : "Standard";
         String s = category.getName() + " (" + type + ")";
         double v = category.getAllocationPerMonth();
+        return new PieChart.Data(s, v);
+    }
+
+    /**
+     * create a new {@link javafx.scene.chart.PieChart.Data} for a {@link Category} with expenses
+     * @param category the {@link Category} object
+     * @return a {@link javafx.scene.chart.PieChart.Data} object
+     */
+    private PieChart.Data createExpensesData(Category category) {
+        String type = category instanceof BudgetCategory ? "Budget" : "Standard";
+        String s = category.getName() + " (" + type + ")";
+        double v = category.getAmountSpent();
         return new PieChart.Data(s, v);
     }
 }

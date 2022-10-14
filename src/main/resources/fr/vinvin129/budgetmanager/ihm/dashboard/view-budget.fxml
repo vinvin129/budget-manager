@@ -13,12 +13,12 @@
                <Font name="SansSerif Regular" size="18.0" />
             </font>
          </Label>
-         <ToggleButton mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" selected="true" text="allocations">
+         <ToggleButton fx:id="allocationViewMode" onAction="#viewModeChanged" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" selected="true" text="allocations">
             <toggleGroup>
-               <ToggleGroup fx:id="graphViewMode" />
+               <ToggleGroup fx:id="graphViewMode"/>
             </toggleGroup>
          </ToggleButton>
-         <ToggleButton mnemonicParsing="false" prefHeight="25.0" prefWidth="129.0" text="dépenses" toggleGroup="$graphViewMode" />
+         <ToggleButton fx:id="expenseViewMode" onAction="#viewModeChanged" mnemonicParsing="false" prefHeight="25.0" prefWidth="129.0" text="dépenses" toggleGroup="$graphViewMode" />
       </HBox>
    </top>
    <bottom>

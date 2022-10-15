@@ -1,6 +1,7 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard;
 
 import fr.vinvin129.budgetmanager.ihm.IHM;
+import fr.vinvin129.budgetmanager.ihm.views.controllers.create.spent.CreateSpentController;
 import fr.vinvin129.budgetmanager.ihm.views.stages.ViewCategoryExpensesStage;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
 import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
@@ -81,6 +82,20 @@ public class ViewBudgetController {
         } else if (toggle == expenseViewMode) {
             updateData(ViewMode.EXPENSES);
         }
+    }
+
+    /**
+     * on click on add spent button
+     * @param actionEvent the event
+     */
+    @FXML
+    public void addSpent(ActionEvent actionEvent) throws IOException {
+        Stage addSpentStage = new Stage();
+        FXMLLoader addSpentViewLoader = new FXMLLoader(IHM.class.getResource("createViews/spents/create-spent.fxml"));
+        addSpentStage.setScene(new Scene(addSpentViewLoader.load()));
+        CreateSpentController controller = addSpentViewLoader.getController();
+        controller.setBudgetRoot(this.budget);
+        addSpentStage.show();
     }
 
     /**

@@ -6,7 +6,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard.ViewCategoryExpensesController">
+<BorderPane prefHeight="263.0" prefWidth="327.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard.ViewCategoryExpensesController">
    <top>
       <Label fx:id="name" BorderPane.alignment="CENTER">
          <font>
@@ -19,13 +19,12 @@
    </padding>
    <center>
       <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <VBox fx:id="spentList"/>
+         <VBox fx:id="spentList" prefHeight="195.0" prefWidth="194.0" />
       </ScrollPane>
    </center>
    <bottom>
       <AnchorPane BorderPane.alignment="CENTER">
-         <Button mnemonicParsing="false" text="Ajouter une dépense" AnchorPane.bottomAnchor="0.0"
-                 AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+         <Button mnemonicParsing="false" text="Ajouter une dépense" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       </AnchorPane>
    </bottom>
 </BorderPane>

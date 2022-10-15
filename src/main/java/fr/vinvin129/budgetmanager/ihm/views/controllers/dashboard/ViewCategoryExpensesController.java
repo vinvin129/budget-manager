@@ -32,7 +32,7 @@ public class ViewCategoryExpensesController {
     /**
      * a customised {@link AnchorPane} for show {@link Spent}
      */
-    private static class SpentView extends AnchorPane {
+    private class SpentView extends AnchorPane {
         /**
          * the linked {@link Spent} object
          */
@@ -45,6 +45,8 @@ public class ViewCategoryExpensesController {
         public SpentView(Spent spent) {
             super();
             this.spent = spent;
+            this.setHeight(ViewCategoryExpensesController.this.spentList.getHeight()-2);
+            this.setWidth(ViewCategoryExpensesController.this.spentList.getWidth()-2);
             Label labelLabel = new Label(spent.label());
             Label priceLabel = new Label(String.valueOf(spent.price()));
             this.getChildren().addAll(labelLabel, priceLabel);

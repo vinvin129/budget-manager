@@ -4,7 +4,9 @@ import fr.vinvin129.budgetmanager.Spent;
 import fr.vinvin129.budgetmanager.exceptions.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represent a Budget. He can contains some {@link Category}
@@ -32,8 +34,12 @@ public class Budget {
      * create a budget instance
      * @param name budget name
      * @param allocationPerMonth money added in the balance each month
+     * @throws IllegalBudgetSizeException when allocationPerMonth is under than 1
      */
-    public Budget(String name, int allocationPerMonth) {
+    public Budget(String name, int allocationPerMonth) throws IllegalBudgetSizeException {
+        if (allocationPerMonth < 1) {
+            throw new IllegalBudgetSizeException();
+        }
         this.name = name;
         this.allocationPerMonth = allocationPerMonth;
     }
@@ -44,6 +50,18 @@ public class Budget {
      */
     public int getAllocationPerMonth() {
         return allocationPerMonth;
+    }
+
+    /**
+     * get the value of unused allocation of this budget by this categories
+     * @return the free allocation per month value
+     */
+    public int getFreeAllocationPerMonth() {
+        int used = 0;
+        for (Category category : this.categories) {
+            used += category.getAllocationPerMonth();
+        }
+        return this.allocationPerMonth - used;
     }
 
     /**
@@ -119,8 +137,12 @@ public class Budget {
     /**
      * add a {@link Category} to this Budget
      * @param category the {@link Category} object
+     * @throws BudgetTooSmallException when there is no more place in this budget
      */
-    public void addCategory(Category category) {
+    public void addCategory(Category category) throws BudgetTooSmallException {
+        if ((this.getFreeAllocationPerMonth() - category.getAllocationPerMonth()) < 0) {
+            throw new BudgetTooSmallException();
+        }
         this.categories.add(category);
     }
 
@@ -157,5 +179,22 @@ public class Budget {
                 }
             }
         });
+    }
+
+    @Override
+    public String toString() {
+        return "Budget " + name + "; solde : " + balance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Budget budget)) return false;
+        return getAllocationPerMonth() == budget.getAllocationPerMonth() && getBalance() == budget.getBalance() && getName().equals(budget.getName()) && Arrays.equals(getCategories(), budget.getCategories());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getAllocationPerMonth(), getBalance(), Arrays.hashCode(getCategories()));
     }
 }

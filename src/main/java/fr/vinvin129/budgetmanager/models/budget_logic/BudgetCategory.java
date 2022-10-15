@@ -5,6 +5,8 @@ import fr.vinvin129.budgetmanager.exceptions.BudgetCategoryTooSmallException;
 import fr.vinvin129.budgetmanager.exceptions.BudgetNotContainCategoryException;
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 
+import java.util.Arrays;
+
 /**
  * a {@link Category} with a linked {@link Budget}
  * @author vinvin129
@@ -72,5 +74,15 @@ public class BudgetCategory extends Category{
     @Override
     public Spent[] getSpentList() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Catégorie budget " + super.toString();
+    }
+
+    @Override
+    public double getAmountSpent() {
+        return Arrays.stream(this.budget.getCategories()).mapToDouble(Category::getAmountSpent).sum();
     }
 }

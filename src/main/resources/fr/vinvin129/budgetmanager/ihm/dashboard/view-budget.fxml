@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<BorderPane prefHeight="493.0" prefWidth="628.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard.ViewBudgetController">
+   <top>
+      <HBox alignment="TOP_RIGHT" BorderPane.alignment="CENTER">
+         <Label fx:id="name" alignment="CENTER" prefHeight="21.0" prefWidth="453.0" text="Budget Name" textAlignment="CENTER">
+            <font>
+               <Font name="SansSerif Regular" size="18.0" />
+            </font>
+         </Label>
+         <ToggleButton fx:id="allocationViewMode" onAction="#viewModeChanged" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" selected="true" text="allocations">
+            <toggleGroup>
+               <ToggleGroup fx:id="graphViewMode"/>
+            </toggleGroup>
+         </ToggleButton>
+         <ToggleButton fx:id="expenseViewMode" onAction="#viewModeChanged" mnemonicParsing="false" prefHeight="25.0" prefWidth="129.0" text="dépenses" toggleGroup="$graphViewMode" />
+      </HBox>
+   </top>
+   <bottom>
+      <GridPane BorderPane.alignment="CENTER">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <Button disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="155.0" text="Ajouter une dépense" GridPane.halignment="CENTER" />
+         <Button disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="136.0" text="Mois suivant" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+         <Button disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="145.0" text="Modifier le budget" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+      </GridPane>
+   </bottom>
+   <center>
+      <AnchorPane fx:id="graphView" BorderPane.alignment="CENTER">
+         <PieChart fx:id="budgetGraph" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      </AnchorPane>
+   </center>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</BorderPane>

@@ -1,0 +1,28 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+actor User
+(View Budget) as ViewBudget
+(Create Budget) as CreateBudget
+(Create Categories) as CreateCategories
+(Define Allocation) as DefineAllocation
+(Update Budget) as UpdateBudget
+(Update Categories) as UpdateCategories
+(Change Allocation) as ChangeAllocation
+(Delete Budget) as DeleteBudget
+
+User --> CreateBudget
+User --> ViewBudget
+User ---> UpdateBudget
+User ---> DeleteBudget
+
+DefineAllocation ..> CreateBudget : include
+CreateCategories ..> CreateBudget : include
+ChangeAllocation ..> UpdateBudget : extends
+UpdateCategories ..> UpdateBudget : extends
+
+note bottom of ViewBudget
+    with history of all months
+end note
+
+@enduml

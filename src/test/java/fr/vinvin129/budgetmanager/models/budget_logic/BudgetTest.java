@@ -1,10 +1,7 @@
 package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
-import fr.vinvin129.budgetmanager.exceptions.BudgetNotContainCategoryException;
-import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
-import fr.vinvin129.budgetmanager.exceptions.CategoryTooBigException;
-import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
+import fr.vinvin129.budgetmanager.exceptions.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,7 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class BudgetTest {
 
     @Test
-    void getAllocationPerMonth() {
+    void createInstance() {
+        assertDoesNotThrow(() -> new Budget("budget", 1000));
+        assertThrows(IllegalBudgetSizeException.class, () -> new Budget("budget", -100));
+    }
+
+    @Test
+    void getAllocationPerMonth() throws IllegalBudgetSizeException {
         Budget b = new Budget("budget", 3000);
         assertEquals(3000, b.getAllocationPerMonth());
         b.newMonth();
@@ -20,7 +23,7 @@ class BudgetTest {
     }
 
     @Test
-    void getBalance() {
+    void getBalance() throws BudgetTooSmallException, IllegalCategorySizeException, IllegalBudgetSizeException {
         Budget b = new Budget("budget", 3000);
         assertEquals(0, b.getBalance(), "budget balance must be 0");
         b.newMonth();
@@ -35,14 +38,14 @@ class BudgetTest {
     }
 
     @Test
-    void getName() {
+    void getName() throws IllegalBudgetSizeException {
         String name = "budget";
         Budget b = new Budget(name, 3000);
         assertEquals(name, b.getName());
     }
 
     @Test
-    void setAllocationPerMonth() {
+    void setAllocationPerMonth() throws BudgetTooSmallException, IllegalCategorySizeException, IllegalBudgetSizeException {
         Budget b1 = new Budget("budget1", 3000);
         Budget b2 = new Budget("budget2", 3000);
         Category cat1b2 = new StandardCategory("cat1b2", 300);
@@ -55,6 +58,7 @@ class BudgetTest {
         assertDoesNotThrow(() -> b2.setAllocationPerMonth(1000));
         assertEquals(1000, b2.getAllocationPerMonth());
 
+        b2.setAllocationPerMonth(3000);
         b2.addCategory(cat2b2);
         assertThrows(BudgetTooSmallException.class, () -> b2.setAllocationPerMonth(1000));
         b2.removeCategory(cat2b2);
@@ -65,7 +69,7 @@ class BudgetTest {
     }
 
     @Test
-    void setAllocationPerMonthOfCategory() {
+    void setAllocationPerMonthOfCategory() throws BudgetTooSmallException, IllegalCategorySizeException, IllegalBudgetSizeException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         Category cat2 = new BudgetCategory(new Budget("cat2", 300));
@@ -81,7 +85,7 @@ class BudgetTest {
     }
 
     @Test
-    void newMonth() {
+    void newMonth() throws BudgetTooSmallException, IllegalCategorySizeException, IllegalBudgetSizeException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         b.addCategory(cat1);
@@ -96,23 +100,25 @@ class BudgetTest {
     }
 
     @Test
-    void addCategory() {
+    void addCategory() throws IllegalCategorySizeException, IllegalBudgetSizeException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         Category cat2 = new BudgetCategory(new Budget("cat2", 300));
+        Category cat3 = new StandardCategory("cat3", 600);
         assertArrayEquals(new Category[]{}, b.getCategories());
-        b.addCategory(cat1);
-        b.addCategory(cat2);
+        assertDoesNotThrow(() -> b.addCategory(cat1));
+        assertDoesNotThrow(() -> b.addCategory(cat2));
         assertArrayEquals(new Category[]{cat1, cat2}, b.getCategories());
+        assertThrows(BudgetTooSmallException.class, () -> b.addCategory(cat3));
     }
 
     @Test
-    void removeCategory() {
+    void removeCategory() throws IllegalCategorySizeException, IllegalBudgetSizeException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         Category cat2 = new BudgetCategory(new Budget("cat2", 300));
-        b.addCategory(cat1);
-        b.addCategory(cat2);
+        assertDoesNotThrow(() -> b.addCategory(cat1));
+        assertDoesNotThrow(() -> b.addCategory(cat2));
         b.removeCategory(cat1);
         assertArrayEquals(new Category[]{cat2}, b.getCategories());
         b.removeCategory(cat2);
@@ -120,26 +126,35 @@ class BudgetTest {
     }
 
     @Test
-    void getCategories() {
+    void getCategories() throws IllegalCategorySizeException, IllegalBudgetSizeException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 300);
         assertArrayEquals(new Category[]{}, b.getCategories());
-        b.addCategory(cat1);
+        assertDoesNotThrow(() -> b.addCategory(cat1));
         assertArrayEquals(new Category[]{cat1}, b.getCategories());
     }
 
     @Test
-    void addSpent() {
+    void addSpent() throws IllegalCategorySizeException, IllegalBudgetSizeException {
         Budget b = new Budget("budget", 1000);
         Category cat1 = new StandardCategory("cat1", 200);
         BudgetCategory cat2 = new BudgetCategory(new Budget("cat2", 300));
         Category cat3 = new StandardCategory("cat3", 300);
-        b.addCategory(cat1);
-        b.addCategory(cat2);
+        assertDoesNotThrow(() -> b.addCategory(cat1));
+        assertDoesNotThrow(() -> b.addCategory(cat2));
         b.newMonth();
         assertDoesNotThrow(() -> b.addSpent(new Spent(cat1, "dep1", 50)));
         assertEquals(1000-300-50, b.getBalance());
 
         assertThrows(BudgetNotContainCategoryException.class, () -> b.addSpent(new Spent(cat3, "erreur", 20)));
+    }
+
+    @Test
+    void getFreeAllocationPerMonth() throws IllegalBudgetSizeException, IllegalCategorySizeException, BudgetTooSmallException {
+        Budget b = new Budget("budget", 1000);
+        assertEquals(1000, b.getFreeAllocationPerMonth());
+        b.addCategory(new StandardCategory("cat1", 300));
+        b.addCategory(new BudgetCategory(new Budget("b2", 200)));
+        assertEquals(500, b.getFreeAllocationPerMonth());
     }
 }

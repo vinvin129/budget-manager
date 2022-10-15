@@ -39,6 +39,11 @@ class CategoryTest {
             public Spent[] getSpentList() {
                 return new Spent[0];
             }
+
+            @Override
+            public double getAmountSpent() {
+                return 0;
+            }
         };
         assertEquals("theName", c.getName());
     }

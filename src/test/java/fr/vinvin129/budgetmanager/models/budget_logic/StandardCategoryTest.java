@@ -1,21 +1,27 @@
 package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
+import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class StandardCategoryTest {
 
     @Test
-    void getAllocationPerMonth() {
+    void createInstance() {
+        assertDoesNotThrow(() -> new StandardCategory("category", 300));
+        assertThrows(IllegalCategorySizeException.class, () -> new StandardCategory("category", 0));
+    }
+
+    @Test
+    void getAllocationPerMonth() throws IllegalCategorySizeException {
         StandardCategory category = new StandardCategory("category", 300);
         assertEquals(300, category.getAllocationPerMonth());
     }
 
     @Test
-    void getBalance() {
+    void getBalance() throws IllegalCategorySizeException {
         StandardCategory category = new StandardCategory("category", 300);
         StandardCategory category2 = new StandardCategory("category2", 300, 200);
         assertEquals(0, category.getBalance());
@@ -27,7 +33,7 @@ class StandardCategoryTest {
     }
 
     @Test
-    void setAllocationPerMonth() {
+    void setAllocationPerMonth() throws IllegalCategorySizeException {
         StandardCategory category = new StandardCategory("category", 300);
         category.newMonth();
         category.setAllocationPerMonth(100);
@@ -36,7 +42,7 @@ class StandardCategoryTest {
     }
 
     @Test
-    void newMonth() {
+    void newMonth() throws IllegalCategorySizeException {
         StandardCategory category = new StandardCategory("category", 300);
         category.newMonth();
         category.newMonth();
@@ -44,7 +50,7 @@ class StandardCategoryTest {
     }
 
     @Test
-    void addSpent() {
+    void addSpent() throws IllegalCategorySizeException {
         StandardCategory category = new StandardCategory("category", 300);
         category.newMonth();
         category.addSpent(new Spent(category, "dépense", 200));
@@ -56,7 +62,7 @@ class StandardCategoryTest {
     }
 
     @Test
-    void getSpentList() {
+    void getSpentList() throws IllegalCategorySizeException {
         StandardCategory category = new StandardCategory("category", 300);
         Spent spent1 = new Spent(category, "dépense", 200);
         Spent spent2 = new Spent(category, "dépense2", 200);
@@ -65,5 +71,15 @@ class StandardCategoryTest {
         category.addSpent(spent2);
         category.newMonth();
         assertArrayEquals(new Spent[]{spent1, spent2}, category.getSpentList());
+    }
+
+    @Test
+    void getAmountSpent() throws IllegalCategorySizeException {
+        StandardCategory category = new StandardCategory("category", 300);
+        Spent spent1 = new Spent(category, "dépense", 200);
+        Spent spent2 = new Spent(category, "dépense2", 200);
+        category.addSpent(spent1);
+        category.addSpent(spent2);
+        assertEquals(400, category.getAmountSpent());
     }
 }

@@ -8,6 +8,7 @@ import fr.vinvin129.budgetmanager.models.budget_logic.StandardCategory;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
@@ -16,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * the controller to create a {@link fr.vinvin129.budgetmanager.Spent} object for a {@link StandardCategory}
@@ -63,23 +65,50 @@ public class CreateSpentController {
      * @param actionEvent the event
      */
     @FXML
-    public void validateSpentCreation(ActionEvent actionEvent) throws Exception {
+    public void validateSpentCreation(ActionEvent actionEvent) {
         String label = titleTextField.getText();
+        int price;
+        try {
+            price = Integer.parseInt(priceTextField.getText());
+        } catch (NumberFormatException e) {
+            showWaringAlterAndWait("le champ 'prix' doit être un nombre !");
+            return;
+        }
         Budget selectedBudget = this.budgetChoiceBox.getValue();
         StandardCategory selectedCategory = this.categoryChoiceBox.getValue();
-        if (selectedBudget != null && selectedCategory != null) {
-            try {
-                Spent spent = new Spent(selectedCategory, label, Integer.parseInt(priceTextField.getText()));
-                try {
-                    selectedBudget.addSpent(spent);
-                } catch (BudgetNotContainCategoryException e) {
-                    throw new RuntimeException(e);
-                }
-            } catch (NumberFormatException e) {
-                throw new Exception("ça doit être un nombre !!!");
-            }
-            cancelSpentCreation(actionEvent);
+        if (label == null || Objects.equals(label.trim(), "")) {
+            showWaringAlterAndWait("Le champ 'intitulé' ne doit pas être vide");
+            return;
         }
+
+        if (price <= 0) {
+            showWaringAlterAndWait("Le champ 'prix' doit être suppérieur à 0");
+            return;
+        }
+
+        if (selectedBudget != null && selectedCategory != null) {
+            Spent spent = new Spent(selectedCategory, label, Integer.parseInt(priceTextField.getText()));
+            try {
+                selectedBudget.addSpent(spent);
+                cancelSpentCreation(actionEvent);
+            } catch (BudgetNotContainCategoryException e) {
+                showWaringAlterAndWait(e.getMessage());
+            }
+        } else {
+            showWaringAlterAndWait("Vous devez sélectionner un budget et une catégorie");
+        }
+    }
+
+    /**
+     * show an alert window for impossibility to create spent and wait this window's closed
+     * @param description a description
+     */
+    private void showWaringAlterAndWait(String description) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Alerte lors de la création d'une dépense");
+        alert.setHeaderText("impossible de créer la dépense");
+        alert.setContentText(description);
+        alert.showAndWait();
     }
 
     /**

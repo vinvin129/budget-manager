@@ -19,7 +19,7 @@
    </padding>
    <center>
       <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <VBox fx:id="spentList" prefHeight="195.0" prefWidth="194.0" />
+         <VBox fx:id="spentList" prefHeight="195.0" prefWidth="313.0" />
       </ScrollPane>
    </center>
    <bottom>

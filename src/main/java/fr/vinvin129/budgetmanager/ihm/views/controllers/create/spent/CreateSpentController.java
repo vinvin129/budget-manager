@@ -4,6 +4,7 @@ import fr.vinvin129.budgetmanager.Spent;
 import fr.vinvin129.budgetmanager.exceptions.BudgetNotContainCategoryException;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
 import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
+import fr.vinvin129.budgetmanager.models.budget_logic.Category;
 import fr.vinvin129.budgetmanager.models.budget_logic.StandardCategory;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -152,5 +153,23 @@ public class CreateSpentController {
                 .filter(category -> category instanceof BudgetCategory)
                 .forEach(category -> items.add(((BudgetCategory)category).getBudget()));
         //budgetChoiceChanged(null);
+    }
+
+    /**
+     * the create spent window will be configured to a specific {@link Category} and can't be changed in IHM
+     * @param budget the {@link Budget} object of {@link StandardCategory}
+     * @param category the {@link StandardCategory} object
+     */
+    public void setSpecificCategory(Budget budget, StandardCategory category) {
+        if (budget == null || category == null) {
+            throw new NullPointerException();
+        }
+
+        if (Arrays.asList(budget.getCategories()).contains(category)) {
+            this.budgetChoiceBox.setDisable(true);
+            this.categoryChoiceBox.setDisable(true);
+            this.budgetChoiceBox.setValue(budget);
+            this.categoryChoiceBox.setValue(category);
+        }
     }
 }

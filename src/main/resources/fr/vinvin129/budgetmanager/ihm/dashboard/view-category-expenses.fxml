@@ -24,7 +24,7 @@
    </center>
    <bottom>
       <AnchorPane BorderPane.alignment="CENTER">
-         <Button mnemonicParsing="false" text="Ajouter une dépense" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         <Button onAction="#addExpense" mnemonicParsing="false" text="Ajouter une dépense" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       </AnchorPane>
    </bottom>
 </BorderPane>

@@ -171,7 +171,7 @@ public class ViewBudgetController {
                     budgetViewStage.show();
                 } else {
                     try {
-                        new ViewCategoryExpensesStage(category).show();
+                        new ViewCategoryExpensesStage(budget, category).show();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

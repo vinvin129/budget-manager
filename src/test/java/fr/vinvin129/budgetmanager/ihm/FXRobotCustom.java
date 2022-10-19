@@ -1,6 +1,7 @@
 package fr.vinvin129.budgetmanager.ihm;
 
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Window;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxRobotContext;
@@ -43,5 +44,13 @@ public class FXRobotCustom {
     public void changeToNewWindowCreated(String name) {
         newWindowCreated(name);
         changeWindow(name);
+    }
+
+    public void removeWindow(String name) {
+        this.windows.remove(name);
+    }
+
+    public void type(KeyCode... keysCode) {
+        this.robot.type(keysCode);
     }
 }

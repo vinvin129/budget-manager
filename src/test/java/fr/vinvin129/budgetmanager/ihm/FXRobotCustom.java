@@ -1,6 +1,7 @@
 package fr.vinvin129.budgetmanager.ihm;
 
 import javafx.scene.Node;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Window;
 import org.testfx.api.FxRobot;
@@ -52,5 +53,27 @@ public class FXRobotCustom {
 
     public void type(KeyCode... keysCode) {
         this.robot.type(keysCode);
+    }
+
+    public <T> boolean selectItem(String query, T item) {
+        ChoiceBox<T> choiceBox = this.robotContext.getNodeFinder().from(actualNode).lookup(query).query();
+        int index = choiceBox.getItems().indexOf(item);
+        if (index > -1) {
+            int indexChosen = choiceBox.getItems().indexOf(choiceBox.getValue());
+            this.clickOn(query);
+            if (indexChosen < index) {
+                for (int i = 0; i < index - indexChosen + 1; i++) {
+                    this.type(KeyCode.DOWN);
+                }
+            } else if (indexChosen > index) {
+                for (int i = 0; i < indexChosen-index; i++) {
+                    this.type(KeyCode.UP);
+                }
+            }
+            this.type(KeyCode.ENTER);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

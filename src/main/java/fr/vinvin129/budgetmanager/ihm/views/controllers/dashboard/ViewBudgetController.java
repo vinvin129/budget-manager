@@ -12,10 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.Label;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -65,6 +62,11 @@ public class ViewBudgetController {
      */
     @FXML
     public ToggleButton allocationViewMode;
+    /**
+     * FXML reference for the add spent button
+     */
+    @FXML
+    public Button addSpentButton;
     /**
      * budget showed
      */

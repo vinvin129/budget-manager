@@ -76,6 +76,16 @@ public class ViewBudgetController {
      */
     private final Map<PieChart.Data, Category> dataCategoryMap = new HashMap<>();
 
+    /**
+     * get a {@link String} for the name of {@link javafx.scene.chart.PieChart.Data} object of a {@link Category}
+     * @param category the {@link Category} object
+     * @return a {@link String} like "categoryName (categoryType)"
+     */
+    public static String getCategoryChartDataName(Category category) {
+        String type = category instanceof BudgetCategory ? "Budget" : "Standard";
+        return category.getName() + " (" + type + ")";
+    }
+
     @FXML
     public void viewModeChanged(ActionEvent actionEvent) {
         Toggle toggle = this.graphViewMode.getSelectedToggle();
@@ -216,8 +226,7 @@ public class ViewBudgetController {
      * @return a {@link javafx.scene.chart.PieChart.Data} object
      */
     private PieChart.Data createAllocationData(Category category) {
-        String type = category instanceof BudgetCategory ? "Budget" : "Standard";
-        String s = category.getName() + " (" + type + ")";
+        String s = getCategoryChartDataName(category);
         double v = category.getAllocationPerMonth();
         return new PieChart.Data(s, v);
     }
@@ -228,8 +237,7 @@ public class ViewBudgetController {
      * @return a {@link javafx.scene.chart.PieChart.Data} object
      */
     private PieChart.Data createExpensesData(Category category) {
-        String type = category instanceof BudgetCategory ? "Budget" : "Standard";
-        String s = category.getName() + " (" + type + ")";
+        String s = getCategoryChartDataName(category);
         double v = category.getAmountSpent();
         return new PieChart.Data(s, v);
     }

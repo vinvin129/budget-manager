@@ -62,7 +62,7 @@ public class FXRobotCustom {
             int indexChosen = choiceBox.getItems().indexOf(choiceBox.getValue());
             this.clickOn(query);
             if (indexChosen < index) {
-                for (int i = 0; i < index - indexChosen + 1; i++) {
+                for (int i = 0; i < index - indexChosen; i++) {
                     this.type(KeyCode.DOWN);
                 }
             } else if (indexChosen > index) {

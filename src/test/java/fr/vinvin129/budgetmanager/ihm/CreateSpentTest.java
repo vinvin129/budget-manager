@@ -53,7 +53,7 @@ public class CreateSpentTest {
     void createSpentFromDashboard(FxRobot robot) throws IllegalBudgetSizeException, IllegalCategorySizeException, BudgetTooSmallException, BudgetNotContainCategoryException {
         robot.clickOn("#startButton");
         FXRobotCustom robotCustom = new FXRobotCustom(robot);
-        Budget b = new Budget("pricipal", 1000);
+        Budget b = new Budget("principal", 1000);
         Budget b2 = new Budget("budget2", 300);
         Category bite = new StandardCategory("bite", 200);
         Category toto = new StandardCategory("toto", 300);
@@ -63,10 +63,19 @@ public class CreateSpentTest {
         b.addCategory(tata);
         CreateBudgetTest.createBudget(robotCustom, "root", b, true);
         robotCustom.changeWindow("root");
+
         robotCustom.clickOn("#addSpentButton");
         robotCustom.changeToNewWindowCreated("newSpentWindow");
         Spent spent1 = new Spent(toto, "une dépense", 30);
         addSpent(robotCustom, b, spent1);
+        robotCustom.removeWindow("newSpentWindow");
+        robotCustom.changeWindow("root");
+
+        robotCustom.clickOn("#addSpentButton");
+        robotCustom.changeToNewWindowCreated("newSpentWindow");
+        Spent spent2 = new Spent(bite, "une autre dépense", 50);
+        addSpent(robotCustom, b2, spent2);
+        robotCustom.removeWindow("newSpentWindow");
         robotCustom.changeWindow("root");
     }
 }

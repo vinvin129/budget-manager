@@ -1,6 +1,7 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard;
 
 import fr.vinvin129.budgetmanager.ihm.IHM;
+import fr.vinvin129.budgetmanager.ihm.views.controllers.create.spent.CreateSpentController;
 import fr.vinvin129.budgetmanager.ihm.views.stages.ViewCategoryExpensesStage;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
 import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
@@ -11,10 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.Label;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -65,6 +63,11 @@ public class ViewBudgetController {
     @FXML
     public ToggleButton allocationViewMode;
     /**
+     * FXML reference for the add spent button
+     */
+    @FXML
+    public Button addSpentButton;
+    /**
      * budget showed
      */
     private Budget budget = null;
@@ -72,6 +75,16 @@ public class ViewBudgetController {
      * the list of {@link Category} with their linked {@link javafx.scene.chart.PieChart.Data}
      */
     private final Map<PieChart.Data, Category> dataCategoryMap = new HashMap<>();
+
+    /**
+     * get a {@link String} for the name of {@link javafx.scene.chart.PieChart.Data} object of a {@link Category}
+     * @param category the {@link Category} object
+     * @return a {@link String} like "categoryName (categoryType)"
+     */
+    public static String getCategoryChartDataName(Category category) {
+        String type = category instanceof BudgetCategory ? "Budget" : "Standard";
+        return category.getName() + " (" + type + ")";
+    }
 
     @FXML
     public void viewModeChanged(ActionEvent actionEvent) {
@@ -81,6 +94,20 @@ public class ViewBudgetController {
         } else if (toggle == expenseViewMode) {
             updateData(ViewMode.EXPENSES);
         }
+    }
+
+    /**
+     * on click on add spent button
+     * @param actionEvent the event
+     */
+    @FXML
+    public void addSpent(ActionEvent actionEvent) throws IOException {
+        Stage addSpentStage = new Stage();
+        FXMLLoader addSpentViewLoader = new FXMLLoader(IHM.class.getResource("createViews/spents/create-spent.fxml"));
+        addSpentStage.setScene(new Scene(addSpentViewLoader.load()));
+        CreateSpentController controller = addSpentViewLoader.getController();
+        controller.setBudgetRoot(this.budget);
+        addSpentStage.show();
     }
 
     /**
@@ -156,7 +183,7 @@ public class ViewBudgetController {
                     budgetViewStage.show();
                 } else {
                     try {
-                        new ViewCategoryExpensesStage(category).show();
+                        new ViewCategoryExpensesStage(budget, category).show();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -199,8 +226,7 @@ public class ViewBudgetController {
      * @return a {@link javafx.scene.chart.PieChart.Data} object
      */
     private PieChart.Data createAllocationData(Category category) {
-        String type = category instanceof BudgetCategory ? "Budget" : "Standard";
-        String s = category.getName() + " (" + type + ")";
+        String s = getCategoryChartDataName(category);
         double v = category.getAllocationPerMonth();
         return new PieChart.Data(s, v);
     }
@@ -211,8 +237,7 @@ public class ViewBudgetController {
      * @return a {@link javafx.scene.chart.PieChart.Data} object
      */
     private PieChart.Data createExpensesData(Category category) {
-        String type = category instanceof BudgetCategory ? "Budget" : "Standard";
-        String s = category.getName() + " (" + type + ")";
+        String s = getCategoryChartDataName(category);
         double v = category.getAmountSpent();
         return new PieChart.Data(s, v);
     }

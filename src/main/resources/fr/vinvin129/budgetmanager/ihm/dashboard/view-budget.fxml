@@ -31,7 +31,7 @@
          <rowConstraints>
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
-         <Button disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="155.0" text="Ajouter une dépense" GridPane.halignment="CENTER" />
+         <Button fx:id="addSpentButton" onAction="#addSpent" mnemonicParsing="false" prefHeight="25.0" prefWidth="155.0" text="Ajouter une dépense" GridPane.halignment="CENTER" />
          <Button disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="136.0" text="Mois suivant" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
          <Button disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="145.0" text="Modifier le budget" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
       </GridPane>

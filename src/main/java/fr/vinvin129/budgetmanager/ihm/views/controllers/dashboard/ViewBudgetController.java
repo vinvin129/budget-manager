@@ -9,7 +9,6 @@ import fr.vinvin129.budgetmanager.models.budget_logic.Category;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
@@ -67,6 +66,16 @@ public class ViewBudgetController {
      */
     @FXML
     public Button addSpentButton;
+    /**
+     * FXML reference for the balance label
+     */
+    @FXML
+    public Label balanceLabel;
+    /**
+     * FXML reference for the allocation per month label
+     */
+    @FXML
+    public Label allocationPerMonthLabel;
     /**
      * budget showed
      */
@@ -136,8 +145,7 @@ public class ViewBudgetController {
         budgetGraph.getData().add(slice3);
         budgetGraph.getData().add(slice4);
         budgetGraph.getData().add(slice5);
-
-        budgetGraph.setLegendSide(Side.LEFT);
+        budgetGraph.setLegendVisible(false);
         graphView.getChildren().add(caption);
 
     }
@@ -149,6 +157,8 @@ public class ViewBudgetController {
     public void setBudget(Budget budget) {
         this.budget = budget;
         this.name.setText("Budget " + this.budget.getName());
+        this.balanceLabel.setText("Solde : " + this.budget.getBalance());
+        this.allocationPerMonthLabel.setText("Allocation par mois : " + this.budget.getAllocationPerMonth());
         updateData(ViewMode.ALLOCATION);
     }
 

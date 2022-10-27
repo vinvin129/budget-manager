@@ -11,17 +11,17 @@ class CategoryTest {
     void getName() {
         Category c = new Category("theName") {
             @Override
-            public int getAllocationPerMonth() {
+            public double getAllocationPerMonth() {
                 return 0;
             }
 
             @Override
-            public int getBalance() {
+            public double getBalance() {
                 return 0;
             }
 
             @Override
-            void setAllocationPerMonth(int allocationPerMonth) {
+            void setAllocationPerMonth(double allocationPerMonth) {
 
             }
 

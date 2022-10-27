@@ -68,9 +68,9 @@ public class CreateSpentController {
     @FXML
     public void validateSpentCreation(ActionEvent actionEvent) {
         String label = titleTextField.getText();
-        int price;
+        double price;
         try {
-            price = Integer.parseInt(priceTextField.getText());
+            price = Double.parseDouble(priceTextField.getText());
         } catch (NumberFormatException e) {
             showWaringAlterAndWait("le champ 'prix' doit être un nombre !");
             return;
@@ -88,7 +88,7 @@ public class CreateSpentController {
         }
 
         if (selectedBudget != null && selectedCategory != null) {
-            Spent spent = new Spent(selectedCategory, label, Integer.parseInt(priceTextField.getText()));
+            Spent spent = new Spent(selectedCategory, label, Double.parseDouble(priceTextField.getText()));
             try {
                 selectedBudget.addSpent(spent);
                 cancelSpentCreation(actionEvent);

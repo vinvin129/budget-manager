@@ -76,7 +76,7 @@ public class CreateBudgetController implements CreateCategory {
         }
         Budget budget;
         try {
-            budget = new Budget(name, Integer.parseInt(allocation));
+            budget = new Budget(name, Double.parseDouble(allocation));
         } catch (NumberFormatException | IllegalBudgetSizeException e) {
             throw new CreateBudgetException("la valeur du champ allocation doit être un nombre");
         }

@@ -14,7 +14,7 @@ public class StandardCategory extends Category{
     /**
      * the actual balance of this category
      */
-    private int balance = 0;
+    private double balance = 0;
     /**
      * the list of expenses in this category
      */
@@ -22,7 +22,7 @@ public class StandardCategory extends Category{
     /**
      * money added in the balance each month
      */
-    private int allocationPerMonth;
+    private double allocationPerMonth;
 
     /**
      * create a {@link StandardCategory} with name and allocation per month
@@ -30,7 +30,7 @@ public class StandardCategory extends Category{
      * @param allocationPerMonth money added in the balance each month
      * @throws IllegalCategorySizeException when allocationPerMonth is under than 1
      */
-    public StandardCategory(String name, int allocationPerMonth) throws IllegalCategorySizeException {
+    public StandardCategory(String name, double allocationPerMonth) throws IllegalCategorySizeException {
         super(name);
         if (allocationPerMonth < 1) {
             throw new IllegalCategorySizeException();
@@ -45,7 +45,7 @@ public class StandardCategory extends Category{
      * @param balance the actual balance of this category
      * @throws IllegalCategorySizeException when allocationPerMonth is under than 1
      */
-    public StandardCategory(String name, int allocationPerMonth, int balance) throws IllegalCategorySizeException {
+    public StandardCategory(String name, double allocationPerMonth, double balance) throws IllegalCategorySizeException {
         super(name);
         if (allocationPerMonth < 1) {
             throw new IllegalCategorySizeException();
@@ -55,17 +55,17 @@ public class StandardCategory extends Category{
     }
 
     @Override
-    public int getAllocationPerMonth() {
+    public double getAllocationPerMonth() {
         return this.allocationPerMonth;
     }
 
     @Override
-    public int getBalance() {
+    public double getBalance() {
         return balance;
     }
 
     @Override
-    void setAllocationPerMonth(int allocationPerMonth) {
+    void setAllocationPerMonth(double allocationPerMonth) {
 
         this.allocationPerMonth = allocationPerMonth;
     }

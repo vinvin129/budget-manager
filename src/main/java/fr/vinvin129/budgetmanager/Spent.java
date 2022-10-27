@@ -8,5 +8,5 @@ import fr.vinvin129.budgetmanager.models.budget_logic.Category;
  * @param label the label/name of expense
  * @param price the price in euros of expense
  */
-public record Spent(Category category, String label, int price) {
+public record Spent(Category category, String label, double price) {
 }

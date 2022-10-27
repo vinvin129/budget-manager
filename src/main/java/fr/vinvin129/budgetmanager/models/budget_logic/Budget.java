@@ -20,11 +20,11 @@ public class Budget {
     /**
      * money added in the balance each month
      */
-    private int allocationPerMonth;
+    private double allocationPerMonth;
     /**
      * total available in the budget
      */
-    private int balance = 0;
+    private double balance = 0;
     /**
      * {@link Category} List of this Budget
      */
@@ -36,7 +36,7 @@ public class Budget {
      * @param allocationPerMonth money added in the balance each month
      * @throws IllegalBudgetSizeException when allocationPerMonth is under than 1
      */
-    public Budget(String name, int allocationPerMonth) throws IllegalBudgetSizeException {
+    public Budget(String name, double allocationPerMonth) throws IllegalBudgetSizeException {
         if (allocationPerMonth < 1) {
             throw new IllegalBudgetSizeException();
         }
@@ -48,7 +48,7 @@ public class Budget {
      * get the value of allocation for each month for Budget
      * @return the value
      */
-    public int getAllocationPerMonth() {
+    public double getAllocationPerMonth() {
         return allocationPerMonth;
     }
 
@@ -56,8 +56,8 @@ public class Budget {
      * get the value of unused allocation of this budget by this categories
      * @return the free allocation per month value
      */
-    public int getFreeAllocationPerMonth() {
-        int used = 0;
+    public double getFreeAllocationPerMonth() {
+        double used = 0;
         for (Category category : this.categories) {
             used += category.getAllocationPerMonth();
         }
@@ -68,7 +68,7 @@ public class Budget {
      * get the balance of budget
      * @return the balance
      */
-    public int getBalance() {
+    public double getBalance() {
         return balance;
     }
 
@@ -85,8 +85,8 @@ public class Budget {
      * @param allocationPerMonth money added in the balance each month
      * @throws BudgetTooSmallException thrown if allocationPerMonth is too big for the actual allocation per month of attached {@link Budget}
      */
-    public void setAllocationPerMonth(int allocationPerMonth) throws BudgetTooSmallException {
-        int totalBudget = 0;
+    public void setAllocationPerMonth(double allocationPerMonth) throws BudgetTooSmallException {
+        double totalBudget = 0;
         for (Category category : this.categories) {
             totalBudget += category.getAllocationPerMonth();
         }
@@ -105,11 +105,11 @@ public class Budget {
      * @throws CategoryTooBigException thrown if allocationPerMonth is too big for the actual allocation per month of attached {@link Budget}
      * @throws IllegalCategorySizeException thrown when {@link Category} allocation is more small than 1.
      */
-    public void setAllocationPerMonthOfCategory(Category category, int allocationPerMonth) throws BudgetCategoryTooSmallException, CategoryTooBigException, IllegalCategorySizeException {
+    public void setAllocationPerMonthOfCategory(Category category, double allocationPerMonth) throws BudgetCategoryTooSmallException, CategoryTooBigException, IllegalCategorySizeException {
         if (allocationPerMonth <= 1) {
             throw new IllegalCategorySizeException();
         }
-        int newTotalAllocation = 0;
+        double newTotalAllocation = 0;
         for (Category c : this.categories) {
             newTotalAllocation += c != category ? c.getAllocationPerMonth() : allocationPerMonth;
         }

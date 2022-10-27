@@ -27,7 +27,7 @@ public class BudgetCategory extends Category{
     }
 
     @Override
-    void setAllocationPerMonth(int allocationPerMonth) throws BudgetCategoryTooSmallException {
+    void setAllocationPerMonth(double allocationPerMonth) throws BudgetCategoryTooSmallException {
         try {
             this.budget.setAllocationPerMonth(allocationPerMonth);
         } catch (BudgetTooSmallException e) {
@@ -44,12 +44,12 @@ public class BudgetCategory extends Category{
     }
 
     @Override
-    public int getAllocationPerMonth() {
+    public double getAllocationPerMonth() {
         return this.budget.getAllocationPerMonth();
     }
 
     @Override
-    public int getBalance() {
+    public double getBalance() {
         return this.budget.getBalance();
     }
 

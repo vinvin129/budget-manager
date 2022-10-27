@@ -28,7 +28,7 @@ public abstract class Category {
      * get the value of allocation for each month
      * @return the value
      */
-    public abstract int getAllocationPerMonth();
+    public abstract double getAllocationPerMonth();
 
     /**
      * get the name of category
@@ -42,14 +42,14 @@ public abstract class Category {
      * get the balance of category
      * @return the balance
      */
-    public abstract int getBalance();
+    public abstract double getBalance();
 
     /**
      * change the value of allocation for each month
      * @param allocationPerMonth the new allocation
      * @throws BudgetCategoryTooSmallException thown if this {@link Category} contains a Budget and their {@link Category} need more allocation that new value
      */
-    abstract void setAllocationPerMonth(int allocationPerMonth) throws BudgetCategoryTooSmallException;
+    abstract void setAllocationPerMonth(double allocationPerMonth) throws BudgetCategoryTooSmallException;
 
     /**
      * update balance with allocationPerMonth

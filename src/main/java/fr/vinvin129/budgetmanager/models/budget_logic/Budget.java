@@ -2,6 +2,7 @@ package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
 import fr.vinvin129.budgetmanager.events.EventT;
+import fr.vinvin129.budgetmanager.events.Listener;
 import fr.vinvin129.budgetmanager.events.Observable;
 import fr.vinvin129.budgetmanager.exceptions.*;
 
@@ -31,6 +32,7 @@ public class Budget extends Observable {
      * {@link Category} List of this Budget
      */
     private final List<Category> categories = new ArrayList<>();
+    private final Listener listener = new Listener(EventT.DATA_CHANGE, this::fire);
 
     /**
      * create a budget instance
@@ -149,6 +151,9 @@ public class Budget extends Observable {
             throw new BudgetTooSmallException();
         }
         this.categories.add(category);
+        if (category instanceof BudgetCategory) {
+            ((BudgetCategory) category).getBudget().addListener(listener);
+        }
         fire(EventT.DATA_CHANGE);
     }
 
@@ -157,6 +162,9 @@ public class Budget extends Observable {
      * @param category the {@link Category} object
      */
     public void removeCategory(Category category) {
+        if (category instanceof BudgetCategory) {
+            ((BudgetCategory) category).getBudget().removeListener(listener);
+        }
         this.categories.remove(category);
         fire(EventT.DATA_CHANGE);
     }

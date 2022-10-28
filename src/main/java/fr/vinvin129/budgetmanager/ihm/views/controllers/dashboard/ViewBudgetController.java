@@ -107,7 +107,7 @@ public class ViewBudgetController extends Observer {
         } else if (toggle == expenseViewMode) {
             this.viewMode = ViewMode.EXPENSES;
         }
-        updateData();
+        refresh();
     }
 
     /**
@@ -141,7 +141,21 @@ public class ViewBudgetController extends Observer {
         this.name.setText("Budget " + this.budget.getName());
         this.balanceLabel.setText("Solde : " + this.budget.getBalance());
         this.allocationPerMonthLabel.setText("Allocation par mois : " + this.budget.getAllocationPerMonth());
+        createNewChart();
         updateData();
+    }
+
+    private void createNewChart() {
+        graphView.getChildren().clear();
+        this.budgetGraph = new PieChart();
+        graphView.getChildren().add(this.budgetGraph);
+        this.budgetGraph.setId("budgetGraph");
+        budgetGraph.setLegendVisible(false);
+        AnchorPane.setTopAnchor(budgetGraph, 0.0);
+        AnchorPane.setBottomAnchor(budgetGraph, 0.0);
+        AnchorPane.setRightAnchor(budgetGraph, 0.0);
+        AnchorPane.setLeftAnchor(budgetGraph, 0.0);
+        graphView.getChildren().add(caption);
     }
 
     /**

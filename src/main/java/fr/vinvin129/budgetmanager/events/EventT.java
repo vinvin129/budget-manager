@@ -14,4 +14,8 @@ public record EventT(String name) {
      * the {@link EventT} for Data change like a new value
      */
     public static EventT DATA_CHANGE = new EventT("Data Change");
+    /**
+     * the {@link EventT} for all events
+     */
+    public static EventT ALL_EVENTS = new EventT("all events");
 }

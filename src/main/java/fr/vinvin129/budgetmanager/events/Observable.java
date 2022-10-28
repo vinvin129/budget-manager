@@ -40,7 +40,7 @@ public abstract class Observable {
      */
     protected final void fire(EventT event) {
         this.listeners.stream()
-                .filter(l -> l.eventType().equals(event))
-                .forEach(l -> l.event().fire());
+                .filter(l -> l.eventType().equals(event) || l.eventType().equals(EventT.ALL_EVENTS))
+                .forEach(l -> l.event().fire(event));
     }
 }

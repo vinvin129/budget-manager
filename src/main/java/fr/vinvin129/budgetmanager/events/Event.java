@@ -8,6 +8,7 @@ package fr.vinvin129.budgetmanager.events;
 public interface Event {
     /**
      * the event method
+     * @param eventT the {@link EventT}
      */
-    void fire();
+    void fire(EventT eventT);
 }

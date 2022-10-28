@@ -1,11 +1,14 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard;
 
+import fr.vinvin129.budgetmanager.events.EventT;
+import fr.vinvin129.budgetmanager.events.Observer;
 import fr.vinvin129.budgetmanager.ihm.IHM;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.create.spent.CreateSpentController;
 import fr.vinvin129.budgetmanager.ihm.views.stages.ViewCategoryExpensesStage;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
 import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
 import fr.vinvin129.budgetmanager.models.budget_logic.Category;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,7 +28,7 @@ import java.util.Map;
  * the controller to view a {@link fr.vinvin129.budgetmanager.models.budget_logic.Budget}
  * @author vinvin129
  */
-public class ViewBudgetController {
+public class ViewBudgetController extends Observer {
     /**
      * FXML reference for the budget graph
      */
@@ -84,6 +87,7 @@ public class ViewBudgetController {
      * the list of {@link Category} with their linked {@link javafx.scene.chart.PieChart.Data}
      */
     private final Map<PieChart.Data, Category> dataCategoryMap = new HashMap<>();
+    private ViewMode viewMode = ViewMode.ALLOCATION;
 
     /**
      * get a {@link String} for the name of {@link javafx.scene.chart.PieChart.Data} object of a {@link Category}
@@ -99,10 +103,11 @@ public class ViewBudgetController {
     public void viewModeChanged(ActionEvent actionEvent) {
         Toggle toggle = this.graphViewMode.getSelectedToggle();
         if (toggle == allocationViewMode) {
-            updateData(ViewMode.ALLOCATION);
+            this.viewMode = ViewMode.ALLOCATION;
         } else if (toggle == expenseViewMode) {
-            updateData(ViewMode.EXPENSES);
+            this.viewMode = ViewMode.EXPENSES;
         }
+        updateData();
     }
 
     /**
@@ -117,6 +122,26 @@ public class ViewBudgetController {
         CreateSpentController controller = addSpentViewLoader.getController();
         controller.setBudgetRoot(this.budget);
         addSpentStage.show();
+    }
+
+    @Override
+    protected void onEvent(EventT eventT) {
+        Platform.runLater(() -> {
+            if (eventT.equals(EventT.DATA_CHANGE)) {
+                refresh();
+            }
+        });
+
+    }
+
+    /**
+     * update all elements in the view
+     */
+    public void refresh() {
+        this.name.setText("Budget " + this.budget.getName());
+        this.balanceLabel.setText("Solde : " + this.budget.getBalance());
+        this.allocationPerMonthLabel.setText("Allocation par mois : " + this.budget.getAllocationPerMonth());
+        updateData();
     }
 
     /**
@@ -155,11 +180,12 @@ public class ViewBudgetController {
      * @param budget the {@link Budget} object
      */
     public void setBudget(Budget budget) {
+        if (this.budget != null) {
+            removeObservable(this.budget);
+        }
         this.budget = budget;
-        this.name.setText("Budget " + this.budget.getName());
-        this.balanceLabel.setText("Solde : " + this.budget.getBalance());
-        this.allocationPerMonthLabel.setText("Allocation par mois : " + this.budget.getAllocationPerMonth());
-        updateData(ViewMode.ALLOCATION);
+        addObservable(this.budget);
+        refresh();
     }
 
     /**
@@ -205,9 +231,8 @@ public class ViewBudgetController {
 
     /**
      * actualize the graph data with the budget attribute
-     * @param viewMode the selected mode
      */
-    public void updateData(ViewMode viewMode) {
+    public void updateData() {
         budgetGraph.getData().forEach(data -> {
             data.getNode().setOnMouseMoved(null);
             data.getNode().setOnMouseExited(null);
@@ -222,7 +247,7 @@ public class ViewBudgetController {
                         this.dataCategoryMap.put(data, category);
                         addDataMouseListeners(data);
                     });
-            if (viewMode == ViewMode.ALLOCATION) {
+            if (this.viewMode == ViewMode.ALLOCATION) {
                 PieChart.Data freeData = new PieChart.Data("Libre", this.budget.getFreeAllocationPerMonth());
                 budgetGraph.getData().add(freeData);
                 addDataMouseListeners(freeData);

@@ -1,6 +1,8 @@
 package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
+import fr.vinvin129.budgetmanager.events.EventT;
+import fr.vinvin129.budgetmanager.events.Observable;
 import fr.vinvin129.budgetmanager.exceptions.*;
 
 import java.util.ArrayList;
@@ -12,7 +14,7 @@ import java.util.Objects;
  * Represent a Budget. He can contains some {@link Category}
  * @author vinvin129
  */
-public class Budget {
+public class Budget extends Observable {
     /**
      * the name of Budget
      */
@@ -95,6 +97,7 @@ public class Budget {
             throw new BudgetTooSmallException();
         }
         this.allocationPerMonth = allocationPerMonth;
+        fire(EventT.DATA_CHANGE);
     }
 
     /**
@@ -119,6 +122,7 @@ public class Budget {
         }
 
         category.setAllocationPerMonth(allocationPerMonth);
+        fire(EventT.DATA_CHANGE);
     }
 
     /**
@@ -132,6 +136,7 @@ public class Budget {
                 this.balance -= category.getAllocationPerMonth();
             }
         }
+        fire(EventT.DATA_CHANGE);
     }
 
     /**
@@ -144,6 +149,7 @@ public class Budget {
             throw new BudgetTooSmallException();
         }
         this.categories.add(category);
+        fire(EventT.DATA_CHANGE);
     }
 
     /**
@@ -152,6 +158,7 @@ public class Budget {
      */
     public void removeCategory(Category category) {
         this.categories.remove(category);
+        fire(EventT.DATA_CHANGE);
     }
 
     /**
@@ -179,6 +186,7 @@ public class Budget {
                 }
             }
         });
+        fire(EventT.DATA_CHANGE);
     }
 
     @Override

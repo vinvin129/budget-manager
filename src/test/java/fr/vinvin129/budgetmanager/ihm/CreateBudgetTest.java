@@ -53,6 +53,7 @@ public class CreateBudgetTest {
         if (main) {
             robotCustom.clickOn("#validateBudgetCreation");
         }
+        budget.newMonth();
     }
     IHM app;
     @Start

@@ -1,12 +1,14 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard;
 
 import fr.vinvin129.budgetmanager.Spent;
+import fr.vinvin129.budgetmanager.events.EventT;
+import fr.vinvin129.budgetmanager.events.Observer;
 import fr.vinvin129.budgetmanager.ihm.IHM;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.create.spent.CreateSpentController;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
 import fr.vinvin129.budgetmanager.models.budget_logic.Category;
 import fr.vinvin129.budgetmanager.models.budget_logic.StandardCategory;
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -23,7 +25,7 @@ import java.util.Arrays;
  * the controller for the view of a category
  * @author vinvin129
  */
-public class ViewCategoryExpensesController {
+public class ViewCategoryExpensesController extends Observer {
     /**
      * FXML reference to spentList VBox
      */
@@ -51,10 +53,9 @@ public class ViewCategoryExpensesController {
 
     /**
      * on click on add spent button to create a {@link Spent} for this {@link Category} linked
-     * @param actionEvent the event
      */
     @FXML
-    public void addExpense(ActionEvent actionEvent) throws IOException {
+    public void addExpense() throws IOException {
         if (budget != null && category != null && category instanceof StandardCategory) {
             Stage addSpentStage = new Stage();
             FXMLLoader addSpentViewLoader = new FXMLLoader(IHM.class.getResource("createViews/spents/create-spent.fxml"));
@@ -62,6 +63,13 @@ public class ViewCategoryExpensesController {
             CreateSpentController controller = addSpentViewLoader.getController();
             controller.setSpecificCategory(budget, (StandardCategory) category);
             addSpentStage.show();
+        }
+    }
+
+    @Override
+    protected void onEvent(EventT eventT) {
+        if (eventT.equals(EventT.DATA_CHANGE)) {
+            Platform.runLater(this::refresh);
         }
     }
 
@@ -101,18 +109,28 @@ public class ViewCategoryExpensesController {
     }
 
     /**
+     * refresh the view
+     */
+    private void refresh() {
+        this.spentList.getChildren().setAll(Arrays.stream(this.category.getSpentList()).map(SpentView::new).toList());
+    }
+
+    /**
      * change the category to view
      * @param budget the {@link Budget} of category
      * @param category the {@link Category} object
      */
     public void setCategory(Budget budget, Category category) {
+        if (this.budget != null) {
+            removeObservable(this.budget);
+        }
         if (Arrays.asList(budget.getCategories()).contains(category)) {
             this.budget = budget;
+            addObservable(this.budget);
             this.category = category;
             this.name.setText("Catégorie " + this.category.getName());
             this.spentList.getChildren().clear();
-            Arrays.stream(this.category.getSpentList())
-                    .forEach(spent -> this.spentList.getChildren().add(new SpentView(spent)));
+            refresh();
         }
     }
 }

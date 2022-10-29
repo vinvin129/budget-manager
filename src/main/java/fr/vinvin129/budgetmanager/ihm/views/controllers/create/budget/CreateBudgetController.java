@@ -90,6 +90,7 @@ public class CreateBudgetController implements CreateCategory {
                 throw new CreateBudgetException(e.getMessage());
             }
         }
+        budget.newMonth();
 
         return budget;
     }

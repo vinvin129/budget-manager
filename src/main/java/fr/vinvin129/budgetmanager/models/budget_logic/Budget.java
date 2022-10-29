@@ -1,6 +1,9 @@
 package fr.vinvin129.budgetmanager.models.budget_logic;
 
 import fr.vinvin129.budgetmanager.Spent;
+import fr.vinvin129.budgetmanager.events.EventT;
+import fr.vinvin129.budgetmanager.events.Listener;
+import fr.vinvin129.budgetmanager.events.Observable;
 import fr.vinvin129.budgetmanager.exceptions.*;
 
 import java.util.ArrayList;
@@ -12,7 +15,7 @@ import java.util.Objects;
  * Represent a Budget. He can contains some {@link Category}
  * @author vinvin129
  */
-public class Budget {
+public class Budget extends Observable {
     /**
      * the name of Budget
      */
@@ -29,6 +32,7 @@ public class Budget {
      * {@link Category} List of this Budget
      */
     private final List<Category> categories = new ArrayList<>();
+    private final Listener listener = new Listener(EventT.DATA_CHANGE, this::fire);
 
     /**
      * create a budget instance
@@ -95,6 +99,7 @@ public class Budget {
             throw new BudgetTooSmallException();
         }
         this.allocationPerMonth = allocationPerMonth;
+        fire(EventT.DATA_CHANGE);
     }
 
     /**
@@ -119,6 +124,7 @@ public class Budget {
         }
 
         category.setAllocationPerMonth(allocationPerMonth);
+        fire(EventT.DATA_CHANGE);
     }
 
     /**
@@ -132,6 +138,7 @@ public class Budget {
                 this.balance -= category.getAllocationPerMonth();
             }
         }
+        fire(EventT.DATA_CHANGE);
     }
 
     /**
@@ -144,6 +151,10 @@ public class Budget {
             throw new BudgetTooSmallException();
         }
         this.categories.add(category);
+        if (category instanceof BudgetCategory) {
+            ((BudgetCategory) category).getBudget().addListener(listener);
+        }
+        fire(EventT.DATA_CHANGE);
     }
 
     /**
@@ -151,7 +162,11 @@ public class Budget {
      * @param category the {@link Category} object
      */
     public void removeCategory(Category category) {
+        if (category instanceof BudgetCategory) {
+            ((BudgetCategory) category).getBudget().removeListener(listener);
+        }
         this.categories.remove(category);
+        fire(EventT.DATA_CHANGE);
     }
 
     /**
@@ -179,6 +194,7 @@ public class Budget {
                 }
             }
         });
+        fire(EventT.DATA_CHANGE);
     }
 
     @Override

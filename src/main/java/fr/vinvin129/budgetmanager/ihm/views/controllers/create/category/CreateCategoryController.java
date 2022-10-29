@@ -2,8 +2,8 @@ package fr.vinvin129.budgetmanager.ihm.views.controllers.create.category;
 
 import fr.vinvin129.budgetmanager.exceptions.CreateCategoryException;
 import fr.vinvin129.budgetmanager.ihm.IHM;
+import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
 import fr.vinvin129.budgetmanager.models.budget_logic.Category;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -80,10 +80,9 @@ public class CreateCategoryController implements CreateCategory {
 
     /**
      * set view template and controller to selected type (standard or budget) when selected type change in IHM
-     * @param actionEvent the event
      */
     @FXML
-    public void onChoiceChange(ActionEvent actionEvent) {
+    public void onChoiceChange() {
         switch (typeChoice.getSelectionModel().getSelectedItem()) {
             case "Standard" -> {
                 view.setCenter(standardView);
@@ -99,6 +98,12 @@ public class CreateCategoryController implements CreateCategory {
             }
             default -> view.setCenter(null);
         }
+    }
+
+    @Override
+    public void setInitialCategory(Category category) {
+        typeChoice.getSelectionModel().select(category instanceof BudgetCategory ? 1 : 0);
+        this.actualCategoryController.setInitialCategory(category);
     }
 
     /**

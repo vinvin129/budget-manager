@@ -55,4 +55,9 @@ public class CreateCategoryStage extends Stage {
         this.showAndWait();
         return category;
     }
+
+    public void display(Category category) {
+        this.controller.setInitialCategory(category);
+        display();
+    }
 }

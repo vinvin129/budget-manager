@@ -18,7 +18,7 @@
             <Label text="Allocation par mois : " />
             <TextField fx:id="budgetAllocation" />
          </HBox>
-         <ListView fx:id="categoryList" disable="true" prefHeight="258.0" prefWidth="372.0" />
+         <ListView fx:id="categoryList" prefHeight="258.0" prefWidth="372.0" />
          <Button fx:id="addCategoryButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addCategory" text="Ajouter Catégorie" textAlignment="CENTER" />
       </VBox>
    </center>

@@ -1,5 +1,6 @@
 module:fr.vinvin129.budgetmanager
 fr.vinvin129.budgetmanager
+fr.vinvin129.budgetmanager.events
 fr.vinvin129.budgetmanager.exceptions
 fr.vinvin129.budgetmanager.ihm
 fr.vinvin129.budgetmanager.ihm.views.controllers

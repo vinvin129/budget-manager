@@ -44,6 +44,12 @@ public class BudgetCategory extends Category{
     }
 
     @Override
+    public void setName(String name) {
+        super.setName(name);
+        this.budget.setName(name);
+    }
+
+    @Override
     public double getAllocationPerMonth() {
         return this.budget.getAllocationPerMonth();
     }

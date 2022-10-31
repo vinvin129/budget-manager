@@ -19,7 +19,7 @@ public class Budget extends Observable {
     /**
      * the name of Budget
      */
-    private final String name;
+    private String name;
     /**
      * money added in the balance each month
      */
@@ -82,6 +82,14 @@ public class Budget extends Observable {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * change the name of budget
+     * @param name the name
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

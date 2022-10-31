@@ -13,4 +13,6 @@ public interface CreateCategory {
      * @throws CreateCategoryException if category can't be created
      */
     Category getCategory() throws CreateCategoryException;
+
+    void setInitialCategory(Category category);
 }

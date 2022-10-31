@@ -63,7 +63,7 @@ public class CreateSpentTest {
         b2.addCategory(bite);
         b.addCategory(toto);
         b.addCategory(tata);
-        CreateBudgetTest.createBudget(robotCustom, "root", b, true);
+        CreateBudgetTest.createBudget(robotCustom, "root", b, true, false);
         robotCustom.changeWindow("root");
 
         robotCustom.clickOn("#addSpentButton");
@@ -93,7 +93,7 @@ public class CreateSpentTest {
         b2.addCategory(bite);
         b.addCategory(toto);
         b.addCategory(tata);
-        CreateBudgetTest.createBudget(robotCustom, "root", b, true);
+        CreateBudgetTest.createBudget(robotCustom, "root", b, true, false);
         robotCustom.changeWindow("root");
         DashbordTest.clickOnChartCategory(robotCustom, toto);
 

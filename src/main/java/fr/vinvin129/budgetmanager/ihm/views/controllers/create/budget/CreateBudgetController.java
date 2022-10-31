@@ -9,13 +9,12 @@ import fr.vinvin129.budgetmanager.ihm.views.stages.CreateCategoryStage;
 import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
 import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
 import fr.vinvin129.budgetmanager.models.budget_logic.Category;
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * the controller for budgets creations
@@ -49,13 +48,38 @@ public class CreateBudgetController implements CreateCategory {
     @FXML
     public Button validateBudgetCreation;
 
+    private BudgetCategory initialCategory = null;
+
+    /**
+     * create a template when view is loaded
+     */
+    @FXML
+    public void initialize() {
+        final MultipleSelectionModel<Category> selectionModel = this.categoryList.getSelectionModel();
+        selectionModel.setSelectionMode(SelectionMode.SINGLE);
+        selectionModel.selectedItemProperty()
+                .addListener((observableValue, oldCategory, newCategory) -> {
+                    if (newCategory != null) {
+                        Platform.runLater(() -> {
+                            selectionModel.clearSelection();
+                            try {
+                                new CreateCategoryStage().display(newCategory);
+                                this.categoryList.refresh();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+
+                    }
+                });
+    }
+
     /**
      * called when the button to add category was pressed
-     * @param actionEvent the event
      * @throws IOException .
      */
     @FXML
-    public void addCategory(ActionEvent actionEvent) throws IOException {
+    public void addCategory() throws IOException {
         System.out.println("ajout d'une catégorie");
         Category category = new CreateCategoryStage().display();
         if (category != null) {
@@ -76,12 +100,24 @@ public class CreateBudgetController implements CreateCategory {
         }
         Budget budget;
         try {
-            budget = new Budget(name, Double.parseDouble(allocation));
+            if (initialCategory != null) {
+                budget = initialCategory.getBudget();
+                initialCategory.setName(name);
+                budget.setAllocationPerMonth(Double.parseDouble(allocation));
+            } else {
+                budget = new Budget(name, Double.parseDouble(allocation));
+            }
         } catch (NumberFormatException | IllegalBudgetSizeException e) {
             throw new CreateBudgetException("la valeur du champ allocation doit être un nombre");
+        } catch (BudgetTooSmallException e) {
+            throw new CreateBudgetException(e.getMessage());
         }
         if (categoryList.getItems().size() == 0) {
             throw new CreateBudgetException("il doit y avoir au moins une catégorie dans le budget");
+        }
+        Category[] categories = budget.getCategories();
+        for (Category category : categories) {
+            budget.removeCategory(category);
         }
         for (Category category : categoryList.getItems()) {
             try {
@@ -90,8 +126,10 @@ public class CreateBudgetController implements CreateCategory {
                 throw new CreateBudgetException(e.getMessage());
             }
         }
-        budget.newMonth();
 
+        if (initialCategory == null) {
+            budget.newMonth();
+        }
         return budget;
     }
 
@@ -102,9 +140,26 @@ public class CreateBudgetController implements CreateCategory {
     @Override
     public Category getCategory() throws CreateCategoryException {
         try {
-            return new BudgetCategory(getBudget());
+            if (initialCategory != null) {
+                return initialCategory;
+            } else {
+                return new BudgetCategory(getBudget());
+            }
         } catch (CreateBudgetException e) {
             throw new CreateCategoryException("le budget auquel est lié la catégorie n'a pas pu être crée\n (" + e.getDescription() + ")");
+        }
+    }
+
+    @Override
+    public void setInitialCategory(Category category) {
+        if (category instanceof BudgetCategory) {
+            this.initialCategory = (BudgetCategory) category;
+            this.budgetName.setText(category.getName());
+            this.budgetAllocation.setText(String.valueOf(category.getAllocationPerMonth()));
+            this.categoryList.getItems()
+                    .setAll(Arrays.asList(
+                                    ((BudgetCategory) category)
+                                            .getBudget().getCategories()));
         }
     }
 }

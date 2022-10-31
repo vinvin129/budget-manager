@@ -14,7 +14,7 @@ public abstract class Category {
     /**
      * the category name
      */
-    private final String name;
+    private String name;
 
     /**
      * create a {@link Category} object with name
@@ -39,6 +39,14 @@ public abstract class Category {
     }
 
     /**
+     * change the category's name
+     * @param name the name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
      * get the balance of category
      * @return the balance
      */
@@ -50,6 +58,11 @@ public abstract class Category {
      * @throws BudgetCategoryTooSmallException thown if this {@link Category} contains a Budget and their {@link Category} need more allocation that new value
      */
     abstract void setAllocationPerMonth(double allocationPerMonth) throws BudgetCategoryTooSmallException;
+
+    @Deprecated
+    public final void directSetAllocationPerMonth(double allocationPerMonth) throws BudgetCategoryTooSmallException {
+        setAllocationPerMonth(allocationPerMonth);
+    }
 
     /**
      * update balance with allocationPerMonth

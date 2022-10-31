@@ -3,6 +3,8 @@ package fr.vinvin129.budgetmanager.ihm;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Window;
 import org.testfx.api.FxRobot;
@@ -87,5 +89,15 @@ public class FXRobotCustom {
         PieChart chart = getNode(chartId);
         Node dataNode = chart.getData().stream().filter(predicate).findFirst().orElseThrow().getNode();
         this.robot.clickOn(dataNode);
+    }
+
+    public <T> void selectListItem(String listId, T item) {
+        ListView<T> listView = getNode(listId);
+        listView.getSelectionModel().select(item);
+    }
+
+    public void clearTextField(String query) {
+        TextField textField = getNode(query);
+        textField.setText("");
     }
 }

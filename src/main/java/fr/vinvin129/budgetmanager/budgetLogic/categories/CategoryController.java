@@ -1,6 +1,7 @@
 package fr.vinvin129.budgetmanager.budgetLogic.categories;
 
 import fr.vinvin129.budgetmanager.budgetLogic.Spent;
+import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.events.EventT;
 import fr.vinvin129.budgetmanager.events.Observable;
@@ -10,9 +11,15 @@ import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 
 public class CategoryController extends Observable {
     private Category model;
+    private final BudgetController budgetParentController;
 
-    public CategoryController(CategoryMoment moment) throws IllegalBudgetSizeException, IllegalCategorySizeException {
+    public CategoryController(CategoryMoment moment, BudgetController budgetParentController) throws IllegalBudgetSizeException, IllegalCategorySizeException {
         this.model = Category.createModel(moment, this);
+        this.budgetParentController = budgetParentController;
+    }
+
+    public BudgetController getBudgetParentController() {
+        return budgetParentController;
     }
 
     public Category getModel() {
@@ -47,6 +54,7 @@ public class CategoryController extends Observable {
         this.model.addSpent(spent);
         if (this.model instanceof StandardCategory) {
             this.setBalance(this.model.getBalance() - spent.price());
+            this.budgetParentController.setBalance(this.budgetParentController.getModel().getBalance() - spent.price());
         }
         fire(EventT.DATA_CHANGE);
     }

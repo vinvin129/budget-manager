@@ -88,7 +88,8 @@ public class CreateSpentController {
         }
 
         if (selectedBudget != null && selectedCategory != null) {
-            Spent spent = new Spent(selectedCategory, label, Double.parseDouble(priceTextField.getText()));
+            Spent spent = new Spent(selectedCategory, label, Double.parseDouble(priceTextField.getText()), null);
+            //TODO à changer
             try {
                 selectedBudget.addSpent(spent);
                 cancelSpentCreation(actionEvent);

@@ -4,12 +4,14 @@ import fr.vinvin129.budgetmanager.budgetLogic.categories.BudgetCategory;
 import fr.vinvin129.budgetmanager.budgetLogic.categories.Category;
 import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.BudgetMoment;
+import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.events.EventT;
 import fr.vinvin129.budgetmanager.events.Listener;
 import fr.vinvin129.budgetmanager.events.Observable;
 import fr.vinvin129.budgetmanager.events.Observer;
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
+import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 
 import java.util.Arrays;
 
@@ -76,10 +78,11 @@ public class BudgetController extends Observable {
 
     /**
      * add a {@link CategoryController} to this Budget
-     * @param categoryController the {@link CategoryController} object
+     * @param categoryMoment the {@link CategoryMoment} object
      * @throws BudgetTooSmallException when there is no more place in this budget
      */
-    public void addCategoryController(CategoryController categoryController) throws BudgetTooSmallException {
+    public CategoryController addCategory(CategoryMoment categoryMoment) throws BudgetTooSmallException, IllegalBudgetSizeException, IllegalCategorySizeException {
+        CategoryController categoryController = new CategoryController(categoryMoment, this);
         Category category = categoryController.getModel();
         if ((this.model.getFreeAllocationPerMonth() - category.getAllocationPerMonth()) < 0) {
             throw new BudgetTooSmallException();
@@ -90,6 +93,7 @@ public class BudgetController extends Observable {
         }
         this.categoryObserver.addObservable(categoryController);
         fire(EventT.DATA_CHANGE);
+        return categoryController;
     }
 
     /**
@@ -97,7 +101,7 @@ public class BudgetController extends Observable {
      *
      * @param categoryController the {@link CategoryController} object
      */
-    public void removeCategoryController(CategoryController categoryController) {
+    public void removeCategory(CategoryController categoryController) {
         Category category = categoryController.getModel();
         if (category instanceof BudgetCategory) {
             ((BudgetCategory) category).getBudgetController().removeListener(listener);
@@ -105,5 +109,18 @@ public class BudgetController extends Observable {
         this.model.removeCategoryController(categoryController);
         this.categoryObserver.removeObservable(categoryController);
         fire(EventT.DATA_CHANGE);
+    }
+
+    /**
+     * remove a {@link CategoryController} to this Budget
+     *
+     * @param categoryMoment the {@link CategoryMoment} object
+     */
+    public void removeCategory(CategoryMoment categoryMoment) {
+        removeCategory(Arrays.stream(this.getModel()
+                .getCategoryControllers())
+                .filter(controller -> controller.getModel().getMoment().equals(categoryMoment))
+                .findFirst()
+                .orElseThrow());
     }
 }

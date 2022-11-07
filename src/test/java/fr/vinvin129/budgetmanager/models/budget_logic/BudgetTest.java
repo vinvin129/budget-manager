@@ -94,7 +94,7 @@ class BudgetTest {
         b.newMonth();
         assertEquals(1000, b.getBalance());
 
-        assertDoesNotThrow(() -> b.addSpent(new Spent(cat1, "un achat", 100)));
+        assertDoesNotThrow(() -> b.addSpent(new Spent(cat1, "un achat", 100, null)));
         b.newMonth();
         assertEquals(1900, b.getBalance());
     }
@@ -143,10 +143,10 @@ class BudgetTest {
         assertDoesNotThrow(() -> b.addCategory(cat1));
         assertDoesNotThrow(() -> b.addCategory(cat2));
         b.newMonth();
-        assertDoesNotThrow(() -> b.addSpent(new Spent(cat1, "dep1", 50)));
+        assertDoesNotThrow(() -> b.addSpent(new Spent(cat1, "dep1", 50, null)));
         assertEquals(1000-300-50, b.getBalance());
 
-        assertThrows(BudgetNotContainCategoryException.class, () -> b.addSpent(new Spent(cat3, "erreur", 20)));
+        assertThrows(BudgetNotContainCategoryException.class, () -> b.addSpent(new Spent(cat3, "erreur", 20, null)));
     }
 
     @Test

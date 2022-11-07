@@ -34,7 +34,7 @@ public class BudgetCategory extends Category {
 
     @Override
     public double getBalance() {
-        return this.budget.getAllocationPerMonth();
+        return this.budget.getBalance();
     }
 
     @Override

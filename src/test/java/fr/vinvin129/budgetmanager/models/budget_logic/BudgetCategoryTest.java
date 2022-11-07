@@ -65,10 +65,10 @@ class BudgetCategoryTest {
         BudgetCategory category = new BudgetCategory(budget);
         category.newMonth();
         assertThrows(RuntimeException.class,
-                () -> category.addSpent(new Spent(category, "dépense", 200))); // on sait jamais
-        category.addSpent(new Spent(categoryInB, "dépense", 200));
+                () -> category.addSpent(new Spent(category, "dépense", 200, null))); // on sait jamais
+        category.addSpent(new Spent(categoryInB, "dépense", 200, null));
         assertEquals(100, category.getBalance());
-        category.addSpent(new Spent(categoryInB, "dépense2", 200));
+        category.addSpent(new Spent(categoryInB, "dépense2", 200, null));
         assertEquals(-100, category.getBalance());
         category.newMonth();
         assertEquals(200, category.getBalance());
@@ -87,8 +87,8 @@ class BudgetCategoryTest {
         Category cat1 = new StandardCategory("cat1", 300);
         budget.addCategory(cat1);
         BudgetCategory category = new BudgetCategory(budget);
-        Spent spent1 = new Spent(cat1, "dépense", 200);
-        Spent spent2 = new Spent(cat1, "dépense2", 200);
+        Spent spent1 = new Spent(cat1, "dépense", 200, null);
+        Spent spent2 = new Spent(cat1, "dépense2", 200, null);
         category.addSpent(spent1);
         category.addSpent(spent2);
         assertEquals(400, category.getAmountSpent());

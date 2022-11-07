@@ -68,14 +68,14 @@ public class CreateSpentTest {
 
         robotCustom.clickOn("#addSpentButton");
         robotCustom.changeToNewWindowCreated("newSpentWindow");
-        Spent spent1 = new Spent(toto, "une dépense", 30);
+        Spent spent1 = new Spent(toto, "une dépense", 30, null);
         addSpent(robotCustom, b, spent1, true);
         robotCustom.removeWindow("newSpentWindow");
         robotCustom.changeWindow("root");
 
         robotCustom.clickOn("#addSpentButton");
         robotCustom.changeToNewWindowCreated("newSpentWindow");
-        Spent spent2 = new Spent(bite, "une autre dépense", 50);
+        Spent spent2 = new Spent(bite, "une autre dépense", 50, null);
         addSpent(robotCustom, b2, spent2, true);
         robotCustom.removeWindow("newSpentWindow");
         robotCustom.changeWindow("root");
@@ -100,14 +100,14 @@ public class CreateSpentTest {
         robotCustom.changeToNewWindowCreated("expensesCategoryView");
         robotCustom.clickOn("#addSpentButton");
         robotCustom.changeToNewWindowCreated("newSpentWindow");
-        Spent spent1 = new Spent(toto, "une dépense", 30.54);
+        Spent spent1 = new Spent(toto, "une dépense", 30.54, null);
         addSpent(robotCustom, b, spent1, false);
         robotCustom.removeWindow("newSpentWindow");
         robotCustom.changeWindow("expensesCategoryView");
 
         robotCustom.clickOn("#addSpentButton");
         robotCustom.changeToNewWindowCreated("newSpentWindow");
-        Spent spent2 = new Spent(bite, "une autre dépense", 50.99);
+        Spent spent2 = new Spent(bite, "une autre dépense", 50.99, null);
         addSpent(robotCustom, b2, spent2, false);
         robotCustom.removeWindow("newSpentWindow");
         robotCustom.changeWindow("expensesCategoryView");

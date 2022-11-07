@@ -53,9 +53,9 @@ class StandardCategoryTest {
     void addSpent() throws IllegalCategorySizeException {
         StandardCategory category = new StandardCategory("category", 300);
         category.newMonth();
-        category.addSpent(new Spent(category, "dépense", 200));
+        category.addSpent(new Spent(category, "dépense", 200, null));
         assertEquals(100, category.getBalance());
-        category.addSpent(new Spent(category, "dépense2", 200));
+        category.addSpent(new Spent(category, "dépense2", 200, null));
         assertEquals(-100, category.getBalance());
         category.newMonth();
         assertEquals(300, category.getBalance());
@@ -64,8 +64,8 @@ class StandardCategoryTest {
     @Test
     void getSpentList() throws IllegalCategorySizeException {
         StandardCategory category = new StandardCategory("category", 300);
-        Spent spent1 = new Spent(category, "dépense", 200);
-        Spent spent2 = new Spent(category, "dépense2", 200);
+        Spent spent1 = new Spent(category, "dépense", 200, null);
+        Spent spent2 = new Spent(category, "dépense2", 200, null);
         category.newMonth();
         category.addSpent(spent1);
         category.addSpent(spent2);
@@ -76,8 +76,8 @@ class StandardCategoryTest {
     @Test
     void getAmountSpent() throws IllegalCategorySizeException {
         StandardCategory category = new StandardCategory("category", 300);
-        Spent spent1 = new Spent(category, "dépense", 200);
-        Spent spent2 = new Spent(category, "dépense2", 200);
+        Spent spent1 = new Spent(category, "dépense", 200, null);
+        Spent spent2 = new Spent(category, "dépense2", 200, null);
         category.addSpent(spent1);
         category.addSpent(spent2);
         assertEquals(400, category.getAmountSpent());

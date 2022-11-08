@@ -11,6 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * a temporary model to update a {@link BudgetMoment} immutable model
+ * @author vinvin129
+ */
 public class Budget {
     /**
      * the name of Budget
@@ -33,6 +37,13 @@ public class Budget {
      */
     private final BudgetController controller;
 
+    /**
+     * create a new {@link Budget} object from a {@link BudgetMoment} object linked with a {@link BudgetController}
+     * @param moment the {@link BudgetMoment} object
+     * @param controller this controller
+     * @return a {@link Budget} instance
+     * @throws IllegalBudgetSizeException if size is illogic
+     */
     static Budget createModel(BudgetMoment moment, BudgetController controller) throws IllegalBudgetSizeException {
         return new Budget(controller, moment.name(), moment.allocationPerMonth());
     }
@@ -127,7 +138,7 @@ public class Budget {
     }
 
     /**
-     * get {@link CategoryController} list of categories in this budget
+     * get {@link CategoryController} list of categories controllers in this budget
      * @return {@link CategoryController} list
      */
     public CategoryController[] getCategoryControllers() {

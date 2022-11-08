@@ -10,19 +10,35 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * a temporary model to update a {@link CategoryMoment} immutable model for budget category
+ * @author vinvin129
+ */
 public class BudgetCategory extends Category {
     /**
      * this linked {@link Budget} object
      */
     private final Budget budget;
+    /**
+     * this controller
+     */
     private final BudgetController budgetController;
 
+    /**
+     * create a {@link BudgetCategory} instance
+     * @param controller this {@link CategoryController} controller
+     * @param budgetController the {@link BudgetController} of this linked budget
+     */
     protected BudgetCategory(CategoryController controller, BudgetController budgetController) {
         super(controller, budgetController.getModel().getName());
         this.budgetController = budgetController;
         this.budget = budgetController.getModel();
     }
 
+    /**
+     * get the controller of this linked budget
+     * @return the {@link BudgetController} object
+     */
     public BudgetController getBudgetController() {
         return budgetController;
     }

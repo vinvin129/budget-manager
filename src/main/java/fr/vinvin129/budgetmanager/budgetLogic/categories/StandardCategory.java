@@ -7,6 +7,10 @@ import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * a temporary model to update a {@link CategoryMoment} immutable model for standard category
+ * @author vinvin129
+ */
 public class StandardCategory extends Category{
     /**
      * the actual balance of this category
@@ -21,6 +25,13 @@ public class StandardCategory extends Category{
      */
     private double allocationPerMonth;
 
+    /**
+     * create a standard category instance
+     * @param controller this {@link CategoryController} controller
+     * @param name category name
+     * @param allocationPerMonth category allocation
+     * @throws IllegalCategorySizeException if illogic size (minus than 1)
+     */
     protected StandardCategory(CategoryController controller, String name, double allocationPerMonth) throws IllegalCategorySizeException {
         super(controller, name);
         if (allocationPerMonth < 1) {

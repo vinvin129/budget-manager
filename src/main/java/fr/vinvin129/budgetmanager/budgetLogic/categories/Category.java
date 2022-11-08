@@ -10,10 +10,29 @@ import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * a temporary model to update a {@link CategoryMoment} immutable model for generic category
+ * @author vinvin129
+ */
 public abstract class Category {
+    /**
+     * the category's name
+     */
     private String name;
+
+    /**
+     * this {@link CategoryController} controller
+     */
     private final CategoryController controller;
 
+    /**
+     * create a new {@link Category} object from a {@link CategoryMoment} object linked with a {@link CategoryController}
+     * @param moment the {@link CategoryMoment} object
+     * @param controller this controller
+     * @return a {@link Category} instance
+     * @throws IllegalCategorySizeException if illogic category size
+     * @throws IllegalBudgetSizeException if illogic category size for a budget category
+     */
     static Category createModel(CategoryMoment moment, CategoryController controller) throws IllegalCategorySizeException, IllegalBudgetSizeException {
         if (moment.budgetMoment() == null) {
             return new StandardCategory(controller, moment.name(), moment.allocationPerMonth());
@@ -22,19 +41,36 @@ public abstract class Category {
         }
     }
 
+    /**
+     * create a category instance
+     * @param controller this {@link CategoryController} controller
+     * @param name this name
+     */
     protected Category(CategoryController controller, String name) {
         this.controller = controller;
         this.name = name;
     }
 
+    /**
+     * get the budget name
+     * @return this name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * update the budget name
+     * @param name the new name
+     */
     void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * get this {@link CategoryController} controller
+     * @return this controller
+     */
     public CategoryController getController() {
         return controller;
     }
@@ -91,6 +127,10 @@ public abstract class Category {
      */
     public abstract double getAmountSpent();
 
+    /**
+     * get this moment
+     * @return the {@link CategoryMoment} object
+     */
     public abstract CategoryMoment getMoment();
 
     @Override

@@ -15,20 +15,42 @@ import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 
 import java.util.Arrays;
 
+/**
+ * the controller for a {@link Budget} instance
+ * @author vinvin129
+ */
 public class BudgetController extends Observable {
+    /**
+     * the {@link Listener} for events in {@link CategoryController} of {@link BudgetCategory} linked to this controller
+     */
     private final Listener listener = new Listener(EventT.DATA_CHANGE, this::fire);
+    /**
+     * the {@link Observer} of {@link CategoryController} in this controller
+     */
     private final Observer categoryObserver = new Observer() {
         @Override
         protected void onEvent(EventT eventT) {
             fire(eventT);
         }
     };
+    /**
+     * the {@link Budget} linked to this controller
+     */
     private Budget model;
 
+    /**
+     * create a new {@link BudgetController} for a {@link Budget} from a {@link BudgetMoment}
+     * @param budgetMoment the {@link BudgetMoment} object
+     * @throws IllegalBudgetSizeException if illogic size
+     */
     public BudgetController(BudgetMoment budgetMoment) throws IllegalBudgetSizeException {
         this.model = Budget.createModel(budgetMoment, this);
     }
 
+    /**
+     * get this model {@link Budget} for this budget
+     * @return a {@link Budget} object
+     */
     public Budget getModel() {
         return model;
     }
@@ -50,6 +72,10 @@ public class BudgetController extends Observable {
         fire(EventT.DATA_CHANGE);
     }
 
+    /**
+     * update the balance of budget
+     * @param balance the new balance
+     */
     public void setBalance(double balance) {
         this.model.setBalance(balance);
     }
@@ -72,6 +98,10 @@ public class BudgetController extends Observable {
         fire(EventT.DATA_CHANGE);
     }
 
+    /**
+     * update the name of budget
+     * @param name the new name
+     */
     public void setName(String name) {
         this.model.setName(name);
     }
@@ -98,7 +128,6 @@ public class BudgetController extends Observable {
 
     /**
      * remove a {@link CategoryController} to this Budget
-     *
      * @param categoryController the {@link CategoryController} object
      */
     public void removeCategory(CategoryController categoryController) {
@@ -112,8 +141,7 @@ public class BudgetController extends Observable {
     }
 
     /**
-     * remove a {@link CategoryController} to this Budget
-     *
+     * remove a {@link CategoryController} to this Budget by this moment
      * @param categoryMoment the {@link CategoryMoment} object
      */
     public void removeCategory(CategoryMoment categoryMoment) {

@@ -1,6 +1,5 @@
-package fr.vinvin129.budgetmanager;
+package fr.vinvin129.budgetmanager.budgetLogic;
 
-import fr.vinvin129.budgetmanager.budgetLogic.Spent;
 import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
 import fr.vinvin129.budgetmanager.budgetLogic.categories.BudgetCategory;
 import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
@@ -17,41 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class BudgetLogicTest {
     @Test
     void logic1() throws BudgetTooSmallException, IllegalCategorySizeException, IllegalBudgetSizeException {
-        BudgetController budgetPrincipal = new BudgetController(new BudgetMoment(
-                        "budget principal",
-                        1000,
-                        0,
-                        new CategoryMoment[]{})
+        BudgetController budgetPrincipal = new BudgetController(
+                BudgetMoment.create("budget principal", 1000)
         );
-        CategoryMoment bouffeMoment = new CategoryMoment(
-                "bouffe",
-                300,
-                0,
-                new Spent[]{},
-                null);
-        CategoryMoment technologiesMoment = new CategoryMoment(
-                "Technologie",
-                300,
-                0,
-                new Spent[]{},
-                new BudgetMoment(
-                        "Technologie",
-                        300,
-                        0,
-                        new CategoryMoment[]{}
-                ));
-        CategoryMoment logementMoment = new CategoryMoment(
-                "logement",
-                400,
-                0,
-                new Spent[]{},
-                null);
-        CategoryMoment telephoneMoment = new CategoryMoment(
-                "telephone",
-                300,
-                0,
-                new Spent[]{},
-                null);
+        CategoryMoment bouffeMoment = CategoryMoment.create("bouffe", 300);
+        CategoryMoment technologiesMoment = CategoryMoment.create(
+                BudgetMoment.create("Technologie", 300)
+        );
+        CategoryMoment logementMoment = CategoryMoment.create("logement", 400);
+        CategoryMoment telephoneMoment = CategoryMoment.create("telephone", 300);
 
         CategoryController bouffe = budgetPrincipal.addCategory(bouffeMoment);
         CategoryController technologiesCat = budgetPrincipal.addCategory(technologiesMoment);

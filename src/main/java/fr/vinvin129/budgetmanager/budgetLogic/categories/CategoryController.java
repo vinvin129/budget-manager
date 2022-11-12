@@ -6,8 +6,11 @@ import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.events.EventT;
 import fr.vinvin129.budgetmanager.events.Observable;
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
+import fr.vinvin129.budgetmanager.exceptions.CategoryTooBigException;
 import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
 import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
+
+import java.util.Arrays;
 
 /**
  * the controller for a {@link Category} instance
@@ -73,7 +76,19 @@ public class CategoryController extends Observable {
      * @param allocationPerMonth new allocation per month
      * @throws BudgetTooSmallException if allocation is too big
      */
-    public void setAllocationPerMonth(double allocationPerMonth) throws BudgetTooSmallException {
+    public void setAllocationPerMonth(double allocationPerMonth) throws BudgetTooSmallException, CategoryTooBigException, IllegalCategorySizeException {
+        if (allocationPerMonth < 1) {
+            throw new IllegalCategorySizeException();
+        }
+
+        double totalBudget = Arrays.stream(this.budgetParentController.getModel().getCategoryControllers())
+                .filter(categoryController -> !categoryController.equals(this))
+                .map(CategoryController::getModel)
+                .mapToDouble(Category::getAllocationPerMonth).sum() + allocationPerMonth;
+
+        if (totalBudget > this.budgetParentController.getModel().getAllocationPerMonth()) {
+            throw new CategoryTooBigException();
+        }
         this.model.setAllocationPerMonth(allocationPerMonth);
         fire(EventT.DATA_CHANGE);
     }

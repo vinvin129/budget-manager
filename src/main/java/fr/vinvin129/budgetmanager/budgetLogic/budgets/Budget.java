@@ -9,7 +9,6 @@ import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * a temporary model to update a {@link BudgetMoment} immutable model
@@ -154,15 +153,26 @@ public class Budget {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Budget budget)) return false;
-        return getAllocationPerMonth() == budget.getAllocationPerMonth()
-                && getBalance() == budget.getBalance()
-                && getName().equals(budget.getName())
-                && Arrays.equals(getCategoryControllers(), budget.getCategoryControllers());
+
+        if (Double.compare(budget.getAllocationPerMonth(), getAllocationPerMonth()) != 0) return false;
+        if (Double.compare(budget.getBalance(), getBalance()) != 0) return false;
+        if (!getName().equals(budget.getName())) return false;
+        if (!Arrays.equals(getCategoryControllers(), budget.getCategoryControllers())) return false;
+        return getController().equals(budget.getController());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getAllocationPerMonth(), getBalance(), Arrays.hashCode(getCategoryControllers()));
+        int result;
+        long temp;
+        result = getName().hashCode();
+        temp = Double.doubleToLongBits(getAllocationPerMonth());
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(getBalance());
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + Arrays.hashCode(getCategoryControllers());
+        result = 31 * result + getController().hashCode();
+        return result;
     }
 
     /**

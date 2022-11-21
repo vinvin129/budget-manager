@@ -1,13 +1,12 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.create.spent;
 
-import fr.vinvin129.budgetmanager.Spent;
-import fr.vinvin129.budgetmanager.exceptions.BudgetNotContainCategoryException;
-import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
-import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
-import fr.vinvin129.budgetmanager.models.budget_logic.Category;
-import fr.vinvin129.budgetmanager.models.budget_logic.StandardCategory;
+import fr.vinvin129.budgetmanager.budgetLogic.Spent;
+import fr.vinvin129.budgetmanager.budgetLogic.budgets.Budget;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.BudgetCategory;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.Category;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.StandardCategory;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -21,7 +20,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * the controller to create a {@link fr.vinvin129.budgetmanager.Spent} object for a {@link StandardCategory}
+ * the controller to create a {@link fr.vinvin129.budgetmanager.budgetLogic.Spent} object for a {@link StandardCategory}
  * @author vinvin129
  */
 public class CreateSpentController {
@@ -36,12 +35,12 @@ public class CreateSpentController {
     @FXML
     public Button validate;
     /**
-     * FXML reference for the title of {@link fr.vinvin129.budgetmanager.Spent}
+     * FXML reference for the title of {@link fr.vinvin129.budgetmanager.budgetLogic.Spent}
      */
     @FXML
     public TextField titleTextField;
     /**
-     * FXML reference for the selection of the {@link Budget} of the {@link fr.vinvin129.budgetmanager.Spent}
+     * FXML reference for the selection of the {@link Budget} of the {@link fr.vinvin129.budgetmanager.budgetLogic.Spent}
      */
     @FXML
     public ChoiceBox<Budget> budgetChoiceBox;
@@ -63,10 +62,9 @@ public class CreateSpentController {
 
     /**
      * call when validate button is pressed
-     * @param actionEvent the event
      */
     @FXML
-    public void validateSpentCreation(ActionEvent actionEvent) {
+    public void validateSpentCreation() {
         String label = titleTextField.getText();
         double price;
         try {
@@ -88,14 +86,10 @@ public class CreateSpentController {
         }
 
         if (selectedBudget != null && selectedCategory != null) {
-            Spent spent = new Spent(selectedCategory, label, Double.parseDouble(priceTextField.getText()), null);
+            Spent spent = new Spent(label, Double.parseDouble(priceTextField.getText()), null);
             //TODO à changer
-            try {
-                selectedBudget.addSpent(spent);
-                cancelSpentCreation(actionEvent);
-            } catch (BudgetNotContainCategoryException e) {
-                showWaringAlterAndWait(e.getMessage());
-            }
+            selectedCategory.getController().addSpent(spent);
+            cancelSpentCreation();
         } else {
             showWaringAlterAndWait("Vous devez sélectionner un budget et une catégorie");
         }
@@ -115,10 +109,9 @@ public class CreateSpentController {
 
     /**
      * call when cancel button is pressed
-     * @param actionEvent the event
      */
     @FXML
-    public void cancelSpentCreation(ActionEvent actionEvent) {
+    public void cancelSpentCreation() {
         Window window = this.view.getScene().getWindow();
         if (window instanceof Stage) {
             ((Stage) window).close();
@@ -127,14 +120,14 @@ public class CreateSpentController {
 
     /**
      * call when choice box of budget is changed
-     * @param actionEvent the event
      */
     @FXML
-    public void budgetChoiceChanged(ActionEvent actionEvent) {
+    public void budgetChoiceChanged() {
         this.categoryChoiceBox.getItems().clear();
         Budget budget = this.budgetChoiceBox.getValue();
         if (budget != null) {
-            Arrays.stream(budget.getCategories())
+            Arrays.stream(budget.getCategoryControllers())
+                    .map(CategoryController::getModel)
                     .filter(category -> category instanceof StandardCategory)
                     .forEach(category -> this.categoryChoiceBox.getItems().add((StandardCategory) category));
             this.categoryChoiceBox.setValue(this.categoryChoiceBox.getItems().get(0));
@@ -150,23 +143,27 @@ public class CreateSpentController {
         items.clear();
         items.add(budget);
         this.budgetChoiceBox.setValue(budget);
-        Arrays.stream(budget.getCategories())
+        Arrays.stream(budget.getCategoryControllers())
+                .map(CategoryController::getModel)
                 .filter(category -> category instanceof BudgetCategory)
-                .forEach(category -> items.add(((BudgetCategory)category).getBudget()));
+                .forEach(category -> items.add(((BudgetCategory)category).getBudgetController().getModel()));
         //budgetChoiceChanged(null);
     }
 
     /**
      * the create spent window will be configured to a specific {@link Category} and can't be changed in IHM
-     * @param budget the {@link Budget} object of {@link StandardCategory}
      * @param category the {@link StandardCategory} object
      */
-    public void setSpecificCategory(Budget budget, StandardCategory category) {
-        if (budget == null || category == null) {
+    public void setSpecificCategory(StandardCategory category) {
+        if (category == null) {
+            throw new NullPointerException();
+        }
+        Budget budget = category.getController().getBudgetParentController().getModel();
+        if (budget == null) {
             throw new NullPointerException();
         }
 
-        if (Arrays.asList(budget.getCategories()).contains(category)) {
+        if (Arrays.asList(budget.getCategoryControllers()).contains(category.getController())) {
             this.budgetChoiceBox.setDisable(true);
             this.categoryChoiceBox.setDisable(true);
             this.budgetChoiceBox.setValue(budget);

@@ -14,6 +14,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class BudgetControllerTest {
 
     @Test
+    void createBudgetController() throws IllegalBudgetSizeException {
+        BudgetController budgetController = new BudgetController(new BudgetMoment(
+                "budget test",
+                1000,
+                0,
+                new CategoryMoment[]{CategoryMoment.create("cat1", 300)}
+        ));
+        assertEquals("budget test", budgetController.getModel().getName());
+        assertEquals(1000, budgetController.getModel().getAllocationPerMonth());
+        assertEquals(0, budgetController.getModel().getBalance());
+        assertEquals(new CategoryMoment("cat1", 300, 0, new Spent[]{}, null),
+                budgetController.getModel().getCategoryControllers()[0].getModel().getMoment());
+    }
+
+    @Test
     void setAllocationPerMonth() throws BudgetTooSmallException, IllegalBudgetSizeException, IllegalCategorySizeException {
         BudgetController b1 = new BudgetController(BudgetMoment.create("budget1", 3000));
         BudgetController b2 = new BudgetController(BudgetMoment.create("budget2", 3000));

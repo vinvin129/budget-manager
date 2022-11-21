@@ -45,6 +45,13 @@ public class BudgetController extends Observable {
      */
     public BudgetController(BudgetMoment budgetMoment) throws IllegalBudgetSizeException {
         this.model = Budget.createModel(budgetMoment, this);
+        for (CategoryMoment categoryMoment : budgetMoment.categoryMoments()) {
+            try {
+                this.addCategory(categoryMoment);
+            } catch (BudgetTooSmallException | IllegalCategorySizeException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
@@ -58,7 +65,7 @@ public class BudgetController extends Observable {
     /**
      * change the allocation per month for this Budget
      * @param allocationPerMonth money added in the balance each month
-     * @throws BudgetTooSmallException thrown if allocationPerMonth is too big for the actual allocation per month of attached {@link fr.vinvin129.budgetmanager.models.budget_logic.Budget}
+     * @throws BudgetTooSmallException thrown if allocationPerMonth is too big for the actual allocation per month of attached {@link Budget}
      */
     public void setAllocationPerMonth(double allocationPerMonth) throws BudgetTooSmallException {
         double totalBudget = Arrays.stream(this.model.getCategoryControllers())

@@ -1,15 +1,16 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard;
 
+import fr.vinvin129.budgetmanager.budgetLogic.budgets.Budget;
+import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.BudgetCategory;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.Category;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
 import fr.vinvin129.budgetmanager.events.EventT;
 import fr.vinvin129.budgetmanager.events.Observer;
 import fr.vinvin129.budgetmanager.ihm.IHM;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.create.spent.CreateSpentController;
 import fr.vinvin129.budgetmanager.ihm.views.stages.ViewCategoryExpensesStage;
-import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
-import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
-import fr.vinvin129.budgetmanager.models.budget_logic.Category;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -25,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * the controller to view a {@link fr.vinvin129.budgetmanager.models.budget_logic.Budget}
+ * the controller to view a {@link Budget}
  * @author vinvin129
  */
 public class ViewBudgetController extends Observer {
@@ -80,9 +81,9 @@ public class ViewBudgetController extends Observer {
     @FXML
     public Label allocationPerMonthLabel;
     /**
-     * budget showed
+     * controller of budget showed
      */
-    private Budget budget = null;
+    private BudgetController budgetController = null;
     /**
      * the list of {@link Category} with their linked {@link javafx.scene.chart.PieChart.Data}
      */
@@ -100,7 +101,7 @@ public class ViewBudgetController extends Observer {
     }
 
     @FXML
-    public void viewModeChanged(ActionEvent actionEvent) {
+    public void viewModeChanged() {
         Toggle toggle = this.graphViewMode.getSelectedToggle();
         if (toggle == allocationViewMode) {
             this.viewMode = ViewMode.ALLOCATION;
@@ -112,15 +113,14 @@ public class ViewBudgetController extends Observer {
 
     /**
      * on click on add spent button
-     * @param actionEvent the event
      */
     @FXML
-    public void addSpent(ActionEvent actionEvent) throws IOException {
+    public void addSpent() throws IOException {
         Stage addSpentStage = new Stage();
         FXMLLoader addSpentViewLoader = new FXMLLoader(IHM.class.getResource("createViews/spents/create-spent.fxml"));
         addSpentStage.setScene(new Scene(addSpentViewLoader.load()));
         CreateSpentController controller = addSpentViewLoader.getController();
-        controller.setBudgetRoot(this.budget);
+        controller.setBudgetRoot(this.budgetController.getModel());
         addSpentStage.show();
     }
 
@@ -138,9 +138,10 @@ public class ViewBudgetController extends Observer {
      * update all elements in the view
      */
     public void refresh() {
-        this.name.setText("Budget " + this.budget.getName());
-        this.balanceLabel.setText("Solde : " + this.budget.getBalance());
-        this.allocationPerMonthLabel.setText("Allocation par mois : " + this.budget.getAllocationPerMonth());
+        this.name.setText("Budget " + this.budgetController.getModel().getName());
+        this.balanceLabel.setText("Solde : " + this.budgetController.getModel().getBalance());
+        this.allocationPerMonthLabel
+                .setText("Allocation par mois : " + this.budgetController.getModel().getAllocationPerMonth());
         createNewChart();
         updateData();
     }
@@ -190,15 +191,15 @@ public class ViewBudgetController extends Observer {
     }
 
     /**
-     * set the budget to show
-     * @param budget the {@link Budget} object
+     * set the controller of the budget to show
+     * @param budgetController the {@link BudgetController} object
      */
-    public void setBudget(Budget budget) {
-        if (this.budget != null) {
-            removeObservable(this.budget);
+    public void setBudgetController(BudgetController budgetController) {
+        if (this.budgetController != null) {
+            removeObservable(this.budgetController);
         }
-        this.budget = budget;
-        addObservable(this.budget);
+        this.budgetController = budgetController;
+        addObservable(this.budgetController);
         refresh();
     }
 
@@ -218,7 +219,7 @@ public class ViewBudgetController extends Observer {
         data.getNode().setOnMouseClicked(mouseEvent -> {
             Category category = this.dataCategoryMap.get(data);
             if (category != null) {
-                if (category instanceof BudgetCategory) {
+                if (category instanceof BudgetCategory budgetCategory) {
                     FXMLLoader budgetViewLoader = new FXMLLoader(IHM.class.getResource("dashboard/view-budget.fxml"));
                     Scene budgetViewScene;
                     try {
@@ -227,13 +228,13 @@ public class ViewBudgetController extends Observer {
                         throw new RuntimeException(e);
                     }
                     ViewBudgetController budgetViewController = budgetViewLoader.getController();
-                    budgetViewController.setBudget(((BudgetCategory) category).getBudget());
+                    budgetViewController.setBudgetController(budgetCategory.getBudgetController());
                     Stage budgetViewStage = new Stage();
                     budgetViewStage.setScene(budgetViewScene);
                     budgetViewStage.show();
                 } else {
                     try {
-                        new ViewCategoryExpensesStage(budget, category).show();
+                        new ViewCategoryExpensesStage(category.getController()).show();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -253,8 +254,9 @@ public class ViewBudgetController extends Observer {
         });
         budgetGraph.getData().clear();
         this.dataCategoryMap.clear();
-        if (this.budget != null) {
-            Arrays.stream(this.budget.getCategories())
+        if (this.budgetController != null) {
+            Arrays.stream(this.budgetController.getModel().getCategoryControllers())
+                    .map(CategoryController::getModel)
                     .forEach(category -> {
                         PieChart.Data data = viewMode == ViewMode.ALLOCATION ? createAllocationData(category) : createExpensesData(category);
                         budgetGraph.getData().add(data);
@@ -262,7 +264,7 @@ public class ViewBudgetController extends Observer {
                         addDataMouseListeners(data);
                     });
             if (this.viewMode == ViewMode.ALLOCATION) {
-                PieChart.Data freeData = new PieChart.Data("Libre", this.budget.getFreeAllocationPerMonth());
+                PieChart.Data freeData = new PieChart.Data("Libre", this.budgetController.getModel().getFreeAllocationPerMonth());
                 budgetGraph.getData().add(freeData);
                 addDataMouseListeners(freeData);
             }

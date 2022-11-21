@@ -15,6 +15,10 @@ public record EventT(String name) {
      */
     public static EventT DATA_CHANGE = new EventT("Data Change");
     /**
+     * the {@link EventT} for added expense
+     */
+    public static EventT ADDED_EXPENSE = new EventT("new expense");
+    /**
      * the {@link EventT} for all events
      */
     public static EventT ALL_EVENTS = new EventT("all events");

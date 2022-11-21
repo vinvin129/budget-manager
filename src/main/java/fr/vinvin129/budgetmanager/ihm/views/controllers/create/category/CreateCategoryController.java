@@ -1,9 +1,11 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.create.category;
 
+import fr.vinvin129.budgetmanager.budgetLogic.categories.BudgetCategory;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
+import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.exceptions.CreateCategoryException;
 import fr.vinvin129.budgetmanager.ihm.IHM;
-import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
-import fr.vinvin129.budgetmanager.models.budget_logic.Category;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -83,38 +85,40 @@ public class CreateCategoryController implements CreateCategory {
      */
     @FXML
     public void onChoiceChange() {
-        switch (typeChoice.getSelectionModel().getSelectedItem()) {
-            case "Standard" -> {
-                view.setCenter(standardView);
-                view.getScene().getWindow().setHeight(standardView.getPrefHeight());
-                view.getScene().getWindow().setWidth(standardView.getPrefWidth());
-                actualCategoryController = standardViewController;
+        Platform.runLater(() -> {
+            switch (typeChoice.getSelectionModel().getSelectedItem()) {
+                case "Standard" -> {
+                    view.setCenter(standardView);
+                    view.getScene().getWindow().setHeight(standardView.getPrefHeight());
+                    view.getScene().getWindow().setWidth(standardView.getPrefWidth());
+                    actualCategoryController = standardViewController;
+                }
+                case "Budget" -> {
+                    view.setCenter(budgetView);
+                    view.getScene().getWindow().setHeight(budgetView.getPrefHeight());
+                    view.getScene().getWindow().setWidth(budgetView.getPrefWidth());
+                    actualCategoryController = budgetViewController;
+                }
+                default -> view.setCenter(null);
             }
-            case "Budget" -> {
-                view.setCenter(budgetView);
-                view.getScene().getWindow().setHeight(budgetView.getPrefHeight());
-                view.getScene().getWindow().setWidth(budgetView.getPrefWidth());
-                actualCategoryController = budgetViewController;
-            }
-            default -> view.setCenter(null);
-        }
+        });
     }
 
     @Override
-    public void setInitialCategory(Category category) {
-        typeChoice.getSelectionModel().select(category instanceof BudgetCategory ? 1 : 0);
-        this.actualCategoryController.setInitialCategory(category);
+    public void setInitialCategoryController(CategoryController categoryController) {
+        typeChoice.getSelectionModel().select(categoryController.getModel() instanceof BudgetCategory ? 1 : 0);
+        this.actualCategoryController.setInitialCategoryController(categoryController);
     }
 
     /**
-     * @return the {@link Category} object
+     * @return the {@link fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment} object
      * @throws CreateCategoryException if category can't be created
      */
     @Override
-    public Category getCategory() throws CreateCategoryException {
+    public CategoryMoment getCategoryMoment() throws CreateCategoryException {
         if (actualCategoryController == null) {
             throw new CreateCategoryException("erreur inconnue (problème de controleurs)");
         }
-        return actualCategoryController.getCategory();
+        return actualCategoryController.getCategoryMoment();
     }
 }

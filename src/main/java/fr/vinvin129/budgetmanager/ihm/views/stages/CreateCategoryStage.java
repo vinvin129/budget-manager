@@ -1,9 +1,10 @@
 package fr.vinvin129.budgetmanager.ihm.views.stages;
 
+import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
+import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.exceptions.CreateCategoryException;
 import fr.vinvin129.budgetmanager.ihm.IHM;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.create.category.CreateCategoryController;
-import fr.vinvin129.budgetmanager.models.budget_logic.Category;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -23,7 +24,7 @@ public class CreateCategoryStage extends Stage {
     /**
      * the category created when validate button was pressed
      */
-    Category category = null;
+    CategoryMoment categoryMoment = null;
 
     /**
      * create a new instance for create graphically a category
@@ -37,7 +38,7 @@ public class CreateCategoryStage extends Stage {
         this.controller = fxmlLoader.getController();
         controller.validateCategoryCreation.setOnAction(actionEvent -> {
             try {
-                this.category = this.controller.getCategory();
+                this.categoryMoment = this.controller.getCategoryMoment();
                 close();
             } catch (CreateCategoryException e) {
                 e.showWarningAlert();
@@ -49,15 +50,15 @@ public class CreateCategoryStage extends Stage {
 
     /**
      * show and wait that new window was closed
-     * @return the created category or null if no created
+     * @return the created {@link CategoryMoment} or null if no created
      */
-    public Category display() {
+    public CategoryMoment display() {
         this.showAndWait();
-        return category;
+        return categoryMoment;
     }
 
-    public void display(Category category) {
-        this.controller.setInitialCategory(category);
+    public void display(CategoryController categoryController) {
+        this.controller.setInitialCategoryController(categoryController);
         display();
     }
 }

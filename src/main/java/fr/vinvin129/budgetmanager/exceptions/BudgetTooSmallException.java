@@ -1,7 +1,7 @@
 package fr.vinvin129.budgetmanager.exceptions;
 
 /**
- * Exception for when a {@link fr.vinvin129.budgetmanager.models.budget_logic.Budget} is too small for change {@link fr.vinvin129.budgetmanager.models.budget_logic.Category} allocation
+ * Exception for when a {@link fr.vinvin129.budgetmanager.budgetLogic.budgets.Budget} is too small for change {@link fr.vinvin129.budgetmanager.budgetLogic.categories.Category} allocation
  * @author vinvin129
  */
 public class BudgetTooSmallException extends Exception {

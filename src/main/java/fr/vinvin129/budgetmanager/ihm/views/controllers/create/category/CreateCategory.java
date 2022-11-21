@@ -1,7 +1,8 @@
 package fr.vinvin129.budgetmanager.ihm.views.controllers.create.category;
 
+import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
+import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.exceptions.CreateCategoryException;
-import fr.vinvin129.budgetmanager.models.budget_logic.Category;
 
 /**
  * an interface for create a category with IHM
@@ -9,10 +10,10 @@ import fr.vinvin129.budgetmanager.models.budget_logic.Category;
  */
 public interface CreateCategory {
     /**
-     * @return the {@link Category} object
+     * @return the {@link CategoryMoment} object
      * @throws CreateCategoryException if category can't be created
      */
-    Category getCategory() throws CreateCategoryException;
+    CategoryMoment getCategoryMoment() throws CreateCategoryException;
 
-    void setInitialCategory(Category category);
+    void setInitialCategoryController(CategoryController category);
 }

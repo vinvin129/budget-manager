@@ -113,7 +113,7 @@ public class CreateBudgetTest {
                     0,
                     new CategoryMoment[]{
                             CategoryMoment.create(
-                                    new BudgetMoment("bugcat1", 300, 0,
+                                    new BudgetMoment("budget test2", 1000, 0,
                                             new CategoryMoment[]{CategoryMoment.create("cat1", 100)}
                                     )
                             )

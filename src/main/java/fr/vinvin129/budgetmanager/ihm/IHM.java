@@ -58,6 +58,7 @@ public class IHM extends Application {
             createBudgetController.validateBudgetCreation.setOnAction(actionEvent -> {
                 try {
                     this.budgetController = createBudgetController.getBudgetController();
+                    this.budgetController.newMonth();
                     FXMLLoader dashboardLoader = new FXMLLoader(IHM.class.getResource("dashboard/view-budget.fxml"));
                     Scene dashboardScene = new Scene(dashboardLoader.load(), 800, 500);
                     ViewBudgetController dashboardController = dashboardLoader.getController();

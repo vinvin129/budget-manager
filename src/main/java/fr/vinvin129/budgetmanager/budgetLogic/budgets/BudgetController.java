@@ -45,13 +45,6 @@ public class BudgetController extends Observable {
      */
     public BudgetController(BudgetMoment budgetMoment) throws IllegalBudgetSizeException {
         this.model = Budget.createModel(budgetMoment, this);
-        for (CategoryMoment categoryMoment : budgetMoment.categoryMoments()) {
-            try {
-                this.addCategory(categoryMoment);
-            } catch (BudgetTooSmallException | IllegalCategorySizeException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     /**

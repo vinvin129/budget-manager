@@ -35,9 +35,24 @@ public abstract class Category {
      */
     static Category createModel(CategoryMoment moment, CategoryController controller) throws IllegalCategorySizeException, IllegalBudgetSizeException {
         if (moment.budgetMoment() == null) {
-            return new StandardCategory(controller, moment.name(), moment.allocationPerMonth());
+            Category category = new StandardCategory(controller, moment.name(), moment.allocationPerMonth());
+            category.setBalance(moment.balance());
+            Arrays.stream(moment.expenses()).forEach(category::addSpent);
+            return category;
         } else {
-            return new BudgetCategory(controller, new BudgetController(moment.budgetMoment()));
+            BudgetCategory category = new BudgetCategory(controller, new BudgetController(moment.budgetMoment()));
+            category.setBalance(moment.budgetMoment().balance());
+            /*Arrays.stream(moment.budgetMoment().categoryMoments())
+                    .forEach(categoryMoment -> {
+                        try {
+                            category.getBudgetController().addCategory(
+                                    categoryMoment
+                            );
+                        } catch (IllegalBudgetSizeException | IllegalCategorySizeException | BudgetTooSmallException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });*/
+            return category;
         }
     }
 

@@ -27,4 +27,6 @@ module fr.vinvin129.budgetmanager {
     exports fr.vinvin129.budgetmanager.ihm.views.controllers.create.spent;
     opens fr.vinvin129.budgetmanager.ihm.views.controllers.create.spent to javafx.fxml;
     exports fr.vinvin129.budgetmanager.events;
+    exports fr.vinvin129.budgetmanager.budgetLogic.history;
+    opens fr.vinvin129.budgetmanager.budgetLogic.history to javafx.fxml;
 }

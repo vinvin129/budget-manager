@@ -126,7 +126,6 @@ public class CreateBudgetController implements CreateCategory {
         if (categoryList.getItems().size() == 0) {
             throw new CreateBudgetException("il doit y avoir au moins une catégorie dans le budget");
         }
-        this.budgetController.newMonth();
         return this.budgetController;
     }
 

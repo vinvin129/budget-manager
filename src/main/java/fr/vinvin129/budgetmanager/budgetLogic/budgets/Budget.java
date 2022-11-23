@@ -5,6 +5,7 @@ import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.BudgetMoment;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
+import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,8 +44,20 @@ public class Budget {
      * @return a {@link Budget} instance
      * @throws IllegalBudgetSizeException if size is illogic
      */
-    static Budget createModel(BudgetMoment moment, BudgetController controller) throws IllegalBudgetSizeException {
-        return new Budget(controller, moment.name(), moment.allocationPerMonth());
+    public static Budget createModel(BudgetMoment moment, BudgetController controller) throws IllegalBudgetSizeException {
+        Budget budget = new Budget(controller, moment.name(), moment.allocationPerMonth());
+        budget.setBalance(moment.balance());
+        Arrays.stream(moment.categoryMoments())
+                .forEach(categoryMoment -> {
+                    try {
+                        budget.addCategoryController(
+                                new CategoryController(categoryMoment, controller)
+                        );
+                    } catch (IllegalBudgetSizeException | IllegalCategorySizeException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+        return budget;
     }
 
     /**

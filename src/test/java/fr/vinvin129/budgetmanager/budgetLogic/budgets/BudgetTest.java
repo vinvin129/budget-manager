@@ -1,5 +1,6 @@
 package fr.vinvin129.budgetmanager.budgetLogic.budgets;
 
+import fr.vinvin129.budgetmanager.budgetLogic.Spent;
 import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.BudgetMoment;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
@@ -11,6 +12,58 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BudgetTest {
+
+    @Test
+    void createModel() throws IllegalBudgetSizeException {
+        BudgetMoment moment1 = new BudgetMoment(
+                "name",
+                1000,
+                200,
+                new CategoryMoment[]{
+                        new CategoryMoment(
+                                "name",
+                                300,
+                                200,
+                                new Spent[]{
+                                        new Spent("toto", 20, null)
+                                },
+                                null
+                        )
+                });
+
+        BudgetMoment moment2 = new BudgetMoment(
+                "name",
+                1000,
+                200,
+                new CategoryMoment[]{
+                        new CategoryMoment(
+                                "name",
+                                300,
+                                200,
+                                new Spent[]{
+                                        new Spent("toto", 20, null)
+                                },
+                                new BudgetMoment(
+                                        "name",
+                                        300,
+                                        200,
+                                        new CategoryMoment[]{
+                                                new CategoryMoment(
+                                                        "name2",
+                                                        50,
+                                                        3,
+                                                        new Spent[]{
+                                                                new Spent("toto", 20, null)
+                                                        },
+                                                        null)})
+                        )
+                });
+        Budget model1 = Budget.createModel(moment1, null);
+        Budget model2 = Budget.createModel(moment2, null);
+
+        assertEquals(moment1, model1.getMoment());
+        assertEquals(moment2, model2.getMoment());
+    }
 
     @Test
     void getAllocationPerMonth() throws IllegalBudgetSizeException {

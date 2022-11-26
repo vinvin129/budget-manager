@@ -13,40 +13,68 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * this singleton class control the history of a main {@link BudgetController} in the time
+ * @author vinvin129
+ */
 public final class History implements HistoryNav<Budget> {
-    private BudgetController controller;
+    /**
+     * the main {@link BudgetController}
+     */
+    private BudgetController mainController;
+    /**
+     * the Map of {@link BudgetMoment} by {@link Period}
+     */
     private final TreeMap<Period, BudgetMoment> history = new TreeMap<>();
-    private Budget actualModel;
+    /**
+     * the actual {@link Period}
+     */
     private Period actualPeriod;
 
+    /**
+     * the unique instance of {@link History}
+     */
     public static final History INSTANCE = new History();
 
     private History () {
     }
 
-    public void initialize(BudgetMoment initialMoment) throws IllegalBudgetSizeException {
+    /**
+     * initialize or reinitialize history from a {@link BudgetController} and this {@link Budget}
+     * @param mainController the {@link BudgetController} object
+     */
+    public void initialize(BudgetController mainController) {
         this.history.clear();
-        this.controller = new BudgetController(initialMoment);
-        this.actualModel = this.controller.getModel();
+        this.mainController = mainController;
         this.actualPeriod = createPeriod();
-        this.history.put(this.actualPeriod, this.actualModel.getMoment());
+        this.history.put(this.actualPeriod, this.mainController.getModel().getMoment());
     }
 
     @Override
     public Budget previousMonth() {
         Map.Entry<Period, BudgetMoment> previous = this.history.lowerEntry(this.actualPeriod);
-        try {
-            return previous != null ? Budget.createModel(previous.getValue(), this.controller) : null;
-        } catch (IllegalBudgetSizeException e) {
-            throw new RuntimeException(e);
-        }
+        return setModelFromEntry(previous);
     }
 
     @Override
     public Budget nextMonth() {
         Map.Entry<Period, BudgetMoment> next = this.history.higherEntry(this.actualPeriod);
+        return setModelFromEntry(next);
+    }
+
+    /**
+     * set actual model and {@link Period} from an entry of a {@link Period} and {@link BudgetMoment}
+     * @param entry the entry to set
+     * @return a {@link Budget} generated from the entry {@link BudgetMoment}
+     */
+    private Budget setModelFromEntry(Map.Entry<Period, BudgetMoment> entry) {
         try {
-            return next != null ? Budget.createModel(next.getValue(), this.controller) : null;
+            Budget model = entry != null ? Budget.createModel(entry.getValue(), this.mainController) : null;
+            if (model != null) {
+                this.mainController.setModel(model);
+                this.actualPeriod = entry.getKey();
+            }
+            return model;
         } catch (IllegalBudgetSizeException e) {
             throw new RuntimeException(e);
         }
@@ -56,32 +84,54 @@ public final class History implements HistoryNav<Budget> {
     public Budget newMonth() {
         BudgetMoment newMoment = procedureToCreateNewMoment(
                 this.history.values().stream().reduce((last, next) -> next).orElseThrow());
-        this.history.put(this.actualPeriod = newPeriod(), newMoment);
+        this.history.put(newPeriod(), newMoment);
         try {
-            return this.actualModel = Budget.createModel(newMoment, this.controller);
+            return Budget.createModel(newMoment, this.mainController);
         } catch (IllegalBudgetSizeException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Generate a new {@link Period} according to actual periods from history map
+     * @see History#createPeriod(Calendar) used if history map isn't empty
+     * @see History#createPeriod() used if history map is empty
+     * @return a new {@link Period} object
+     */
     private Period newPeriod() {
         Period actualPeriod = this.history.keySet().stream().reduce((last, next) -> next).orElse(null);
         if (actualPeriod == null) {
             return createPeriod();
         }
         Calendar next = Calendar.getInstance();
+        next.set(Calendar.MONTH, actualPeriod.month());
+        next.set(Calendar.YEAR, actualPeriod.year());
         next.add(Calendar.MONTH, 1);
         return createPeriod(next);
     }
 
+    /**
+     * create a {@link Period} from actual {@link Calendar}
+     * @return a {@link Period} object
+     */
     public static Period createPeriod() {
         return createPeriod(Calendar.getInstance());
     }
 
+    /**
+     * create a {@link Period} from a specific {@link Calendar}
+     * @param calendar the {@link Calendar} object
+     * @return a {@link Period} object
+     */
     public static Period createPeriod(Calendar calendar) {
         return new Period(calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
     }
 
+    /**
+     * calculate the balance of budget for the next month
+     * @param lastMoment the {@link BudgetMoment} object
+     * @return the new balance
+     */
     private double newBalanceBudgetMomentCalculate(BudgetMoment lastMoment) {
         double newBalance = lastMoment.balance() + lastMoment.allocationPerMonth();
         double allocationSum = Arrays.stream(lastMoment.categoryMoments())
@@ -92,6 +142,11 @@ public final class History implements HistoryNav<Budget> {
         return newBalance;
     }
 
+    /**
+     * the procedure to generate the {@link BudgetMoment} for the next month
+     * @param latestMoment origin {@link BudgetMoment}
+     * @return the m+1 {@link BudgetMoment}
+     */
     private BudgetMoment procedureToCreateNewMoment(BudgetMoment latestMoment) {
         double newBalance = newBalanceBudgetMomentCalculate(latestMoment);
         CategoryMoment[] newCategoryMoments = Arrays.stream(latestMoment.categoryMoments())
@@ -114,7 +169,7 @@ public final class History implements HistoryNav<Budget> {
 
     @Override
     public Budget getActualModel() {
-        return this.actualModel;
+        return this.mainController.getModel();
     }
 
     @Override

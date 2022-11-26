@@ -3,7 +3,9 @@ package fr.vinvin129.budgetmanager.budgetLogic.moments;
 
 import fr.vinvin129.budgetmanager.budgetLogic.Spent;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -29,12 +31,25 @@ public record CategoryMoment(
                 null);
     }
 
+    private static List<Spent> getSpentList(CategoryMoment[] categoryMoments) {
+        List<Spent> spents = new ArrayList<>();
+        for (CategoryMoment categoryMoment : categoryMoments) {
+            if (categoryMoment.budgetMoment == null) {
+                spents.addAll(List.of(categoryMoment.expenses));
+            } else {
+                spents.addAll(getSpentList(categoryMoment.budgetMoment().categoryMoments()));
+            }
+        }
+        return spents;
+    }
+
     public static CategoryMoment create(BudgetMoment budgetMoment) {
+        List<Spent> spents = getSpentList(budgetMoment.categoryMoments());
         return new CategoryMoment(
                 budgetMoment.name(),
                 budgetMoment.allocationPerMonth(),
                 budgetMoment.balance(),
-                new Spent[]{},
+                spents.toArray(Spent[]::new),
                 budgetMoment);
     }
 

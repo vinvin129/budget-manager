@@ -56,6 +56,14 @@ public class BudgetController extends Observable {
     }
 
     /**
+     * change the model of this controller
+     * @param model
+     */
+    public void setModel(Budget model) {
+        this.model = model;
+    }
+
+    /**
      * change the allocation per month for this Budget
      * @param allocationPerMonth money added in the balance each month
      * @throws BudgetTooSmallException thrown if allocationPerMonth is too big for the actual allocation per month of attached {@link Budget}

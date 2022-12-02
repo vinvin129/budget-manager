@@ -85,7 +85,6 @@ public class CreateBudgetController implements CreateCategory {
     public void addCategory() throws IOException, IllegalBudgetSizeException, BudgetTooSmallException, IllegalCategorySizeException {
         try {
             updateCommonBudgetData();
-            System.out.println("ajout d'une catégorie");
             CategoryMoment categoryMoment = new CreateCategoryStage().display();
             if (categoryMoment == null) {
                 return;

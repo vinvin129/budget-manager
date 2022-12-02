@@ -45,6 +45,18 @@ public class BudgetController extends Observable {
      */
     public BudgetController(BudgetMoment budgetMoment) throws IllegalBudgetSizeException {
         this.model = Budget.createModel(budgetMoment, this);
+        Arrays.stream(this.model.getCategoryControllers()).forEach(this::addListenerOnCategory);
+    }
+
+    /**
+     * Add listener on a category
+     * @param categoryController the {@link CategoryController} object
+     */
+    private void addListenerOnCategory(CategoryController categoryController) {
+        if (categoryController.getModel() instanceof BudgetCategory budgetCategory) {
+            budgetCategory.getBudgetController().addListener(listener);
+        }
+        this.categoryObserver.addObservable(categoryController);
     }
 
     /**
@@ -57,7 +69,7 @@ public class BudgetController extends Observable {
 
     /**
      * change the model of this controller
-     * @param model
+     * @param model the budget model
      */
     public void setModel(Budget model) {
         this.model = model;
@@ -126,10 +138,7 @@ public class BudgetController extends Observable {
             throw new BudgetTooSmallException();
         }
         this.model.addCategoryController(categoryController);
-        if (category instanceof BudgetCategory) {
-            ((BudgetCategory) category).getBudgetController().addListener(listener);
-        }
-        this.categoryObserver.addObservable(categoryController);
+        addListenerOnCategory(categoryController);
         fire(EventT.DATA_CHANGE);
         return categoryController;
     }

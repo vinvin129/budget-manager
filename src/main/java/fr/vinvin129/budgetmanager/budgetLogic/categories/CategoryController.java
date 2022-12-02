@@ -5,6 +5,7 @@ import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.events.EventT;
 import fr.vinvin129.budgetmanager.events.Observable;
+import fr.vinvin129.budgetmanager.events.Observer;
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 import fr.vinvin129.budgetmanager.exceptions.CategoryTooBigException;
 import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
@@ -19,7 +20,7 @@ public class CategoryController extends Observable {
     /**
      * the {@link Category} linked to this controller
      */
-    private Category model;
+    private final Category model;
     /**
      * this linked {@link BudgetController}
      */
@@ -35,6 +36,16 @@ public class CategoryController extends Observable {
     public CategoryController(CategoryMoment moment, BudgetController budgetParentController) throws IllegalBudgetSizeException, IllegalCategorySizeException {
         this.model = Category.createModel(moment, this);
         this.budgetParentController = budgetParentController;
+
+        if (this.model instanceof BudgetCategory budgetCategory) {
+            Observer budgetObserver = new Observer() {
+                @Override
+                protected void onEvent(EventT eventT) {
+                    fire(eventT);
+                }
+            };
+            budgetObserver.addObservable(budgetCategory.getBudgetController());
+        }
     }
 
     /**

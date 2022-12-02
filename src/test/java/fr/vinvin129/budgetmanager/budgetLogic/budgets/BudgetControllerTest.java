@@ -1,13 +1,18 @@
 package fr.vinvin129.budgetmanager.budgetLogic.budgets;
 
 import fr.vinvin129.budgetmanager.budgetLogic.Spent;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.BudgetCategory;
 import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.BudgetMoment;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
+import fr.vinvin129.budgetmanager.events.EventT;
+import fr.vinvin129.budgetmanager.events.Listener;
 import fr.vinvin129.budgetmanager.exceptions.BudgetTooSmallException;
 import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
 import fr.vinvin129.budgetmanager.exceptions.IllegalCategorySizeException;
 import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -98,5 +103,45 @@ class BudgetControllerTest {
         assertArrayEquals(new CategoryController[]{cat2}, b.getModel().getCategoryControllers());
         b.removeCategory(cat2);
         assertArrayEquals(new CategoryController[]{}, b.getModel().getCategoryControllers());
+    }
+
+    @Test
+    void eventOnCategories() throws IllegalBudgetSizeException {
+        AtomicBoolean isGood1 = new AtomicBoolean(false);
+        AtomicBoolean isGood2 = new AtomicBoolean(false);
+        BudgetMoment moment = new BudgetMoment(
+                "budget test",
+                1000,
+                0,
+                new CategoryMoment[]{
+                        new CategoryMoment(
+                                "cat1",
+                                300,
+                                300,
+                                new Spent[]{new Spent("toto", 30, null)},
+                                null),
+                        CategoryMoment.create(
+                                new BudgetMoment(
+                                        "cat2",
+                                        300,
+                                        0,
+                                        new CategoryMoment[]{
+                                                CategoryMoment.create("cat3", 100)
+                                        })
+                        )
+                }
+        );
+        BudgetController budgetController = new BudgetController(moment);
+        budgetController.newMonth();
+        budgetController.getModel().getCategoryControllers()[1]
+                .addListener(new Listener(EventT.DATA_CHANGE, eventT -> isGood1.set(true)));
+        budgetController.getModel().getCategoryControllers()[0]
+                .addListener(new Listener(EventT.DATA_CHANGE, eventT -> isGood2.set(true)));
+        budgetController.getModel().getCategoryControllers()[0].addSpent(new Spent("test", 10, null));
+
+        ((BudgetCategory) budgetController.getModel().getCategoryControllers()[1].getModel())
+                .getBudgetController().getModel().getCategoryControllers()[0].addSpent(new Spent("test", 10, null));
+        assertTrue(isGood1.get(), "on main budget");
+        assertTrue(isGood2.get(), "On sub budget");
     }
 }

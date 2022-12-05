@@ -1,5 +1,8 @@
 package fr.vinvin129.budgetmanager.budgetLogic;
 
+import java.util.Calendar;
+import java.util.Formatter;
+
 /**
  * a specific moment in the time
  * @param month the month
@@ -13,5 +16,15 @@ public record Period(int month, int year) implements Comparable<Period> {
             return Integer.compare(this.month, o.month);
         }
         return compYear;
+    }
+
+    @Override
+    public String toString() {
+        Formatter fmt;
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MONTH, this.month);
+        fmt = new Formatter();
+        fmt.format("%tB ", cal);
+        return fmt.toString() + this.year;
     }
 }

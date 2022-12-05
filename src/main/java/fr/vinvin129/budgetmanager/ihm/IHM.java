@@ -2,6 +2,7 @@ package fr.vinvin129.budgetmanager.ihm;
 
 import fr.vinvin129.budgetmanager.budgetLogic.budgets.Budget;
 import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
+import fr.vinvin129.budgetmanager.budgetLogic.history.History;
 import fr.vinvin129.budgetmanager.exceptions.CreateBudgetException;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.HomeController;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.create.budget.CreateBudgetController;
@@ -60,6 +61,7 @@ public class IHM extends Application {
                 try {
                     this.budgetController = createBudgetController.getBudgetController();
                     this.budgetController.newMonth();
+                    History.INSTANCE.initialize(budgetController);
                     FXMLLoader dashboardLoader = new FXMLLoader(IHM.class.getResource("dashboard/dashboard.fxml"));
                     Scene dashboardScene = new Scene(dashboardLoader.load(), 800, 500);
                     DashboardController dashboardController = dashboardLoader.getController();

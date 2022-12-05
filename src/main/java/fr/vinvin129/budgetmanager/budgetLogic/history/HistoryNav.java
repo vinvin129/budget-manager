@@ -27,6 +27,18 @@ public interface HistoryNav<T> {
     T newMonth();
 
     /**
+     *
+     * @return true if exists next month, else otherwise
+     */
+    boolean hasNext();
+
+    /**
+     *
+     * @return true if exists previous month, else otherwise
+     */
+    boolean hasPrevious();
+
+    /**
      * get the actual T object
      * @return actual T object
      */

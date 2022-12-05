@@ -19,6 +19,10 @@ public record EventT(String name) {
      */
     public static EventT ADDED_EXPENSE = new EventT("new expense");
     /**
+     * the {@link EventT} for when history month was changed
+     */
+    public static EventT HISTORY_MONTH_CHANGE = new EventT("History month was changed");
+    /**
      * the {@link EventT} for all events
      */
     public static EventT ALL_EVENTS = new EventT("all events");

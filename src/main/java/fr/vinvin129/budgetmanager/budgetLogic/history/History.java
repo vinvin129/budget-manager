@@ -6,6 +6,8 @@ import fr.vinvin129.budgetmanager.budgetLogic.budgets.Budget;
 import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.BudgetMoment;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
+import fr.vinvin129.budgetmanager.events.EventT;
+import fr.vinvin129.budgetmanager.events.Observable;
 import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
 
 import java.util.Arrays;
@@ -17,7 +19,7 @@ import java.util.TreeMap;
  * this singleton class control the history of a main {@link BudgetController} in the time
  * @author vinvin129
  */
-public final class History implements HistoryNav<Budget> {
+public final class History extends Observable implements HistoryNav<Budget> {
     /**
      * the main {@link BudgetController}
      */
@@ -62,6 +64,16 @@ public final class History implements HistoryNav<Budget> {
         return setModelFromEntry(next);
     }
 
+    @Override
+    public boolean hasPrevious() {
+        return this.history.lowerKey(this.actualPeriod) != null;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return this.history.higherKey(this.actualPeriod) != null;
+    }
+
     /**
      * set actual model and {@link Period} from an entry of a {@link Period} and {@link BudgetMoment}
      * @param entry the entry to set
@@ -74,6 +86,7 @@ public final class History implements HistoryNav<Budget> {
                 this.mainController.setModel(model);
                 this.actualPeriod = entry.getKey();
             }
+            this.fire(EventT.HISTORY_MONTH_CHANGE);
             return model;
         } catch (IllegalBudgetSizeException e) {
             throw new RuntimeException(e);
@@ -86,6 +99,7 @@ public final class History implements HistoryNav<Budget> {
                 this.history.values().stream().reduce((last, next) -> next).orElseThrow());
         this.history.put(newPeriod(), newMoment);
         try {
+            this.fire(EventT.HISTORY_MONTH_CHANGE);
             return Budget.createModel(newMoment, this.mainController);
         } catch (IllegalBudgetSizeException e) {
             throw new RuntimeException(e);

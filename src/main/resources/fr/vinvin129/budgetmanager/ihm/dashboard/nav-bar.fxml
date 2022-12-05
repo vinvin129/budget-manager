@@ -11,10 +11,10 @@
     </opaqueInsets>
     <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <left>
-          <Button fx:id="previousButton" mnemonicParsing="false" text="Précédent" BorderPane.alignment="CENTER" />
+          <Button fx:id="previousButton" onAction="#previous" mnemonicParsing="false" text="Précédent" BorderPane.alignment="CENTER" />
         </left>
         <right>
-          <Button fx:id="nextButton" mnemonicParsing="false" text="Suivant" BorderPane.alignment="CENTER" />
+          <Button fx:id="nextButton" onAction="#next" mnemonicParsing="false" text="Suivant" BorderPane.alignment="CENTER" />
         </right>
         <center>
           <Label fx:id="monthLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="25.0" prefWidth="202.0" text="Under know" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">

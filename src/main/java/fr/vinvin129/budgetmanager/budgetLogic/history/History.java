@@ -80,6 +80,13 @@ public final class History extends Observable implements HistoryNav<Budget> {
      * @return a {@link Budget} generated from the entry {@link BudgetMoment}
      */
     private Budget setModelFromEntry(Map.Entry<Period, BudgetMoment> entry) {
+        //Save actual model if exists
+        Budget actualBudget = this.mainController.getModel();
+        if (this.actualPeriod != null && actualBudget != null) {
+            this.history.put(this.actualPeriod, actualBudget.getMoment());
+        }
+
+        //get new model from history
         try {
             Budget model = entry != null ? Budget.createModel(entry.getValue(), this.mainController) : null;
             if (model != null) {
@@ -95,8 +102,13 @@ public final class History extends Observable implements HistoryNav<Budget> {
 
     @Override
     public Budget newMonth() {
-        BudgetMoment newMoment = procedureToCreateNewMoment(
-                this.history.values().stream().reduce((last, next) -> next).orElseThrow());
+        BudgetMoment newMoment;
+        if (this.actualPeriod.equals(this.history.keySet().stream().reduce((last, next) -> next).orElseThrow())) {
+            newMoment = procedureToCreateNewMoment(this.mainController.getModel().getMoment());
+        } else {
+            newMoment = procedureToCreateNewMoment(
+                    this.history.values().stream().reduce((last, next) -> next).orElseThrow());
+        }
         this.history.put(newPeriod(), newMoment);
         try {
             this.fire(EventT.HISTORY_MONTH_CHANGE);

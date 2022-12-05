@@ -5,6 +5,7 @@ import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
 import fr.vinvin129.budgetmanager.budgetLogic.categories.BudgetCategory;
 import fr.vinvin129.budgetmanager.budgetLogic.categories.Category;
 import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
+import fr.vinvin129.budgetmanager.budgetLogic.history.History;
 import fr.vinvin129.budgetmanager.events.EventT;
 import fr.vinvin129.budgetmanager.events.Observer;
 import fr.vinvin129.budgetmanager.ihm.IHM;
@@ -129,6 +130,8 @@ public class ViewBudgetController extends Observer {
         Platform.runLater(() -> {
             if (eventT.equals(EventT.DATA_CHANGE)) {
                 refresh();
+            } else if (eventT.equals(EventT.HISTORY_MONTH_CHANGE)) {
+                this.addSpentButton.setDisable(History.INSTANCE.hasNext());
             }
         });
 
@@ -187,7 +190,7 @@ public class ViewBudgetController extends Observer {
         budgetGraph.getData().add(slice5);
         budgetGraph.setLegendVisible(false);
         graphView.getChildren().add(caption);
-
+        this.addObservable(History.INSTANCE);
     }
 
     /**

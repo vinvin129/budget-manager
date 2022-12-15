@@ -4,6 +4,7 @@ import fr.vinvin129.budgetmanager.budgetLogic.Period;
 import fr.vinvin129.budgetmanager.budgetLogic.Spent;
 import fr.vinvin129.budgetmanager.budgetLogic.budgets.Budget;
 import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.BudgetCategory;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.BudgetMoment;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.events.EventT;
@@ -201,5 +202,54 @@ public final class History extends Observable implements HistoryNav<Budget> {
     @Override
     public Period getActualPeriod() {
         return this.actualPeriod;
+    }
+
+    /**
+     * Updates moments in history in according to changes in actual budget model to preserve logic
+     */
+    public void updateFutureFromPresent() throws IllegalBudgetSizeException {
+        Period period = this.actualPeriod;
+        BudgetMoment origin = this.history.get(period);
+        do {
+            updateFutureFromPresent(origin);
+            Map.Entry<Period, BudgetMoment> newEntry = this.history.higherEntry(period);
+            if (newEntry != null) {
+                period = newEntry.getKey();
+                origin = newEntry.getValue();
+            } else {
+                period = null;
+                origin = null;
+            }
+        } while (period != null && origin != null);
+    }
+
+    public void updateFutureFromPresent(BudgetMoment origin) throws IllegalBudgetSizeException {
+        BudgetMoment actual = this.mainController.getModel().getMoment();
+        BudgetMoment previousFuture = this.history.values().stream().reduce((last, next) -> next).orElse(null);
+        if (!origin.equals(actual) && previousFuture != null) {
+            BudgetController futureController = new BudgetController(procedureToCreateNewMoment(actual));
+            Budget futureModel = futureController.getModel();
+            updateFutureFromPreviousFuture(previousFuture, futureModel);
+            Period nextPeriod = this.history.keySet().stream().reduce((last, next) -> next).orElseThrow();
+            this.history.put(nextPeriod, futureModel.getMoment());
+        }
+    }
+
+    private static void updateFutureFromPreviousFuture(BudgetMoment previousFuture, Budget futureModel) {
+        if (previousFuture.categoryMoments().length != futureModel.getCategoryControllers().length) {
+            return;
+        }
+        for (int i = 0; i < previousFuture.categoryMoments().length; i++) {
+            CategoryMoment categoryMoment = previousFuture.categoryMoments()[i];
+            if (categoryMoment.budgetMoment() != null) {
+                updateFutureFromPreviousFuture(
+                        categoryMoment.budgetMoment(),
+                        ((BudgetCategory) futureModel.getCategoryControllers()[i].getModel())
+                                .getBudgetController().getModel());
+            } else {
+                Arrays.stream(categoryMoment.expenses())
+                        .forEach(futureModel.getCategoryControllers()[i]::addSpent);
+            }
+        }
     }
 }

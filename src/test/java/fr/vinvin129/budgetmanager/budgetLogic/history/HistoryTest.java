@@ -4,6 +4,8 @@ import fr.vinvin129.budgetmanager.budgetLogic.Period;
 import fr.vinvin129.budgetmanager.budgetLogic.Spent;
 import fr.vinvin129.budgetmanager.budgetLogic.budgets.Budget;
 import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.BudgetCategory;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.BudgetMoment;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
@@ -306,5 +308,74 @@ class HistoryTest {
         history.nextMonth();
         history.nextMonth();
         assertEquals(History.createPeriod(calendar), history.getActualPeriod());
+    }
+
+    @Test
+    void updateFutureFromPresentChange() throws IllegalBudgetSizeException {
+        History history = History.INSTANCE;
+        BudgetMoment m1MomentInit = new BudgetMoment(
+                "budget test",
+                1000,
+                0,
+                new CategoryMoment[]{
+                        new CategoryMoment(
+                                "cat1",
+                                300,
+                                300,
+                                new Spent[]{new Spent("toto", 30, null)},
+                                null),
+                        CategoryMoment.create(
+                                new BudgetMoment(
+                                        "cat2",
+                                        300,
+                                        0,
+                                        new CategoryMoment[]{
+                                                CategoryMoment.create("cat3", 100)
+                                        })
+                        )
+                }
+        );
+        BudgetMoment m2Moment = new BudgetMoment(
+                "budget test",
+                1000,
+                600,
+                new CategoryMoment[]{
+                        new CategoryMoment(
+                                "cat1",
+                                300,
+                                300,
+                                new Spent[]{},
+                                null),
+                        CategoryMoment.create(
+                                new BudgetMoment(
+                                        "cat2",
+                                        300,
+                                        100,
+                                        new CategoryMoment[]{
+                                                new CategoryMoment(
+                                                        "cat3",
+                                                        100,
+                                                        100,
+                                                        new Spent[]{},
+                                                        null
+                                                )
+                                        })
+                        )
+                }
+        );
+
+        BudgetController budgetController = new BudgetController(m1MomentInit);
+        history.initialize(budgetController);
+        history.newMonth();
+
+        CategoryController cat1 = budgetController.getModel().getCategoryControllers()[0];
+        BudgetController bugCat2 = ((BudgetCategory)budgetController.getModel().getCategoryControllers()[1].getModel())
+                .getBudgetController();
+        CategoryController cat3 = bugCat2.getModel().getCategoryControllers()[0];
+        cat1.addSpent(new Spent("dépense 1", 100, null));
+        cat3.addSpent(new Spent("dépense 2", 200, null));
+        history.updateFutureFromPresent();
+        history.nextMonth();
+        assertEquals(m2Moment, budgetController.getModel().getMoment());
     }
 }

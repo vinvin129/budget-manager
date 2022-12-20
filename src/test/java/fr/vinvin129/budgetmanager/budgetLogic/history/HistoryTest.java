@@ -374,7 +374,7 @@ class HistoryTest {
         CategoryController cat3 = bugCat2.getModel().getCategoryControllers()[0];
         cat1.addSpent(new Spent("dépense 1", 100, null));
         cat3.addSpent(new Spent("dépense 2", 200, null));
-        history.updateFutureFromPresent();
+        history.recalculeHistoriqueAPartirMoisActuel();
         history.nextMonth();
         assertEquals(m2Moment, budgetController.getModel().getMoment());
     }

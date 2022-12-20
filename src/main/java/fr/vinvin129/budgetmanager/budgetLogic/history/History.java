@@ -5,6 +5,8 @@ import fr.vinvin129.budgetmanager.budgetLogic.Spent;
 import fr.vinvin129.budgetmanager.budgetLogic.budgets.Budget;
 import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
 import fr.vinvin129.budgetmanager.budgetLogic.categories.BudgetCategory;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.Category;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.StandardCategory;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.BudgetMoment;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.events.EventT;
@@ -81,11 +83,8 @@ public final class History extends Observable implements HistoryNav<Budget> {
      * @return a {@link Budget} generated from the entry {@link BudgetMoment}
      */
     private Budget setModelFromEntry(Map.Entry<Period, BudgetMoment> entry) {
-        //Save actual model if exists
-        Budget actualBudget = this.mainController.getModel();
-        if (this.actualPeriod != null && actualBudget != null) {
-            this.history.put(this.actualPeriod, actualBudget.getMoment());
-        }
+        //Save actual model if exists and recalculate the history
+        recalculeHistoriqueAPartirMoisActuel();
 
         //get new model from history
         try {
@@ -205,50 +204,69 @@ public final class History extends Observable implements HistoryNav<Budget> {
     }
 
     /**
-     * Updates moments in history in according to changes in actual budget model to preserve logic
+     * Recalcule l'historique des périodes supérieures à la période actuelle à partir du {@link Budget} actuel.
+     * Seuls les soldes, en fonctions des dépenses ajoutées dans le passé, sont mises à jour.
+     * Les catégories doivent être au même nombre.
      */
-    public void updateFutureFromPresent() throws IllegalBudgetSizeException {
-        Period period = this.actualPeriod;
-        BudgetMoment origin = this.history.get(period);
-        do {
-            updateFutureFromPresent(origin);
-            Map.Entry<Period, BudgetMoment> newEntry = this.history.higherEntry(period);
-            if (newEntry != null) {
-                period = newEntry.getKey();
-                origin = newEntry.getValue();
-            } else {
-                period = null;
-                origin = null;
-            }
-        } while (period != null && origin != null);
-    }
-
-    public void updateFutureFromPresent(BudgetMoment origin) throws IllegalBudgetSizeException {
-        BudgetMoment actual = this.mainController.getModel().getMoment();
-        BudgetMoment previousFuture = this.history.values().stream().reduce((last, next) -> next).orElse(null);
-        if (!origin.equals(actual) && previousFuture != null) {
-            BudgetController futureController = new BudgetController(procedureToCreateNewMoment(actual));
-            Budget futureModel = futureController.getModel();
-            updateFutureFromPreviousFuture(previousFuture, futureModel);
-            Period nextPeriod = this.history.keySet().stream().reduce((last, next) -> next).orElseThrow();
-            this.history.put(nextPeriod, futureModel.getMoment());
-        }
-    }
-
-    private static void updateFutureFromPreviousFuture(BudgetMoment previousFuture, Budget futureModel) {
-        if (previousFuture.categoryMoments().length != futureModel.getCategoryControllers().length) {
+    public void recalculeHistoriqueAPartirMoisActuel() {
+        Period nextPeriod = this.history.higherKey(this.actualPeriod);
+        if (nextPeriod == null) {
             return;
         }
-        for (int i = 0; i < previousFuture.categoryMoments().length; i++) {
-            CategoryMoment categoryMoment = previousFuture.categoryMoments()[i];
-            if (categoryMoment.budgetMoment() != null) {
-                updateFutureFromPreviousFuture(
-                        categoryMoment.budgetMoment(),
-                        ((BudgetCategory) futureModel.getCategoryControllers()[i].getModel())
-                                .getBudgetController().getModel());
-            } else {
+        Budget actualModel = this.mainController.getModel();
+        BudgetMoment actualMoment = actualModel.getMoment();
+        if (this.history.get(this.actualPeriod).equals(actualMoment)) {
+            return;
+        }
+
+        this.history.put(this.actualPeriod, actualMoment);
+        this.history.tailMap(this.actualPeriod, false)
+                .forEach((period, budgetMoment) -> {
+                    try {
+                        recalculeMoisProchain(period);
+                    } catch (IllegalBudgetSizeException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+    }
+
+    /**
+     * Recalcule l'historique d'une période spécifique à partir de la période avant elle
+     * Seuls les soldes, en fonctions des dépenses ajoutées dans le passé, sont mises à jour.
+     * Les catégories doivent être au même nombre.
+     * @param moisProchain la période qui doit être recalculée
+     * @throws IllegalBudgetSizeException si il y a un problème de conception du budget
+     */
+    private void recalculeMoisProchain(Period moisProchain) throws IllegalBudgetSizeException {
+        Map.Entry<Period, BudgetMoment> previousEntry = this.history.lowerEntry(moisProchain);
+        if (previousEntry == null) {
+            return;
+        }
+        BudgetMoment previousMonth = previousEntry.getValue();
+        BudgetMoment nextMonthVirgin = procedureToCreateNewMoment(previousMonth);
+        Budget nextMonthModel = Budget.createModel(nextMonthVirgin, this.mainController);
+        ajoutDepensesMoisRecalcule(this.history.get(moisProchain), nextMonthModel);
+        this.history.put(moisProchain, nextMonthModel.getMoment());
+    }
+
+    /**
+     * Ajoute les dépenses {@link Spent} qui n'existent pas déjà dans un {@link Budget}, à partir d'un {@link BudgetMoment} référentiel
+     * @param base le {@link BudgetMoment} référentiel
+     * @param nextMonthModel le {@link Budget} où les dépenses doivent être ajoutées
+     */
+    private void ajoutDepensesMoisRecalcule(BudgetMoment base, Budget nextMonthModel) {
+        if (base.categoryMoments().length != nextMonthModel.getCategoryControllers().length) {
+            return;
+        }
+        for (int i = 0; i < base.categoryMoments().length; i++) {
+            CategoryMoment categoryMoment = base.categoryMoments()[i];
+            Category categoryNextMonthModel = nextMonthModel.getCategoryControllers()[i].getModel();
+            if (categoryMoment.budgetMoment() != null && categoryNextMonthModel instanceof BudgetCategory budgetCategory) {
+                ajoutDepensesMoisRecalcule(categoryMoment.budgetMoment(), budgetCategory.getBudgetController().getModel());
+            } else if (categoryMoment.budgetMoment() == null && categoryNextMonthModel instanceof StandardCategory) {
                 Arrays.stream(categoryMoment.expenses())
-                        .forEach(futureModel.getCategoryControllers()[i]::addSpent);
+                        .filter(spent -> !Arrays.asList(categoryNextMonthModel.getSpentList()).contains(spent))
+                        .forEach(categoryNextMonthModel.getController()::addSpent);
             }
         }
     }

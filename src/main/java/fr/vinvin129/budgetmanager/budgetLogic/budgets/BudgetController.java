@@ -60,6 +60,17 @@ public class BudgetController extends Observable {
     }
 
     /**
+     * Remove listener on a category
+     * @param categoryController the {@link CategoryController} object
+     */
+    private void removeListenerOnCategory(CategoryController categoryController) {
+        if (categoryController.getModel() instanceof BudgetCategory budgetCategory) {
+            budgetCategory.getBudgetController().removeListener(listener);
+        }
+        this.categoryObserver.removeObservable(categoryController);
+    }
+
+    /**
      * get this model {@link Budget} for this budget
      * @return a {@link Budget} object
      */
@@ -72,7 +83,11 @@ public class BudgetController extends Observable {
      * @param model the budget model
      */
     public void setModel(Budget model) {
+        if (this.model != null) {
+            Arrays.stream(this.model.getCategoryControllers()).forEach(this::removeListenerOnCategory);
+        }
         this.model = model;
+        Arrays.stream(this.model.getCategoryControllers()).forEach(this::addListenerOnCategory);
     }
 
     /**

@@ -130,8 +130,6 @@ public class ViewBudgetController extends Observer {
         Platform.runLater(() -> {
             if (eventT.equals(EventT.DATA_CHANGE)) {
                 refresh();
-            } else if (eventT.equals(EventT.HISTORY_MONTH_CHANGE)) {
-                this.addSpentButton.setDisable(History.INSTANCE.hasNext());
             }
         });
 
@@ -202,8 +200,10 @@ public class ViewBudgetController extends Observer {
             removeObservable(this.budgetController);
         }
         this.budgetController = budgetController;
-        addObservable(this.budgetController);
-        refresh();
+        if (this.budgetController != null) {
+            addObservable(this.budgetController);
+            refresh();
+        }
     }
 
     /**

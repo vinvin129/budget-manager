@@ -1,5 +1,9 @@
 module:fr.vinvin129.budgetmanager
-fr.vinvin129.budgetmanager
+fr.vinvin129.budgetmanager.budgetLogic
+fr.vinvin129.budgetmanager.budgetLogic.budgets
+fr.vinvin129.budgetmanager.budgetLogic.categories
+fr.vinvin129.budgetmanager.budgetLogic.history
+fr.vinvin129.budgetmanager.budgetLogic.moments
 fr.vinvin129.budgetmanager.events
 fr.vinvin129.budgetmanager.exceptions
 fr.vinvin129.budgetmanager.ihm
@@ -9,4 +13,3 @@ fr.vinvin129.budgetmanager.ihm.views.controllers.create.category
 fr.vinvin129.budgetmanager.ihm.views.controllers.create.spent
 fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard
 fr.vinvin129.budgetmanager.ihm.views.stages
-fr.vinvin129.budgetmanager.models.budget_logic

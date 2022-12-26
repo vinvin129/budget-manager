@@ -57,13 +57,13 @@ public final class History extends Observable implements HistoryNav<Budget> {
 
     @Override
     public Budget previousMonth() {
-        Map.Entry<Period, BudgetMoment> previous = this.history.lowerEntry(this.actualPeriod);
+        Period previous = this.history.lowerKey(this.actualPeriod);
         return setModelFromEntry(previous);
     }
 
     @Override
     public Budget nextMonth() {
-        Map.Entry<Period, BudgetMoment> next = this.history.higherEntry(this.actualPeriod);
+        Period next = this.history.higherKey(this.actualPeriod);
         return setModelFromEntry(next);
     }
 
@@ -78,20 +78,24 @@ public final class History extends Observable implements HistoryNav<Budget> {
     }
 
     /**
-     * set actual model and {@link Period} from an entry of a {@link Period} and {@link BudgetMoment}
-     * @param entry the entry to set
+     * set actual model and {@link Period} from a {@link Period} and this linked {@link BudgetMoment}
+     * call {@link History#recalculeHistoriqueAPartirMoisActuel()}
+     * @param period the period to set
      * @return a {@link Budget} generated from the entry {@link BudgetMoment}
      */
-    private Budget setModelFromEntry(Map.Entry<Period, BudgetMoment> entry) {
+    private Budget setModelFromEntry(Period period) {
         //Save actual model if exists and recalculate the history
         recalculeHistoriqueAPartirMoisActuel();
+        this.history.put(this.actualPeriod, this.mainController.getModel().getMoment());
 
         //get new model from history
         try {
-            Budget model = entry != null ? Budget.createModel(entry.getValue(), this.mainController) : null;
-            if (model != null) {
+            Budget model = null;
+            if (period != null) {
+                BudgetMoment newMoment = this.history.get(period);
+                model = Budget.createModel(newMoment, this.mainController);
                 this.mainController.setModel(model);
-                this.actualPeriod = entry.getKey();
+                this.actualPeriod = period;
             }
             this.fire(EventT.HISTORY_MONTH_CHANGE);
             return model;

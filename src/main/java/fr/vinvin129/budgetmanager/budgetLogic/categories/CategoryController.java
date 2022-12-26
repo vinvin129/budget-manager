@@ -2,7 +2,6 @@ package fr.vinvin129.budgetmanager.budgetLogic.categories;
 
 import fr.vinvin129.budgetmanager.budgetLogic.Spent;
 import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
-import fr.vinvin129.budgetmanager.budgetLogic.history.History;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.events.EventT;
 import fr.vinvin129.budgetmanager.events.Observable;
@@ -123,7 +122,6 @@ public class CategoryController extends Observable {
             this.setBalance(this.model.getBalance() - spent.price());
             this.budgetParentController.setBalance(this.budgetParentController.getModel().getBalance() - spent.price());
         }
-        History.INSTANCE.recalculeHistoriqueAPartirMoisActuel();
         fire(EventT.DATA_CHANGE);
     }
 }

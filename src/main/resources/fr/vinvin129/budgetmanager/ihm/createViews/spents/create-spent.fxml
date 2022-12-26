@@ -46,6 +46,8 @@
            </rowConstraints>
            <Label text="Intitulé : " />
            <TextField fx:id="titleTextField" GridPane.columnIndex="1" />
+           <Label text="Prix : " GridPane.rowIndex="1" />
+           <TextField fx:id="priceTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
            <Label text="Budget : " GridPane.rowIndex="2" />
            <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="2">
                <ChoiceBox fx:id="budgetChoiceBox" onAction="#budgetChoiceChanged" prefWidth="150.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="18.666666666666668" />
@@ -54,8 +56,6 @@
            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <ChoiceBox fx:id="categoryChoiceBox" layoutX="25.0" layoutY="19.0" prefWidth="150.0" AnchorPane.bottomAnchor="17.666666666666668" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="19.0" />
            </AnchorPane>
-         <Label text="Prix : " GridPane.rowIndex="1" />
-         <TextField fx:id="priceTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
        </GridPane>
    </center>
 </BorderPane>

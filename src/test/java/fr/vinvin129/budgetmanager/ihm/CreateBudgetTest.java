@@ -1,10 +1,11 @@
 package fr.vinvin129.budgetmanager.ihm;
 
-import fr.vinvin129.budgetmanager.exceptions.*;
-import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
-import fr.vinvin129.budgetmanager.models.budget_logic.BudgetCategory;
-import fr.vinvin129.budgetmanager.models.budget_logic.Category;
-import fr.vinvin129.budgetmanager.models.budget_logic.StandardCategory;
+import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.BudgetCategory;
+import fr.vinvin129.budgetmanager.budgetLogic.categories.CategoryController;
+import fr.vinvin129.budgetmanager.budgetLogic.moments.BudgetMoment;
+import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
+import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,38 +21,38 @@ import java.io.IOException;
 public class CreateBudgetTest {
     static int windowNb = 0;
 
-    static void createBudget(FXRobotCustom robotCustom, String windowName, Budget budget, boolean main, boolean clear) {
+    static void createBudget(FXRobotCustom robotCustom, String windowName, BudgetController budgetController, boolean main, boolean clear) {
         robotCustom.clickOn("#budgetName");
         if (clear) {
             robotCustom.clearTextField("#budgetName");
         }
-        robotCustom.write(budget.getName());
+        robotCustom.write(budgetController.getModel().getName());
         robotCustom.clickOn("#budgetAllocation");
         if (clear) {
             robotCustom.clearTextField("#budgetAllocation");
         }
-        robotCustom.write(String.valueOf(budget.getAllocationPerMonth()));
+        robotCustom.write(String.valueOf(budgetController.getModel().getAllocationPerMonth()));
 
-        for (Category category : budget.getCategories()) {
+        for (CategoryController categoryController : budgetController.getModel().getCategoryControllers()) {
             robotCustom.clickOn("#addCategoryButton");
             String catNameBot = "category-" + ++windowNb + "Window";
             robotCustom.changeToNewWindowCreated(catNameBot);
-            createCategory(robotCustom, catNameBot, category, clear);
+            createCategory(robotCustom, catNameBot, categoryController, clear);
             robotCustom.removeWindow(catNameBot);
 
             robotCustom.changeWindow(windowName);
         }
         if (main) {
             robotCustom.clickOn("#validateBudgetCreation");
+            budgetController.newMonth();
         }
-        budget.newMonth();
     }
 
-    static void createCategory(FXRobotCustom robotCustom, String windowName, Category category, boolean clear) {
-        if (category instanceof BudgetCategory) {
+    static void createCategory(FXRobotCustom robotCustom, String windowName, CategoryController categoryController, boolean clear) {
+        if (categoryController.getModel() instanceof BudgetCategory budgetCategory) {
             robotCustom.selectItem("#typeChoice", "Budget");
             robotCustom.changeWindow(windowName);
-            createBudget(robotCustom, windowName, ((BudgetCategory) category).getBudget(), false, clear);
+            createBudget(robotCustom, windowName, budgetCategory.getBudgetController(), false, clear);
         } else {
             robotCustom.selectItem("#typeChoice", "Standard");
             robotCustom.changeWindow(windowName);
@@ -59,12 +60,12 @@ public class CreateBudgetTest {
             if (clear) {
                 robotCustom.clearTextField("#name");
             }
-            robotCustom.write(category.getName());
+            robotCustom.write(categoryController.getModel().getName());
             robotCustom.clickOn("#allocation");
             if (clear) {
                 robotCustom.clearTextField("#allocation");
             }
-            robotCustom.write(String.valueOf(category.getAllocationPerMonth()));
+            robotCustom.write(String.valueOf(categoryController.getModel().getAllocationPerMonth()));
         }
         robotCustom.clickOn("#validateCategoryCreation");
     }
@@ -83,53 +84,77 @@ public class CreateBudgetTest {
     }
 
     @Test
-    void createStandardCategory(FxRobot robot) throws IllegalCategorySizeException, IllegalBudgetSizeException, BudgetTooSmallException {
+    void createStandardCategory(FxRobot robot) {
         robot.clickOn("#startButton");
-        Budget b = new Budget("budget test", 1000);
-        b.addCategory(new StandardCategory("cat1", 300));
+        BudgetController b;
+        try {
+            b = new BudgetController(new BudgetMoment(
+                    "budget test",
+                    1000,
+                    0,
+                    new CategoryMoment[]{CategoryMoment.create("cat1", 300)}
+            ));
+        } catch (IllegalBudgetSizeException e) {
+            throw new RuntimeException(e);
+        }
         FXRobotCustom robotCustom = new FXRobotCustom(robot);
         createBudget(robotCustom, "root", b, true, false);
-        Assertions.assertEquals(b, app.budget);
+        Assertions.assertEquals(b.getModel().getMoment(), app.budgetController.getModel().getMoment());
     }
 
     @Test
-    void createBudgetCategory(FxRobot robot) throws BudgetTooSmallException, IllegalCategorySizeException, IllegalBudgetSizeException {
+    void createBudgetCategory(FxRobot robot) {
         robot.clickOn("#startButton");
-        Budget b = new Budget("budget test2", 1000);
-        Budget b2 = new Budget("bugcat1", 300);
-        b2.addCategory(new StandardCategory("cat1", 100));
-        b.addCategory(new BudgetCategory(b2));
+        BudgetController b;
+        try {
+            b = new BudgetController(new BudgetMoment(
+                    "budget test2",
+                    1000,
+                    0,
+                    new CategoryMoment[]{
+                            CategoryMoment.create(
+                                    new BudgetMoment("budget test2", 1000, 0,
+                                            new CategoryMoment[]{CategoryMoment.create("cat1", 100)}
+                                    )
+                            )
+                    }));
+        } catch (IllegalBudgetSizeException e) {
+            throw new RuntimeException(e);
+        }
         FXRobotCustom robotCustom = new FXRobotCustom(robot);
         createBudget(robotCustom, "root", b, true, false);
-        Assertions.assertEquals(b, app.budget);
+        Assertions.assertEquals(b.getModel().getMoment(), app.budgetController.getModel().getMoment());
     }
 
     @Test
-    void updateCreatedCategory(FxRobot robot) throws IllegalBudgetSizeException,
-            IllegalCategorySizeException,
-            BudgetTooSmallException,
-            BudgetCategoryTooSmallException,
-            CategoryTooBigException {
+    void updateCreatedCategory(FxRobot robot) {
         robot.clickOn("#startButton");
-        Budget b = new Budget("budget test2", 1000);
-        Budget b2 = new Budget("bugcat1", 300);
-        StandardCategory cat1 = new StandardCategory("cat1", 100);
-        BudgetCategory bugcat1 = new BudgetCategory(b2);
-        b2.addCategory(cat1);
-        b.addCategory(bugcat1);
-        FXRobotCustom robotCustom = new FXRobotCustom(robot);
+        try {
+            BudgetController b = new BudgetController(BudgetMoment.create("budget test2", 1000));
+            CategoryController bugcat1 = b.addCategory(CategoryMoment.create(BudgetMoment.create("bugcat1", 300)));
+            CategoryController cat1 = ((BudgetCategory) bugcat1.getModel())
+                    .getBudgetController().addCategory(CategoryMoment.create("cat1", 100));
+            FXRobotCustom robotCustom = new FXRobotCustom(robot);
 
-        robotCustom.clickOn("#addCategoryButton");
-        String catNameBot = "cat1Window";
-        robotCustom.changeToNewWindowCreated(catNameBot);
-        createCategory(robotCustom, catNameBot, cat1, false);
-        robotCustom.removeWindow(catNameBot);
-        robotCustom.changeWindow("root");
+            robotCustom.clickOn("#budgetName");
+            robotCustom.write(b.getModel().getName());
+            robotCustom.clickOn("#budgetAllocation");
+            robotCustom.write(String.valueOf(b.getModel().getAllocationPerMonth()));
 
-        robotCustom.selectListItem("#categoryList", (Category) cat1);
-        robot.sleep(1000);
-        robotCustom.changeToNewWindowCreated("update cat1");
-        b.setAllocationPerMonthOfCategory(cat1, 50);
-        createCategory(robotCustom, "update cat1", cat1, true);
+            robotCustom.clickOn("#addCategoryButton");
+            String catNameBot = "cat1Window";
+            robotCustom.changeToNewWindowCreated(catNameBot);
+            createCategory(robotCustom, catNameBot, cat1, false);
+            robotCustom.removeWindow(catNameBot);
+            robotCustom.changeWindow("root");
+
+            robotCustom.selectListItem("#categoryList", cat1.getModel());
+            robot.sleep(1000);
+            robotCustom.changeToNewWindowCreated("update cat1");
+            cat1.setAllocationPerMonth(50);
+            createCategory(robotCustom, "update cat1", cat1, true);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

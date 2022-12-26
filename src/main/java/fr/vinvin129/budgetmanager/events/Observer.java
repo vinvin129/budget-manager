@@ -20,7 +20,7 @@ public abstract class Observer {
      * add a {@link Observable} object
      * @param observable the {@link Observable}
      */
-    protected final void addObservable(Observable observable) {
+    public final void addObservable(Observable observable) {
         observable.addListener(listener);
     }
 
@@ -28,7 +28,7 @@ public abstract class Observer {
      * remove a {@link Observable} object
      * @param observable the {@link Observable}
      */
-    protected final void removeObservable(Observable observable) {
+    public final void removeObservable(Observable observable) {
         observable.removeListener(listener);
     }
 }

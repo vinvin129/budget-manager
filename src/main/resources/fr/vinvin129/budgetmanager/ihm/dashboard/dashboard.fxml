@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane fx:id="mainPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard.DashboardController">
+    <top>
+        <fx:include fx:id="navBar" source="nav-bar.fxml" />
+    </top>
+    <center>
+        <fx:include fx:id="viewMainBudget" source="view-budget.fxml" />
+    </center>
+</BorderPane>

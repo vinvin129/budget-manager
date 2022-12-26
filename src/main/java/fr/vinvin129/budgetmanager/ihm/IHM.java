@@ -1,10 +1,13 @@
 package fr.vinvin129.budgetmanager.ihm;
 
+import fr.vinvin129.budgetmanager.budgetLogic.budgets.Budget;
+import fr.vinvin129.budgetmanager.budgetLogic.budgets.BudgetController;
+import fr.vinvin129.budgetmanager.budgetLogic.history.History;
 import fr.vinvin129.budgetmanager.exceptions.CreateBudgetException;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.HomeController;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.create.budget.CreateBudgetController;
+import fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard.DashboardController;
 import fr.vinvin129.budgetmanager.ihm.views.controllers.dashboard.ViewBudgetController;
-import fr.vinvin129.budgetmanager.models.budget_logic.Budget;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -22,9 +25,9 @@ public class IHM extends Application {
      */
     protected Stage principalStage = null;
     /**
-     * the main {@link Budget}
+     * the main {@link BudgetController}
      */
-    protected Budget budget = null;
+    protected BudgetController budgetController = null;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -45,22 +48,25 @@ public class IHM extends Application {
     }
 
     /**
-     * create the main {@link Budget}. And in the future : show this {@link Budget} graphically
+     * create the main {@link BudgetController}. And in the future : show this {@link Budget} graphically
      * @throws IOException if FXML template to create budget can't be loaded from disk
      */
     private void showBudget() throws IOException {
-        if (this.budget == null) {
+        if (this.budgetController == null) {
             FXMLLoader fxmlLoader = new FXMLLoader(IHM.class.getResource("createViews/budgets/create-budget.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 800, 500);
             principalStage.setScene(scene);
             CreateBudgetController createBudgetController = fxmlLoader.getController();
             createBudgetController.validateBudgetCreation.setOnAction(actionEvent -> {
                 try {
-                    this.budget = createBudgetController.getBudget();
-                    FXMLLoader dashboardLoader = new FXMLLoader(IHM.class.getResource("dashboard/view-budget.fxml"));
+                    this.budgetController = createBudgetController.getBudgetController();
+                    this.budgetController.newMonth();
+                    History.INSTANCE.initialize(budgetController);
+                    FXMLLoader dashboardLoader = new FXMLLoader(IHM.class.getResource("dashboard/dashboard.fxml"));
                     Scene dashboardScene = new Scene(dashboardLoader.load(), 800, 500);
-                    ViewBudgetController dashboardController = dashboardLoader.getController();
-                    dashboardController.setBudget(budget);
+                    DashboardController dashboardController = dashboardLoader.getController();
+                    ViewBudgetController viewBudgetController = dashboardController.getMainBudgetViewController().orElseThrow();
+                    viewBudgetController.setBudgetController(budgetController);
                     principalStage.setScene(dashboardScene);
                 } catch (CreateBudgetException e) {
                     e.showWarningAlert();
@@ -69,11 +75,12 @@ public class IHM extends Application {
                 }
             });
         } else {
-            FXMLLoader dashboardLoader = new FXMLLoader(IHM.class.getResource("dashboard/view-budget.fxml"));
-            Scene scene = new Scene(dashboardLoader.load(), 800, 500);
-            ViewBudgetController dashboardController = dashboardLoader.getController();
-            dashboardController.setBudget(budget);
-            principalStage.setScene(scene);
+            FXMLLoader dashboardLoader = new FXMLLoader(IHM.class.getResource("dashboard/bashboard.fxml"));
+            Scene dashboardScene = new Scene(dashboardLoader.load(), 800, 500);
+            DashboardController dashboardController = dashboardLoader.getController();
+            ViewBudgetController viewBudgetController = dashboardController.getMainBudgetViewController().orElseThrow();
+            viewBudgetController.setBudgetController(budgetController);
+            principalStage.setScene(dashboardScene);
         }
     }
 

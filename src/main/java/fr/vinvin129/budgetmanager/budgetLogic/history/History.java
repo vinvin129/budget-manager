@@ -129,13 +129,14 @@ public final class History extends Observable implements HistoryNav<Budget> {
      * @return a new {@link Period} object
      */
     private Period newPeriod() {
-        Period actualPeriod = this.history.keySet().stream().reduce((last, next) -> next).orElse(null);
-        if (actualPeriod == null) {
+        Period latestPeriod = this.history.keySet().stream().reduce((last, next) -> next).orElse(null);
+        if (latestPeriod == null) {
             return createPeriod();
         }
         Calendar next = Calendar.getInstance();
-        next.set(Calendar.MONTH, actualPeriod.month());
-        next.set(Calendar.YEAR, actualPeriod.year());
+        next.set(Calendar.DATE, 1);
+        next.set(Calendar.MONTH, latestPeriod.month());
+        next.set(Calendar.YEAR, latestPeriod.year());
         next.add(Calendar.MONTH, 1);
         return createPeriod(next);
     }

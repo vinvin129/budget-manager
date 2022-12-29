@@ -22,6 +22,7 @@ public record Period(int month, int year) implements Comparable<Period> {
     public String toString() {
         Formatter fmt;
         Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DATE, 1);
         cal.set(Calendar.MONTH, this.month);
         fmt = new Formatter();
         fmt.format("%tB ", cal);

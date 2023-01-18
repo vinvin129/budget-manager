@@ -1,6 +1,8 @@
 package fr.vinvin129.budgetmanager.budgetLogic.moments;
 
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.vinvin129.budgetmanager.budgetLogic.Spent;
 
 import java.util.ArrayList;
@@ -16,6 +18,8 @@ import java.util.Objects;
  * @param expenses this {@link Spent} list
  * @param budgetMoment a {@link BudgetMoment} object if is a budget category or null if is a standard category
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonSerialize
 public record CategoryMoment(
         String name,
         double allocationPerMonth,

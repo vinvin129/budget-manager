@@ -1,6 +1,8 @@
 module fr.vinvin129.budgetmanager {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.base;
+    requires com.fasterxml.jackson.databind;
 
 
     exports fr.vinvin129.budgetmanager.budgetLogic;

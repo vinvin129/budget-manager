@@ -53,6 +53,9 @@ public class Backup {
      * @return the history or any if it can't be loaded
      */
     public Optional<Map<Period, BudgetMoment>> load() {
+        if (!file.exists()) {
+            return Optional.empty();
+        }
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             ArrayList<Saved> input = objectMapper.readValue(file, new TypeReference<>() {

@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HistoryTest {
 
+
     @Test
     void initialize() throws IllegalBudgetSizeException {
         /* Avec un budget controller */

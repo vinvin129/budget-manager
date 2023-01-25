@@ -2,15 +2,51 @@ package fr.vinvin129.budgetmanager.budgetLogic;
 
 import fr.vinvin129.budgetmanager.budgetLogic.moments.BudgetMoment;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BackupTest {
+    static File origineFile = new File("backup.json");
+    static File origineSaved = new File("backup_temp.json");
+
+    @BeforeAll
+    static void beforeAll() throws IOException {
+        if (origineFile.exists()) {
+            BufferedReader reader = new BufferedReader(new FileReader(origineFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(origineSaved));
+            writer.write(reader.readLine());
+            writer.close();
+            reader.close();
+            assertTrue(origineFile.delete());
+        }
+    }
+
+    @AfterAll
+    static void afterAll() throws IOException {
+        if (origineSaved.exists()) {
+            BufferedReader reader = new BufferedReader(new FileReader(origineSaved));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(origineFile));
+            writer.write(reader.readLine());
+            writer.close();
+            reader.close();
+            assertTrue(origineSaved.delete());
+        }
+    }
+
+    @AfterEach
+    void afterEach() {
+        if (origineFile.exists()) {
+            assertTrue(origineFile.delete());
+        }
+    }
 
     @Test
     void save() {

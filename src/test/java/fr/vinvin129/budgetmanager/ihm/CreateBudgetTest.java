@@ -7,19 +7,61 @@ import fr.vinvin129.budgetmanager.budgetLogic.moments.BudgetMoment;
 import fr.vinvin129.budgetmanager.budgetLogic.moments.CategoryMoment;
 import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
 import javafx.stage.Stage;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.framework.junit5.Stop;
 
-import java.io.IOException;
+import java.io.*;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(ApplicationExtension.class)
 public class CreateBudgetTest {
     static int windowNb = 0;
+
+    static File origineFile = new File("backup.json");
+    static File origineSaved = new File("backup_temp.json");
+
+    @BeforeAll
+    static void beforeAll() throws IOException {
+        if (origineFile.exists()) {
+            BufferedReader reader = new BufferedReader(new FileReader(origineFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(origineSaved));
+            writer.write(reader.readLine());
+            writer.close();
+            reader.close();
+            assertTrue(origineFile.delete());
+        }
+    }
+
+    @AfterAll
+    static void afterAll() throws IOException {
+        if (origineSaved.exists()) {
+            BufferedReader reader = new BufferedReader(new FileReader(origineSaved));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(origineFile));
+            writer.write(reader.readLine());
+            writer.close();
+            reader.close();
+            assertTrue(origineSaved.delete());
+        }
+    }
+
+    @BeforeEach
+    void beforeEach() {
+        if (origineFile.exists()) {
+            assertTrue(origineFile.delete());
+        }
+    }
+
+    @AfterEach
+    void afterEach() {
+        if (origineFile.exists()) {
+            assertTrue(origineFile.delete());
+        }
+    }
 
     static void createBudget(FXRobotCustom robotCustom, String windowName, BudgetController budgetController, boolean main, boolean clear) {
         robotCustom.clickOn("#budgetName");
@@ -79,7 +121,7 @@ public class CreateBudgetTest {
     }
 
     @Stop
-    private void stop() throws Exception {
+    private void stop() {
         app.stop();
     }
 

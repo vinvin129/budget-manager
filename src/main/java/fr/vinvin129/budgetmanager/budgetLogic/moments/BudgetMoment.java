@@ -1,5 +1,8 @@
 package fr.vinvin129.budgetmanager.budgetLogic.moments;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.Arrays;
 
 /**
@@ -10,6 +13,8 @@ import java.util.Arrays;
  * @param categoryMoments list of {@link CategoryMoment} for categories in this budget
  * @author vinvin129
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonSerialize
 public record BudgetMoment(
         String name,
         double allocationPerMonth,

@@ -1,5 +1,6 @@
 package fr.vinvin129.budgetmanager.budgetLogic.history;
 
+import fr.vinvin129.budgetmanager.budgetLogic.Backup;
 import fr.vinvin129.budgetmanager.budgetLogic.Period;
 import fr.vinvin129.budgetmanager.budgetLogic.Spent;
 import fr.vinvin129.budgetmanager.budgetLogic.budgets.Budget;
@@ -13,10 +14,8 @@ import fr.vinvin129.budgetmanager.events.EventT;
 import fr.vinvin129.budgetmanager.events.Observable;
 import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Map;
-import java.util.TreeMap;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * this singleton class control the history of a main {@link BudgetController} in the time
@@ -53,6 +52,65 @@ public final class History extends Observable implements HistoryNav<Budget> {
         this.mainController = mainController;
         this.actualPeriod = createPeriod();
         this.history.put(this.actualPeriod, this.mainController.getModel().getMoment());
+    }
+
+    /**
+     * Initialise ou réinitialise l'historique depuis une map des {@link BudgetMoment} par les {@link Period}.
+     *  Si des mois sont manquants entre le mois actuel et le dernier enregistré, ils seront calculés.
+     * @param history Une map des {@link BudgetMoment} par les {@link Period}
+     * @return Le controller principal {@link BudgetController}, configuré sur le mois en cours, ou rien si la map n'était pas correcte
+     * @throws IllegalBudgetSizeException si le budget principal ou ses sous budgets, sont incohérents
+     */
+    public Optional<BudgetController> initialize(TreeMap<Period, BudgetMoment> history) throws IllegalBudgetSizeException {
+        this.history.clear();
+        this.actualPeriod = null;
+        this.mainController = null;
+
+        Period actualPeriod = History.createPeriod();
+        Period lastHistoryPeriod = history.keySet().stream().reduce((last, next) -> next).orElse(null);
+        if (lastHistoryPeriod == null) {
+            return Optional.empty();
+        }
+
+        /* Ajout des mois manquants entre le dernier de l'historique et le mois en cours, s'il y en a */
+        while (actualPeriod.compareTo(lastHistoryPeriod) > 0) {
+            BudgetMoment lastHistoryMoment = history.get(lastHistoryPeriod);
+            Period nextPeriod = nextPeriod(lastHistoryPeriod);
+            history.put(nextPeriod, procedureToCreateNewMoment(lastHistoryMoment));
+            lastHistoryPeriod = nextPeriod;
+        }
+
+        /* Vérification de l'absence de 'trou' entre les périodes */
+        Set<Period> normalPeriodSet = new HashSet<>();
+        Set<Period> actualPeriodSet = history.keySet();
+        Period p = actualPeriodSet.stream().reduce((last, next) -> last).orElseThrow();
+        normalPeriodSet.add(p);
+        for (int i = 1; i < actualPeriodSet.size(); i++) {
+            Period next = nextPeriod(p);
+            normalPeriodSet.add(next);
+            p = next;
+        }
+        if (!actualPeriodSet.equals(normalPeriodSet)) {
+            return Optional.empty();
+        }
+
+        /* Création du controleur et initialisation de l'historique */
+        BudgetController controller = new BudgetController(history.get(actualPeriod));
+        this.mainController = controller;
+        this.actualPeriod = actualPeriod;
+        this.history.putAll(history);
+        return Optional.of(controller);
+    }
+
+    /**
+     * Permet de sauvegarder tout l'historique dans un fichier
+     * @see Backup#save(Map)
+     * @throws IOException
+     */
+    public void save() throws IOException {
+        recalculeHistoriqueAPartirMoisActuel();
+        this.history.put(this.actualPeriod, this.mainController.getModel().getMoment());
+        Backup.INSTANCE.save(history);
     }
 
     @Override
@@ -129,15 +187,11 @@ public final class History extends Observable implements HistoryNav<Budget> {
      * @return a new {@link Period} object
      */
     private Period newPeriod() {
-        Period actualPeriod = this.history.keySet().stream().reduce((last, next) -> next).orElse(null);
-        if (actualPeriod == null) {
+        Period latestPeriod = this.history.keySet().stream().reduce((last, next) -> next).orElse(null);
+        if (latestPeriod == null) {
             return createPeriod();
         }
-        Calendar next = Calendar.getInstance();
-        next.set(Calendar.MONTH, actualPeriod.month());
-        next.set(Calendar.YEAR, actualPeriod.year());
-        next.add(Calendar.MONTH, 1);
-        return createPeriod(next);
+        return nextPeriod(latestPeriod);
     }
 
     /**
@@ -273,5 +327,20 @@ public final class History extends Observable implements HistoryNav<Budget> {
                         .forEach(categoryNextMonthModel.getController()::addSpent);
             }
         }
+    }
+
+    /**
+     * Crée la période suivante par rapport à celle en paramètre
+     * @param period la période de référence
+     * @return la période suivante
+     */
+    private static Period nextPeriod(Period period) {
+        Calendar next = Calendar.getInstance();
+        next.set(Calendar.DATE, 1);
+        next.set(Calendar.MONTH, period.month());
+        next.set(Calendar.YEAR, period.year());
+        next.add(Calendar.MONTH, 1);
+
+        return createPeriod(next);
     }
 }

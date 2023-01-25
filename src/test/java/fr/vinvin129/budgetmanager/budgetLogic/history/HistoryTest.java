@@ -12,14 +12,16 @@ import fr.vinvin129.budgetmanager.exceptions.IllegalBudgetSizeException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
+import java.util.TreeMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class HistoryTest {
 
+
     @Test
     void initialize() throws IllegalBudgetSizeException {
+        /* Avec un budget controller */
         History history = History.INSTANCE;
         BudgetController budgetController = new BudgetController(new BudgetMoment(
                 "budget test",
@@ -29,6 +31,31 @@ class HistoryTest {
         ));
         history.initialize(budgetController);
         assertEquals(budgetController.getModel().getMoment(), history.getActualModel().getMoment());
+
+        /* Avec une map représentant l'historique */
+        TreeMap<Period, BudgetMoment> mapHistory = new TreeMap<>();
+        mapHistory.put(new Period(9, 2022), new BudgetMoment(
+                "principal",
+                1000, 1000, new CategoryMoment[]{
+                        new CategoryMoment("cat1", 200, 200, new Spent[]{}, null)
+        }
+        ));
+        mapHistory.put(new Period(10, 2022), new BudgetMoment(
+                "principal",
+                1000, 2000, new CategoryMoment[]{
+                new CategoryMoment("cat1", 200, 200, new Spent[]{}, null)
+        }
+        ));
+        assertTrue(history.initialize(mapHistory).isPresent());
+
+        mapHistory.put(new Period(6, 2022), new BudgetMoment(
+                "principal",
+                1000, 0, new CategoryMoment[]{
+                new CategoryMoment("cat1", 200, 0, new Spent[]{}, null)
+        }
+        ));
+        assertFalse(history.initialize(mapHistory).isPresent());
+        System.out.println(history);
     }
 
     @Test

@@ -1,5 +1,8 @@
 package fr.vinvin129.budgetmanager.budgetLogic;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.Calendar;
 import java.util.Formatter;
 
@@ -8,6 +11,8 @@ import java.util.Formatter;
  * @param month the month
  * @param year the year
  */
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonSerialize
 public record Period(int month, int year) implements Comparable<Period> {
     @Override
     public int compareTo(Period o) {
@@ -22,6 +27,7 @@ public record Period(int month, int year) implements Comparable<Period> {
     public String toString() {
         Formatter fmt;
         Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DATE, 1);
         cal.set(Calendar.MONTH, this.month);
         fmt = new Formatter();
         fmt.format("%tB ", cal);

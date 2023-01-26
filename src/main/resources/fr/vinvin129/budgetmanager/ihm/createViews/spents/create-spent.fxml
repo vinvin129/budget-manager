@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<BorderPane fx:id="view" prefHeight="211.0" prefWidth="324.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.vinvin129.budgetmanager.ihm.views.controllers.create.spent.CreateSpentController">
+   <top>
+      <Label text="Ajout d'une dépense" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+   </top>
+   <bottom>
+       <GridPane BorderPane.alignment="CENTER">
+           <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+           </columnConstraints>
+           <rowConstraints>
+               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+           <AnchorPane GridPane.halignment="CENTER">
+               <Button fx:id="validate" mnemonicParsing="false" onAction="#validateSpentCreation" text="Valider" AnchorPane.bottomAnchor="2.666666666666668" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="2.0" />
+           </AnchorPane>
+           <AnchorPane GridPane.columnIndex="1" GridPane.halignment="CENTER">
+               <Button fx:id="cancel" cancelButton="true" mnemonicParsing="false" onAction="#cancelSpentCreation" text="Annuler" AnchorPane.bottomAnchor="2.666666666666668" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="2.0" />
+           </AnchorPane>
+       </GridPane>
+   </bottom>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+   <center>
+       <GridPane BorderPane.alignment="CENTER">
+           <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.0" minWidth="10.0" prefWidth="70.33333333333333" />
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="247.33333333333337" minWidth="10.0" prefWidth="244.33333333333337" />
+           </columnConstraints>
+           <rowConstraints>
+               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+           <Label text="Intitulé : " />
+           <TextField fx:id="titleTextField" GridPane.columnIndex="1" />
+           <Label text="Prix : " GridPane.rowIndex="1" />
+           <TextField fx:id="priceTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+           <Label text="Budget : " GridPane.rowIndex="2" />
+           <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <ChoiceBox fx:id="budgetChoiceBox" onAction="#budgetChoiceChanged" prefWidth="150.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="18.666666666666668" />
+           </AnchorPane>
+           <Label text="Catégorie : " GridPane.rowIndex="3" />
+           <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <ChoiceBox fx:id="categoryChoiceBox" layoutX="25.0" layoutY="19.0" prefWidth="150.0" AnchorPane.bottomAnchor="17.666666666666668" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="19.0" />
+           </AnchorPane>
+       </GridPane>
+   </center>
+</BorderPane>

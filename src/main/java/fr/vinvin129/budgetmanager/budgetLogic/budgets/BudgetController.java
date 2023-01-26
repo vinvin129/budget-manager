@@ -100,6 +100,7 @@ public class BudgetController extends Observable {
                 .map(CategoryController::getModel)
                 .mapToDouble(Category::getAllocationPerMonth)
                 .sum();
+        totalBudget = Math.round(totalBudget*100.0)/100.0;
         if (totalBudget > allocationPerMonth) {
             throw new BudgetTooSmallException();
         }
@@ -129,6 +130,7 @@ public class BudgetController extends Observable {
                 .filter(category -> category instanceof BudgetCategory)
                 .mapToDouble(Category::getAllocationPerMonth)
                 .sum();
+        allocationSum = Math.round(allocationSum*100.0)/100.0;
         this.setBalance(this.model.getBalance() - allocationSum);
         fire(EventT.DATA_CHANGE);
     }

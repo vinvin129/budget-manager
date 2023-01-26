@@ -88,10 +88,10 @@ public class BudgetCategory extends Category {
 
     @Override
     public double getAmountSpent() {
-        return Arrays.stream(this.budget.getCategoryControllers())
+        return Math.round(Arrays.stream(this.budget.getCategoryControllers())
                 .map(CategoryController::getModel)
                 .mapToDouble(Category::getAmountSpent)
-                .sum();
+                .sum()*100.0)/100.0;
     }
 
     @Override

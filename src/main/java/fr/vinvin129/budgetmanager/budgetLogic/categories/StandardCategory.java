@@ -37,7 +37,7 @@ public class StandardCategory extends Category{
         if (allocationPerMonth < 1) {
             throw new IllegalCategorySizeException();
         }
-        this.allocationPerMonth = allocationPerMonth;
+        this.allocationPerMonth = Math.round(allocationPerMonth*100.0)/100.0;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class StandardCategory extends Category{
 
     @Override
     void setAllocationPerMonth(double allocationPerMonth) {
-        this.allocationPerMonth = allocationPerMonth;
+        this.allocationPerMonth = Math.round(allocationPerMonth*100.0)/100.0;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class StandardCategory extends Category{
 
     @Override
     public double getAmountSpent() {
-        return this.spentList.stream().mapToDouble(Spent::price).sum();
+        return Math.round(this.spentList.stream().mapToDouble(Spent::price).sum()*100.0)/100.0;
     }
 
     @Override

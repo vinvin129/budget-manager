@@ -96,6 +96,7 @@ public class CategoryController extends Observable {
                 .filter(categoryController -> !categoryController.equals(this))
                 .map(CategoryController::getModel)
                 .mapToDouble(Category::getAllocationPerMonth).sum() + allocationPerMonth;
+        totalBudget = Math.round(totalBudget*100.0)/100.0;
 
         if (totalBudget > this.budgetParentController.getModel().getAllocationPerMonth()) {
             throw new CategoryTooBigException();

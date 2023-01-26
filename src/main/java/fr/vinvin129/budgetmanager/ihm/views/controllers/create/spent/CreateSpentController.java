@@ -86,8 +86,7 @@ public class CreateSpentController {
         }
 
         if (selectedBudget != null && selectedCategory != null) {
-            Spent spent = new Spent(label, Double.parseDouble(priceTextField.getText()), null);
-            //TODO à changer
+            Spent spent = new Spent(label, Math.round(Double.parseDouble(priceTextField.getText())*100.0)/100.0, null);
             selectedCategory.getController().addSpent(spent);
             cancelSpentCreation();
         } else {

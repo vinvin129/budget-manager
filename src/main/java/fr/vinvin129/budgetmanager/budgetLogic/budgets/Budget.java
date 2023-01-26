@@ -72,7 +72,7 @@ public class Budget {
             throw new IllegalBudgetSizeException();
         }
         this.name = name;
-        this.allocationPerMonth = allocationPerMonth;
+        this.allocationPerMonth = Math.round(allocationPerMonth*100.0)/100.0;
         this.controller = controller;
     }
 
@@ -88,7 +88,7 @@ public class Budget {
      * change the allocation per month for this Budget
      */
     void setAllocationPerMonth(double allocationPerMonth) {
-        this.allocationPerMonth = allocationPerMonth;
+        this.allocationPerMonth = Math.round(allocationPerMonth*100.0)/100.0;
     }
 
     /**
@@ -115,7 +115,7 @@ public class Budget {
      * @param balance the balance
      */
     void setBalance(double balance) {
-        this.balance = balance;
+        this.balance = Math.round(balance*100.0)/100.0;
     }
 
     /**

@@ -10,6 +10,6 @@ public class CreateCategoryException extends CreateException{
      * @param message the description
      */
     public CreateCategoryException(String message) {
-        super("impossible de créer la catégorie", message);
+        super("Impossible de créer la catégorie.", message);
     }
 }

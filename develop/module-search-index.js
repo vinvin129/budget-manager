@@ -1,0 +1,1 @@
+moduleSearchIndex = [{"l":"fr.vinvin129.budgetmanager"}];updateSearchResults();

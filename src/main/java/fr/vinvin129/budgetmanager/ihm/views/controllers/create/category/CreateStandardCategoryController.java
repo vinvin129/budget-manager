@@ -37,7 +37,7 @@ public class CreateStandardCategoryController implements CreateCategory {
         String name = this.name.getText();
         String allocation = this.allocation.getText();
         if (name.equals("") || allocation.equals("")) {
-            throw new CreateCategoryException("le nom et l'allocation de la catégorie ne doivent pas être vide");
+            throw new CreateCategoryException("Le nom et l'allocation de la catégorie ne doivent pas être vide.");
         }
         try {
             if (categoryController != null) {
@@ -48,7 +48,7 @@ public class CreateStandardCategoryController implements CreateCategory {
                 return CategoryMoment.create(name, Double.parseDouble(allocation));
             }
         } catch (NumberFormatException e) {
-            throw new CreateCategoryException("la valeur du champ allocation doit être un nombre");
+            throw new CreateCategoryException("La valeur du champ allocation doit être un nombre.");
         } catch (IllegalCategorySizeException | BudgetTooSmallException e) {
             throw new CreateCategoryException(e.getMessage());
         } catch (CategoryTooBigException e) {

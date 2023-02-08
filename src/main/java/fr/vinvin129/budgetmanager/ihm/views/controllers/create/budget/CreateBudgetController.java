@@ -102,13 +102,13 @@ public class CreateBudgetController implements CreateCategory {
         String name = this.budgetName.getText();
         String allocation = this.budgetAllocation.getText();
         if (name.equals("") || allocation.equals("")) {
-            throw new CreateBudgetException("le nom et l'allocation du budget ne doivent pas être vide");
+            throw new CreateBudgetException("Le nom et l'allocation du budget ne doivent pas être vide.");
         }
         try {
             this.budgetController.setName(name);
             this.budgetController.setAllocationPerMonth(Double.parseDouble(allocation));
         } catch (NumberFormatException e) {
-            throw new CreateBudgetException("la valeur du champ allocation doit être un nombre");
+            throw new CreateBudgetException("La valeur du champ allocation doit être un nombre.");
         } catch (BudgetTooSmallException e) {
             throw new CreateBudgetException(e.getMessage());
         }
@@ -123,7 +123,7 @@ public class CreateBudgetController implements CreateCategory {
         updateCommonBudgetData();
 
         if (categoryList.getItems().size() == 0) {
-            throw new CreateBudgetException("il doit y avoir au moins une catégorie dans le budget");
+            throw new CreateBudgetException("Il doit y avoir au moins une catégorie dans le budget.");
         }
         return this.budgetController;
     }
@@ -137,7 +137,7 @@ public class CreateBudgetController implements CreateCategory {
         try {
             return CategoryMoment.create(getBudgetController().getModel().getMoment());
         } catch (CreateBudgetException e) {
-            throw new CreateCategoryException("le budget auquel est lié la catégorie n'a pas pu être crée\n (" + e.getDescription() + ")");
+            throw new CreateCategoryException("Le budget auquel est lié la catégorie n'a pas pu être crée\n (" + e.getDescription() + ").");
         }
     }
 

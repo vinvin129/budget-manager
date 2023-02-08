@@ -117,7 +117,7 @@ public class CreateCategoryController implements CreateCategory {
     @Override
     public CategoryMoment getCategoryMoment() throws CreateCategoryException {
         if (actualCategoryController == null) {
-            throw new CreateCategoryException("erreur inconnue (problème de controleurs)");
+            throw new CreateCategoryException("Erreur inconnue (problème de controleurs).");
         }
         return actualCategoryController.getCategoryMoment();
     }

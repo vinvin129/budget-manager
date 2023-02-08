@@ -10,14 +10,6 @@ public class CreateBudgetException extends CreateException{
      * @param message the description
      */
     public CreateBudgetException(String message) {
-        super("impossible de créer le budget", message);
-    }
-
-    /**
-     * Create a new exception for graphics budgets creations. the title is defined
-     * @param e the throwable
-     */
-    public CreateBudgetException(Throwable e) {
-        super(e);
+        super("Impossible de créer le budget", message);
     }
 }
